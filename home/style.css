@@ -87,7 +87,9 @@ footer {
 
 .footer-section {
   max-width: 300px;
-  justify-content: space-between;
+  justify-content: center;
+  margin-left: 40px;
+  margin-right: 40px;
 }
 
 .footer-section h3 {
@@ -111,7 +113,7 @@ footer {
 .LH {
   color: white;
   text-decoration: none;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 
 }
 
@@ -119,7 +121,8 @@ footer {
   color: #f39c12;
 }
 #about-me{
-  width: 150px;
+  width: 250px;
+  font-size:x-large;
 }
 
 .footer-bottom {
