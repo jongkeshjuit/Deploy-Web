@@ -113,9 +113,8 @@ footer {
   margin-bottom: 10px;
 }
 
-.footer-section p,
-a {
-  font-size: 14px;
+.footer-section p,a
+ {
   line-height: 1.5;
   text-decoration: none;
   color: #fff;
@@ -135,13 +134,19 @@ a {
 
 }
 
-.social-icons a:hover {
-  color: #f39c12;
+.fa-facebook:hover
+{
+  color: #0866fe;
+}
+.fa-instagram:hover
+{color: #d12769;}
+.fa-twitter:hover
+{
+  color: rgb(0, 204, 255);
 }
 
 #about-me {
-  width: 250px;
-  font-size: x-large;
+  width: 200px;
 }
 
 .footer-bottom {
