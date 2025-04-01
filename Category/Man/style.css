@@ -37,3 +37,98 @@ header {
   margin-left: 30px;
   margin-right: 10px;
 }
+
+/* ................. */
+.card
+{
+  width: 294px;
+}
+.category-name
+{
+  text-align: center;
+  font-size: x-large;
+  font-weight: bold;
+}
+.conten-infor
+{
+  display: flex;
+
+}
+.conten-infor div
+{
+  width: 50%;
+}
+.sex
+{
+  text-align: left;
+}
+.size
+{
+  text-align: right;
+}
+
+
+
+/* footer design */
+footer {
+  background-color: #222;
+  color: #fff;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 20px;
+}
+
+.footer-section {
+  max-width: 300px;
+  justify-content: center;
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+.footer-section h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.footer-section p,a {
+  font-size: 14px;
+  line-height: 1.5;
+  text-decoration: none;
+  color: #fff;
+}
+
+.social-icons a {
+  color: white;
+  font-size: 20px;
+  margin: 0 10px;
+  transition: 0.3s;
+}
+.LH {
+  color: white;
+  text-decoration: none;
+    margin-bottom: 10px;
+
+}
+
+.social-icons a:hover {
+  color: #f39c12;
+}
+#about-me{
+  width: 250px;
+  font-size:x-large;
+}
+
+.footer-bottom {
+  margin-top: 20px;
+  font-size: 14px;
+  border-top: 1px solid #444;
+  padding-top: 10px;
+}
+
+
