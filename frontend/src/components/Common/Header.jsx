@@ -3,7 +3,7 @@ import Navbar from './Navbar'
 
 const Header = () => {
     return (
-        <header>
+        <header className='border-b-[1px] border-b-[#DCDCDC]'>
             {/* navbar */}
             <Navbar />
             {/* Cart Drawer */}
