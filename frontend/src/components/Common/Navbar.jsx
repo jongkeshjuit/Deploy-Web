@@ -24,19 +24,16 @@ const Navbar = () => {
                     <Link to="/" className="text-[30px] font-medium font-Jost">Wukudada.</Link>
                 </div>
 
-                {/* Liên hệ + yêu thích + giỏ hàng */}
+                {/* Liên hệ + tài khoản + giỏ hàng */}
                 <div className='flex items-center gap-[20px]'>
                     <button className='flex items-center gap-2.5 cursor-pointer'>
                         <span className='text-[14px] font-normal'>Liên hệ với chúng tôi</span>
                     </button>
-                    <Link to="/wishlist">
-                        <IoMdHeartEmpty className='text-[20px]' />
-                    </Link>
-                    <Link to="/cart">
-                        <PiShoppingCartSimple className='text-[20px]' />
-                    </Link>
                     <Link to="/user">
                         <AiOutlineUser className='text-[20px]' />
+                    </Link>
+                    <Link to="/cart">
+                        <PiShoppingCartSimple className='text-[20px]'/>
                     </Link>
 
                 </div>
