@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GrSearch, GrClose } from 'react-icons/gr';
 
 const SearchBar = () => {
@@ -11,11 +11,23 @@ const SearchBar = () => {
         e.preventDefault();
         console.log('Search:', searchTerm);
         setIsOpen(false);
-    }
+    };
+
+    //Tắt / bật scroll theo trạng thái isOpen
+    useEffect(() => {
+        if (isOpen) {
+            document.body.classList.add('overflow-hidden');
+        } else {
+            document.body.classList.remove('overflow-hidden');
+        }
+        // Dọn dẹp khi component unmount
+        return () => {
+            document.body.classList.remove('overflow-hidden');
+        };
+    }, [isOpen]);
 
     return (
         <>
-            {/* Nút mở tìm kiếm luôn hiển thị */}
             {!isOpen && (
                 <button
                     onClick={toggleSearch}
@@ -27,13 +39,12 @@ const SearchBar = () => {
                 </button>
             )}
 
-            {/* Giao diện tìm kiếm trượt xuống */}
             <div
                 className={`fixed top-0 left-0 w-full h-screen bg-white z-50 transition-transform duration-200 ease-in-out ${isOpen ? 'translate-y-0' : '-translate-y-full'
                     }`}
             >
                 <form className="relative flex flex-col items-center w-full h-full pt-10"
-                onSubmit={handleSearch}>
+                    onSubmit={handleSearch}>
                     <button
                         type="button"
                         onClick={toggleSearch}

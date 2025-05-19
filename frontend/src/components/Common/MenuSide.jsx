@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // ✅ thiếu import useEffect
 import { Link } from 'react-router-dom';
 import { GrClose, GrMenu } from 'react-icons/gr';
 
@@ -12,6 +12,17 @@ const MenuSide = () => {
     const closeMenu = () => {
         setIsMenuOpen(false);
     };
+    useEffect(() => {
+        if (isMenuOpen) {
+            document.body.classList.add('overflow-hidden');
+        } else {
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        return () => {
+            document.body.classList.remove('overflow-hidden');
+        };
+    }, [isMenuOpen]);
 
     return (
         <>
@@ -46,10 +57,10 @@ const MenuSide = () => {
                 className={`fixed top-0 left-0 w-[300px] h-screen bg-white shadow-lg z-40 transition-all duration-300 ease-in-out transform ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}
             >
                 <div className="flex flex-col gap-4 mt-[88px]">
-                    <Link to="/do-nam" className="text-[20px] font-normal transition-all duration-300 hover:underline underline-offset-4 pl-[50px]" onClick={closeMenu}>Đồ Nam</Link>
-                    <Link to="/do-nu" className="text-[20px] font-normal transition-all duration-300 hover:underline underline-offset-4 pl-[50px]" onClick={closeMenu}>Đồ Nữ</Link>
-                    <Link to="/tre-em" className="text-[20px] font-normal transition-all duration-300 hover:underline underline-offset-4 pl-[50px]" onClick={closeMenu}>Đồ Trẻ em</Link>
-                    <Link to="/tre-so-sinh" className="text-[20px] font-normal transition-all duration-300 hover:underline underline-offset-4 pl-[50px]" onClick={closeMenu}>Đồ Trẻ sơ sinh</Link>
+                    <Link to="/do-nam" className="text-[20px] font-normal hover:underline underline-offset-4 pl-[50px]" onClick={closeMenu}>Đồ Nam</Link>
+                    <Link to="/do-nu" className="text-[20px] font-normal hover:underline underline-offset-4 pl-[50px]" onClick={closeMenu}>Đồ Nữ</Link>
+                    <Link to="/tre-em" className="text-[20px] font-normal hover:underline underline-offset-4 pl-[50px]" onClick={closeMenu}>Đồ Trẻ em</Link>
+                    <Link to="/tre-so-sinh" className="text-[20px] font-normal hover:underline underline-offset-4 pl-[50px]" onClick={closeMenu}>Đồ Trẻ sơ sinh</Link>
                 </div>
             </div>
         </>
