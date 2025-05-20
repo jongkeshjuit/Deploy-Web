@@ -3,7 +3,7 @@ import Navbar from './Navbar'
 
 const Header = () => {
     return (
-        <header className='border-b-[1px] border-b-[#DCDCDC]'>
+        <header className='fixed top-0 left-0 w-full z-50 bg-white border-b border-b-[#DCDCDC]'>
             {/* navbar */}
             <Navbar />
             {/* Cart Drawer */}

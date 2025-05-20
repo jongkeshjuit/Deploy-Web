@@ -8,7 +8,7 @@ const UserLayout = () => {
             {/* Header */}
             <Header />
             {/* Main context */}
-            <main>
+            <main className='pt-[88px]'>
                 <Outlet />
             </main>
             {/* Footer */}

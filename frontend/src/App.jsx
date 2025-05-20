@@ -1,5 +1,4 @@
 import React from 'react'
-import { FaUser } from "react-icons/fa";
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import UserLayout from './components/Layout/UserLayout';
 import Home from './pages/Home';
