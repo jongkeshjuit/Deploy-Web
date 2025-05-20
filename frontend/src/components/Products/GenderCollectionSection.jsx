@@ -52,30 +52,10 @@ const GenderCollectionSection = () => {
         <section className='py-16'>
             <div>
                 <div className='flex flex-col items-center justify-center'>
-                    <h2 className='text-4xl font-menium tracking-wider'>Khám phá bộ sưu tập của Wukudada.</h2>
+                    <h2 className='text-4xl font-mendium tracking-wider'>Khám phá bộ sưu tập của Wukudada.</h2>
                 </div>
                 <CollectionSection {...collection1} />
                 <CollectionSection {...collection2} />
-                {/* <div className='flex flex-col justify-center gap-[20px] mt-[25px]'>
-                    <img src="https://images6.alphacoders.com/134/thumb-1920-1342229.png" alt=""
-                        className='w-full h-[400px] md:h-[600px] lg:h-[750px] object-cover' />
-                    <h1 >BỘ SƯU TẬP ÁO THUN HỌA TIẾT</h1>
-                    <ul className="flex gap-4 flex-wrap justify-center">
-                        <li>
-                            <div className='bg-amber-100 w-[150px] h-[200px] md:h-[200px] lg:h-[400px] lg:w-[300px]'></div>
-                        </li>
-                        <li>
-                            <div className='bg-amber-100 w-[150px] h-[200px] md:h-[200px] lg:h-[400px] lg:w-[300px]'></div>
-                        </li>
-                        <li>
-                            <div className='bg-amber-100 w-[150px] h-[200px] md:h-[200px] lg:h-[400px] lg:w-[300px]'></div>
-                        </li>
-                        <li>
-                            <div className='bg-amber-100 w-[150px] h-[200px] md:h-[200px] lg:h-[400px] lg:w-[300px]'></div>
-                        </li>
-                    </ul>
-
-                </div> */}
             </div>
         </section>
     )
