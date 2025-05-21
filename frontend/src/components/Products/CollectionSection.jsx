@@ -13,7 +13,7 @@ const CollectionSection = ({ title, imageUrl, items = [] }) => {
                     <ul className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full">
                         {items.map((item, index) => (
                             <li key={index} className="w-full">
-                                <div className="relative w-full h-[300px] md:h-[400px] rounded-lg overflow-hidden group">
+                                <div className="relative w-full aspect-[3/4] rounded-lg overflow-hidden group">
                                     <img
                                         src={item.image}
                                         alt={item.title || `Item ${index + 1}`}
