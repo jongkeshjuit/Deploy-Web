@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import LinenCollection from './pages/LinenCollection';
 import Auth from './pages/Auth';
 import SignupForm from './pages/SignupForm';
+import ProductDetail from './components/Product/ProductDetail';
 
 const App = () => {
   return (
@@ -21,8 +22,10 @@ const App = () => {
         <Route path='/' element={<UserLayout />}>
           <Route index element={<Home />} />
           <Route path="linen" element={<LinenCollection />} />
+          <Route path="product/:id" element={<ProductDetail />} />
           <Route path="/login" element={<Auth />} />
           <Route path="/signup" element={<SignupForm />} />
+          
         </Route>
 
         <Route>
