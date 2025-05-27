@@ -10,6 +10,7 @@ import ProfileLayout from "./components/Layout/ProfileLayout";
 import ProfileInfo from "./components/profile/ProfileInfo";
 import OrderDetailPage from "./components/profile/OrderDetailPage";
 import { OrderProvider } from "./components/profile/OrderContext";
+import ProductDetail from './components/Product/ProductDetail';
 
 const App = () => {
   return (
@@ -19,8 +20,10 @@ const App = () => {
           <Route path="/" element={<UserLayout />}>
             <Route index element={<Home />} />
             <Route path="linen" element={<LinenCollection />} />
+          <Route path="product/:id" element={<ProductDetail />} />
             <Route path="/login" element={<Auth />} />
             <Route path="/signup" element={<SignupForm />} />
+          
             <Route path="profile" element={<ProfileLayout />}>
               <Route index element={<ProfileInfo />} />
               <Route path="info" element={<ProfileInfo />} />

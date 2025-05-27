@@ -41,7 +41,7 @@ const SignupForm = () => {
 
     // Terms agreement validation
     if (!formData.agreeToTerms) {
-      newErrors.agreeToTerms = 'Vui lòng đồng ý với điều khoản sử dụng';
+        newErrors.agreeToTerms = 'Vui lòng đồng ý với điều khoản sử dụng';
     }
 
     setErrors(newErrors);
