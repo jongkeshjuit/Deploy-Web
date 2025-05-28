@@ -9,7 +9,7 @@ const Footer = () => {
                 {/* bên trái */}
                 <div className='flex flex-col gap-[15px] w-[164px]'>
                     <h3 className='font-semibold'>Về Wukudada.</h3>
-                    <Link to="#" className='text-[14px] font-light'>Thông tin</Link>
+                    <Link to="information" className='text-[14px] font-light'>Thông tin</Link>
                     <Link to="#" className='text-[14px] font-light'>Chính sách</Link>
                 </div>
                 {/* ở giữa */}
