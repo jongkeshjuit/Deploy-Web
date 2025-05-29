@@ -43,7 +43,7 @@ const App = () => {
               <Route path="about" element={<About />} />
               <Route path="sponsorship" element={<Sponsorship />} />
             </Route>
-            <Route path="/policy" element={<Policy/>} />
+            <Route path="/policy" element={<Policy />} />
           </Route>
 
           <Route>{/* admin layout */}</Route>
