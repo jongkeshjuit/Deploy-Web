@@ -13,7 +13,6 @@ import Signup from "./pages/Signup";
 import Collection from "./pages/Collection";
 import { Toaster } from "sonner";
 import ProductDetails from "./components/Products/ProductDetails";
-import ProductDetail from "./components/Product/ProductDetail";
 import Information from "./pages/Information";
 import About from "./components/information/About";
 import Sponsorship from "./components/information/Sponsorship";

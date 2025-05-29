@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const FeaturedCollection = ({ collections }) => {
   return (
-    <div className="container">
+    <div className="flex flex-col items-center">
       <div className="grid grid-cols-1 gap-8">
         {collections.map((col) => {
           const featured = col.products.filter((p) => p.featured);
