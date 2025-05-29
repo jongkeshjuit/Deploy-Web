@@ -1,13 +1,15 @@
 import React from 'react'
 import Hero from '../components/Layout/Hero'
-import GenderCollectionSection from '../components/Products/GenderCollectionSection'
-
+import FeaturedCollection from '../components/Products/FeaturedCollection'
+import { collections } from '../assets/dummyData'
+  
 const Home = () => {
   return (
-    <div>
+    <>
       <Hero />
-      <GenderCollectionSection />
-    </div>
+      <h1 className='text-center text-4xl font-normal  mb-6 mt-10'>Khám phá bộ sưu tập độc đáo của Wuludada</h1>
+      <FeaturedCollection collections={collections} />
+    </>
   )
 }
 
