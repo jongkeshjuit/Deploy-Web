@@ -14,6 +14,7 @@ import ProductDetail from "./components/Product/ProductDetail";
 import Information from "./pages/Information";
 import About from "./components/information/About";
 import Sponsorship from "./components/information/Sponsorship";
+import Policy from "./pages/Policy";
 
 const App = () => {
   return (
@@ -38,6 +39,7 @@ const App = () => {
               <Route path="about" element={<About />} />
               <Route path="sponsorship" element={<Sponsorship />} />
             </Route>
+            <Route path="/policy" element={<Policy/>} />
           </Route>
 
           <Route>{/* admin layout */}</Route>

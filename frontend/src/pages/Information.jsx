@@ -1,7 +1,19 @@
-import React from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import React, { useEffect } from "react";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 
 const Information = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (
+      location.pathname === "/information" ||
+      location.pathname === "/information/"
+    ) {
+      navigate("about", { replace: true });
+    }
+  }, [location, navigate]);
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <h1 className="text-4xl font-bold mb-8">THÔNG TIN</h1>

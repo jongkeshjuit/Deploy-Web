@@ -10,7 +10,7 @@ const Footer = () => {
                 <div className='flex flex-col gap-[15px] w-[164px]'>
                     <h3 className='font-semibold'>Về Wukudada.</h3>
                     <Link to="information" className='text-[14px] font-light'>Thông tin</Link>
-                    <Link to="#" className='text-[14px] font-light'>Chính sách</Link>
+                    <Link to="policy" className='text-[14px] font-light'>Chính sách</Link>
                 </div>
                 {/* ở giữa */}
                 <div className='flex flex-col gap-[15px] w-[300px]'>
