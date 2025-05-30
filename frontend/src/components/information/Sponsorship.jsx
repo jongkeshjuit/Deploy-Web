@@ -91,18 +91,8 @@ const Sponsorship = () => (
     <div className="mb-4 text-base">
       WUKUDADA tự hào hợp tác với các KOL hàng đầu Việt Nam
       <br />
-      Tin tức mới sẽ được cập nhật trên trang Facebook chính thức của WUKUDADA.
     </div>
-    <div className="mb-6 flex justify-end">
-      <a
-        href="https://www.facebook.com/WUKUDADA"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="font-bold underline text-black"
-      >
-        FACEBOOK
-      </a>
-    </div>
+
     <div className="divide-y">
       {SPONSORS.map((s, idx) => (
         <div
