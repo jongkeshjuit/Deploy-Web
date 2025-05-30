@@ -15,9 +15,7 @@ const UserLayout = () => {
 
             {/* Main Content */}
             <main className="flex-grow pt-[88px]">
-                <div className="container mx-auto">
-                    <Outlet />
-                </div>
+                <Outlet />
             </main>
 
             {/* Footer */}

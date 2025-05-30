@@ -7,7 +7,7 @@ const Home = () => {
   return (
     <>
       <Hero />
-      <h1 className='text-center text-4xl font-normal  mb-6 mt-10'>Khám phá bộ sưu tập độc đáo của Wuludada</h1>
+      <h1 className='text-center text-4xl font-normal  mb-6 mt-10'>Khám phá bộ sưu tập độc đáo của Wukudada</h1>
       <FeaturedCollection collections={collections} />
     </>
   )
