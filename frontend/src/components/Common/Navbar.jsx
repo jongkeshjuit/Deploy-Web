@@ -26,18 +26,15 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Liên hệ + tài khoản + giỏ hàng */}
+          {/* tài khoản + giỏ hàng */}
           <div className="flex items-center gap-[20px]">
-            <button className="flex items-center gap-2.5 cursor-pointer">
-              <span className="text-[14px] font-normal">
-                Liên hệ với chúng tôi
-              </span>
-            </button>
-            <Link to="/login">
+            <Link to="/login" className="flex items-center gap-[10px]">
               <AiOutlineUser className="text-[20px]" />
+              <span className="text-sm">Tài khoản</span>
             </Link>
-            <Link to="/profile">
+            <Link to="/profile" className="flex items-center gap-[10px]">
               <PiShoppingCartSimple className="text-[20px]" />
+              <span className="text-sm">Giỏ hàng</span>
             </Link>
           </div>
         </nav>

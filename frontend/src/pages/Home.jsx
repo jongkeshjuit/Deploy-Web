@@ -8,7 +8,10 @@ const Home = () => {
     <>
       <Hero />
       <h1 className='text-center text-4xl font-normal  mb-6 mt-10'>Khám phá bộ sưu tập độc đáo của Wukudada</h1>
-      <FeaturedCollection collections={collections} />
+      <div className='mb-[50px]'>
+        <FeaturedCollection collections={collections} />
+      </div>
+
     </>
   )
 }
