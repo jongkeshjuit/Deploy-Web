@@ -57,4 +57,16 @@ export const collections = [
     bannerUrl: "https://via.placeholder.com/1000x300?text=Autumn+Collection",
     products: generateProducts("Autumn", 41),
   },
+  {
+    id: "man",
+    name: "Đồ nam",
+    bannerUrl: "https://picsum.photos/500/500?random=200",
+    products: generateProducts("Linen", 61),
+  },
+  {
+    id: "Women",
+    name: "Women",
+    bannerUrl: "https://picsum.photos/500/500?random=200",
+    products: generateProducts("Casual", 81),
+  },
 ];

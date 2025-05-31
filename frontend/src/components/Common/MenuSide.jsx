@@ -57,7 +57,7 @@ const MenuSide = () => {
                 className={`fixed top-0 left-0 w-[300px] h-screen bg-white shadow-lg z-40 transition-all duration-300 ease-in-out transform ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}
             >
                 <div className="flex flex-col gap-4 mt-[88px]">
-                    <Link to="/do-nam" className="text-[20px] font-normal hover:underline underline-offset-4 pl-[50px]" onClick={closeMenu}>Đồ Nam</Link>
+                    <Link to="gendercollections/man" className="text-[20px] font-normal hover:underline underline-offset-4 pl-[50px]" onClick={closeMenu}>Đồ Nam</Link>
                     <Link to="/do-nu" className="text-[20px] font-normal hover:underline underline-offset-4 pl-[50px]" onClick={closeMenu}>Đồ Nữ</Link>
                     <Link to="/tre-em" className="text-[20px] font-normal hover:underline underline-offset-4 pl-[50px]" onClick={closeMenu}>Đồ Trẻ em</Link>
                     <Link to="/tre-so-sinh" className="text-[20px] font-normal hover:underline underline-offset-4 pl-[50px]" onClick={closeMenu}>Đồ Trẻ sơ sinh</Link>

@@ -17,6 +17,7 @@ import Information from "./pages/Information";
 import About from "./components/information/About";
 import Sponsorship from "./components/information/Sponsorship";
 import Policy from "./pages/Policy";
+import GenderCollection from "./pages/GenderCollection";
 
 const App = () => {
   return (
@@ -29,6 +30,7 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/collections/:id" element={<Collection />} />
+            <Route path="/gendercollections/:id" element={<GenderCollection/>} />
             <Route path="/product/:id" element={<ProductDetails />} />
 
             <Route path="profile" element={<ProfileLayout />}>
