@@ -8,7 +8,6 @@ import ProfileInfo from "./components/profile/ProfileInfo";
 import OrderDetailPage from "./components/profile/OrderDetailPage";
 import { OrderProvider } from "./components/profile/OrderContext";
 import { CartProvider } from "./components/Cart/CartContext";
-
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Collection from "./pages/Collection";
@@ -19,36 +18,43 @@ import About from "./components/information/About";
 import Sponsorship from "./components/information/Sponsorship";
 import Policy from "./pages/Policy";
 import Cart from "./pages/Cart";
+import { Provider } from "react-redux";
+import store from "./redux/store";
+import GoogleCallback from "./pages/GoogleCallback";
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <CartProvider>
-        <OrderProvider>
-          <Toaster position="top-right" />
-          <Routes>
-            <Route path="/" element={<UserLayout />}>
-              <Route index element={<Home />} />
-              <Route path="login" element={<Login />} />
-              <Route path="signup" element={<Signup />} />
-              <Route path="collections/:id" element={<Collection />} />
-              <Route path="product/:id" element={<ProductDetails />} />
-              <Route path="cart" element={<Cart />} />
-              <Route path="information" element={<Information />}>
-                <Route path="about" element={<About />} />
-                <Route path="sponsorship" element={<Sponsorship />} />
+    <Provider store={store}>
+      <BrowserRouter>
+        <CartProvider>
+          <OrderProvider>
+            <Toaster position="top-right" />
+            <Routes>
+              <Route path="/" element={<UserLayout />}>
+                <Route index element={<Home />} />
+                <Route path="login" element={<Login />} />
+                <Route path="signup" element={<Signup />} />
+                <Route path="collections/:id" element={<Collection />} />
+                <Route path="product/:id" element={<ProductDetails />} />
+                <Route path="cart" element={<Cart />} />
+                <Route path="auth/success" element={<GoogleCallback />} />
+                <Route path="information" element={<Information />}>
+                  <Route path="about" element={<About />} />
+                  <Route path="sponsorship" element={<Sponsorship />} />
+                </Route>
+                <Route path="policy" element={<Policy />} />
+                <Route path="profile" element={<ProfileLayout />}>
+                  <Route index element={<ProfileInfo />} />
+                  <Route path="info" element={<ProfileInfo />} />
+                  <Route path="orders" element={<MyOdersPage />} />
+                  <Route path="orders/:id" element={<OrderDetailPage />} />
+                </Route>
               </Route>
-              <Route path="policy" element={<Policy />} />
-              <Route path="profile" element={<ProfileLayout />}>
-                <Route path="orders" element={<MyOdersPage />} />
-                <Route path="orders/:id" element={<OrderDetailPage />} />
-                <Route path="info" element={<ProfileInfo />} />
-              </Route>
-            </Route>
-          </Routes>
-        </OrderProvider>
-      </CartProvider>
-    </BrowserRouter>
+            </Routes>
+          </OrderProvider>
+        </CartProvider>
+      </BrowserRouter>
+    </Provider>
   );
 };
 
