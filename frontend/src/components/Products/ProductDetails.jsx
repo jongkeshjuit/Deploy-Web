@@ -27,9 +27,10 @@ const ProductDetails = () => {
 
   // 🔥 Không được return trước hooks
   const similarProducts = collections
-    .flatMap((c) => c.products)
-    .filter((p) => p._id !== id)
-    .slice(0, 4);
+    .find(c => c.products.some(p => p._id === id))?.products
+    .filter(p => p._id !== id)
+    .sort(() => Math.random() - 0.5)
+    .slice(0, Math.ceil(collections.find(c => c.products.some(p => p._id === id))?.products.length / 2));
 
   const handleQuantityChange = (action) => {
     setQuantity((prev) =>
@@ -59,45 +60,47 @@ const ProductDetails = () => {
   }
 
   return (
-    <div className="p-6">
-      <div className="max-w-6xl mx-auto bg-white rounded-lg p-8">
-        <div className="flex flex-col md:flex-row gap-8">
+    <div className="pt-6">
+      <div className="mx-[50px] bg-white">
+        <div className="flex flex-col md:flex-row gap-4">
           {/* left thumbnail */}
-          <div className="hidden md:flex flex-col gap-4">
-            {product.images.map((image, index) => (
-              <img
-                src={image.url}
-                alt={image.altText || `thumbnail ${index + 1}`}
-                key={index}
-                className="w-24 h-24 object-cover rounded-md"
-                onClick={() => setMainImage(image.url)}
-              />
-            ))}
-          </div>
-          {/* main image */}
-          <div className="md:w-1/2">
-            <div className="mb-4">
-              <img
-                src={mainImage || product.images[0]?.url}
-                alt="Main Product"
-                className="w-full h-full object-cover rounded-md"
-              />
+          <div className="flex gap-4 md:w-2/3">
+            <div className="hidden md:flex flex-col gap-4">
+              {product.images.map((image, index) => (
+                <img
+                  src={image.url}
+                  alt={image.altText || `thumbnail ${index + 1}`}
+                  key={index}
+                  className="w-24 h-24 object-cover"
+                  onClick={() => setMainImage(image.url)}
+                />
+              ))}
+            </div>
+            {/* main image */}
+            <div className="w-full">
+              <div className="mb-4">
+                <img
+                  src={mainImage || product.images[0]?.url}
+                  alt="Main Product"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+            {/* mobile thumbnail */}
+            <div className="md:hidden flex overscroll-x-scroll space-x-4 mb-4">
+              {product.images?.map((image, index) => (
+                <img
+                  src={image.url}
+                  alt={image.altText || `thumbnail ${index + 1}`}
+                  key={index}
+                  className="w-16 h-16 object-cover rounded-md"
+                  onClick={() => setMainImage(image.url)}
+                />
+              ))}
             </div>
           </div>
-          {/* mobile thumbnail */}
-          <div className="md:hidden flex overscroll-x-scroll space-x-4 mb-4">
-            {product.images?.map((image, index) => (
-              <img
-                src={image.url}
-                alt={image.altText || `thumbnail ${index + 1}`}
-                key={index}
-                className="w-16 h-16 object-cover rounded-md"
-                onClick={() => setMainImage(image.url)}
-              />
-            ))}
-          </div>
           {/* right side */}
-          <div className="md:w-1/2 md:ml-10">
+          <div className="md:w-1/3 md:ml-10">
             <h1 className="text-2xl md:text-3xl mb-2">{product.name}</h1>
             <p className="text-lg text-gray-600 mb-1 line-through">
               {product.price.toFixed(2) && `${product.price.toFixed(2)}`}
@@ -107,7 +110,7 @@ const ProductDetails = () => {
             </p>
             <p className="text-gray-600 mb-4">{product.description}</p>
             <div className="mb-4">
-              <p className="text-gray-700">Color:</p>
+              <p className="text-gray-700 font-medium">Màu sắc:</p>
               <div className="flex gap-2 mt-2">
                 {product.colors.map((color) => (
                   <button
@@ -127,13 +130,15 @@ const ProductDetails = () => {
             </div>
 
             <div className="mb-4">
-              <p className="text-gray-700">Size:</p>
-              <div className="flex gap-2 mt-2">
+              <p className="text-gray-700 font-medium">Kích cỡ:</p>
+              <div className="flex flex-wrap gap-2 mt-2">
                 {product.sizes.map((size) => (
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
-                    className={`px-4 py-2 rounded border cursor-pointer ${selectedSize === size ? "bg-black text-white" : ""
+                    className={`w-10 h-10 flex items-center justify-center border cursor-pointer text-sm font-medium ${selectedSize === size
+                      ? "border-black text-black"
+                      : "border-gray-400 text-gray-400"
                       }`}
                   >
                     {size}
@@ -143,20 +148,31 @@ const ProductDetails = () => {
             </div>
 
             <div className="mb-6 flex flex-col items-start gap-2">
-              <p className="text-gray-700">Quantity:</p>
-              <div className="flex items-center bg-gray-100 rounded-full">
+              <p className="text-gray-700 font-medium">Số lượng:</p>
+              <div className="flex items-center w-[30%] py-1 bg-gray-100 rounded-full">
                 <button
                   onClick={() => handleQuantityChange("minus")}
-                  className="px-4 py-2"
+                  className="w-[30%] text-center hover:font-bold cursor-pointer"
                 >
                   -
                 </button>
-                <span className="px-5 py-2 bg-gray-100 text-lg">
-                  {quantity}
-                </span>
+                <input
+                  // type="number"
+                  min="1"
+                  value={quantity}
+                  onChange={(e) => {
+                    const value = parseInt(e.target.value);
+                    if (!isNaN(value) && value >= 1) {
+                      setQuantity(value);
+                    } else {
+                      setQuantity(1); // fallback nếu người dùng xóa hết
+                    }
+                  }}
+                  className="w-[40%] text-center bg-gray-100 text-lg outline-none"
+                />
                 <button
                   onClick={() => handleQuantityChange("plus")}
-                  className="px-4 py-2"
+                  className="w-[30%] text-center hover:font-bold cursor-pointer"
                 >
                   +
                 </button>
@@ -166,7 +182,7 @@ const ProductDetails = () => {
             <button
               onClick={handleAddToCart}
               disabled={isButtonDisabled}
-              className={`bg-black text-white px-6 py-2 rounded w-full ${isButtonDisabled
+              className={`bg-black text-white px-6 py-2 rounded-full w-full ${isButtonDisabled
                 ? "opacity-50 cursor-not-allowed"
                 : "hover:bg-gray-800"
                 }`}
@@ -188,7 +204,7 @@ const ProductDetails = () => {
           </div>
         </div>
       </div>
-      <div className="mt-20">
+      <div className="mt-20 mb-10 mx-[50px]">
         <h2 className="text-2xl text-center font-medium mb-4">
           You may also like
         </h2>

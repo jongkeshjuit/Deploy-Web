@@ -5,7 +5,7 @@ const SPONSORS = [
   {
     name: "TRỊNH TRẦN PHƯƠNG TUẤN (JACK)",
     image:
-      "https://th.bing.com/th/id/OIP.9ZV04tRaNHWtRUxXxRE_LwHaLH?w=128&h=192&c=7&r=0&o=5&cb=iwc2&dpr=1.4&pid=1.7",
+      "https://cdnphoto.dantri.com.vn/BWnuv5garDlUBKjRSZrItt4qfWk=/thumb_w/1020/2025/05/26/jack1-1748272770861.jpg",
     description:
       "Sinh ngày 12/04/1997, quê Bến Tre, Việt Nam. Jack là ca sĩ, nhạc sĩ nổi tiếng với nhiều bản hit và đạt nhiều giải thưởng lớn trong làng nhạc Việt.",
     socials: [
@@ -71,7 +71,7 @@ const SPONSORS = [
   {
     name: "QUANG LINH VLOG",
     image:
-      "https://i.vgt.vn/2023/9/4/huan-hoa-hong-tuyen-bo-soc-chuyen-quang-linh-vlog-lam-tu-thien-nghe-xong-ai-cung-phuc-sat-dat-63f-6975682.png",
+      "https://tudienwiki.com/wp-content/uploads/2023/04/300095820_500185375441609_5755206151203271073_n.jpg",
     description:
       "Sinh ngày 11/12/1997, quê Nghệ An, Việt Nam. Quang Linh là YouTuber nổi tiếng với các hoạt động thiện nguyện tại châu Phi, truyền cảm hứng tích cực đến cộng đồng.",
     socials: [
