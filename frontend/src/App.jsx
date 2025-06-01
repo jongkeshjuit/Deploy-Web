@@ -18,8 +18,13 @@ import About from "./components/information/About";
 import Sponsorship from "./components/information/Sponsorship";
 import Policy from "./pages/Policy";
 
+import {Provider} from "react-redux";
+import store from "./redux/store"; 
+import GoogleCallback from "./pages/GoogleCallback";
+
 const App = () => {
   return (
+    <Provider store={store}>
     <BrowserRouter>
       <OrderProvider>
         <Toaster position="top-right" />
@@ -30,7 +35,7 @@ const App = () => {
             <Route path="signup" element={<Signup />} />
             <Route path="collections/:id" element={<Collection />} />
             <Route path="product/:id" element={<ProductDetails />} />
-
+            <Route path="auth/success" element={<GoogleCallback />} />
             <Route path="profile" element={<ProfileLayout />}>
               <Route index element={<ProfileInfo />} />
               <Route path="info" element={<ProfileInfo />} />
@@ -49,6 +54,7 @@ const App = () => {
         </Routes>
       </OrderProvider>
     </BrowserRouter>
+    </Provider>
   );
 };
 

@@ -1,19 +1,51 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { registerUser, clearError, clearSuccess } from '../redux/slices/authSlice';
+import { toast } from 'sonner';
 
 const Signup = () => {
     const [formData, setFormData] = useState({
+        name: '',
         email: '',
         password: '',
-        birthDate: '',
+        birth: '',
         gender: '',
         agreeToTerms: false
     });
 
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState({});
+    
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    
+    const { loading, error, success, userInfo } = useSelector((state) => state.auth);
+
+    // Handle navigation after successful registration
+    useEffect(() => {
+        if (success && userInfo) {
+            toast.success('Đăng ký thành công!');
+            dispatch(clearSuccess());
+            navigate('/');
+        }
+    }, [success, userInfo, navigate, dispatch]);
+
+    // Handle error display
+    useEffect(() => {
+        if (error) {
+            toast.error(error);
+            dispatch(clearError());
+        }
+    }, [error, dispatch]);
 
     const validateForm = () => {
         const newErrors = {};
+
+        // Name validation
+        if (!formData.name) {
+            newErrors.name = 'Vui lòng nhập họ tên';
+        }
 
         // Email validation
         if (!formData.email) {
@@ -30,8 +62,8 @@ const Signup = () => {
         }
 
         // Birth date validation
-        if (!formData.birthDate) {
-            newErrors.birthDate = 'Vui lòng chọn ngày sinh';
+        if (!formData.birth) {
+            newErrors.birth = 'Vui lòng chọn ngày sinh';
         }
 
         // Gender validation
@@ -54,27 +86,55 @@ const Signup = () => {
             ...prev,
             [name]: type === 'checkbox' ? checked : value
         }));
+        // Clear error for this field
+        if (errors[name]) {
+            setErrors(prev => ({
+                ...prev,
+                [name]: ''
+            }));
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (validateForm()) {
-            try {
-                // Here you would typically make an API call to register the user
-                console.log('Form submitted:', formData);
-                // Add your API call here
-                // await registerUser(formData);
-            } catch (error) {
-                console.error('Registration error:', error);
-            }
+            dispatch(registerUser({
+                name: formData.name,
+                email: formData.email,
+                password: formData.password,
+                gender: formData.gender,
+                birth: formData.birth
+            }));
         }
     };
+
     return (
         <div className="ml-24 mt-12 mb-36">
             <h2 className="text-3xl font-medium text-black mb-16">TẠO MỘT TÀI KHOẢN</h2>
             <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6 items-start border border-[#DCDCDC] p-5 w-[55%]">
                 <p className='w-3/4'>Chúng tôi sẽ gửi thư xác nhận đến địa chỉ email được liên kết với tài khoản của bạn. Hãy kiểm tra email đến từ chúng tôi.</p>
+
+                {/* Name */}
+                <div className="flex items-baseline gap-5 w-full">
+                    <label htmlFor="name" className="w-1/4 text-xl font-medium text-black">
+                        HỌ TÊN
+                    </label>
+                    <div className="w-3/4 flex flex-col">
+                        <input
+                            id="name"
+                            name="name"
+                            type="text"
+                            value={formData.name}
+                            onChange={handleChange}
+                            required
+                            disabled={loading}
+                            placeholder="Nhập họ tên"
+                            className="w-full h-12 px-3 py-2 border-b-2 border-b-[#898989] bg-[#F5F5F5] placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-black disabled:opacity-50"
+                        />
+                        {errors.name && <span className="text-red-500 text-sm mt-1">{errors.name}</span>}
+                    </div>
+                </div>
 
                 {/* Email */}
                 <div className="flex items-baseline gap-5 w-full">
@@ -89,8 +149,9 @@ const Signup = () => {
                             value={formData.email}
                             onChange={handleChange}
                             required
+                            disabled={loading}
                             placeholder="Nhập email hợp lệ"
-                            className="w-full h-12 px-3 py-2 border-b-2 border-b-[#898989] bg-[#F5F5F5] placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-black"
+                            className="w-full h-12 px-3 py-2 border-b-2 border-b-[#898989] bg-[#F5F5F5] placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-black disabled:opacity-50"
                         />
                         {errors.email && <span className="text-red-500 text-sm mt-1">{errors.email}</span>}
                     </div>
@@ -109,8 +170,9 @@ const Signup = () => {
                             value={formData.password}
                             onChange={handleChange}
                             required
+                            disabled={loading}
                             placeholder="Nhập mật khẩu"
-                            className="w-full h-12 px-3 py-2 border-b-2 border-b-[#898989] bg-[#F5F5F5] placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-black"
+                            className="w-full h-12 px-3 py-2 border-b-2 border-b-[#898989] bg-[#F5F5F5] placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-black disabled:opacity-50"
                         />
                         {errors.password && <span className="text-red-500 text-sm mt-1">{errors.password}</span>}
                     </div>
@@ -132,20 +194,21 @@ const Signup = () => {
 
                 {/* Birth Date */}
                 <div className="flex items-baseline gap-5 w-full">
-                    <label htmlFor="birthDate" className="w-1/4 text-xl font-medium text-black">
+                    <label htmlFor="birth" className="w-1/4 text-xl font-medium text-black">
                         NGÀY SINH
                     </label>
                     <div className="w-3/4 flex flex-col">
                         <input
-                            id="birthDate"
-                            name="birthDate"
+                            id="birth"
+                            name="birth"
                             type="date"
-                            value={formData.birthDate}
+                            value={formData.birth}
                             onChange={handleChange}
                             required
-                            className="w-full h-12 px-3 py-2 border-b-2 border-b-[#898989] bg-[#F5F5F5] placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-black"
+                            disabled={loading}
+                            className="w-full h-12 px-3 py-2 border-b-2 border-b-[#898989] bg-[#F5F5F5] placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-black disabled:opacity-50"
                         />
-                        {errors.birthDate && <span className="text-red-500 text-sm mt-1">{errors.birthDate}</span>}
+                        {errors.birth && <span className="text-red-500 text-sm mt-1">{errors.birth}</span>}
                     </div>
                 </div>
 
@@ -162,6 +225,7 @@ const Signup = () => {
                                 value="male"
                                 checked={formData.gender === 'male'}
                                 onChange={handleChange}
+                                disabled={loading}
                                 className="h-5 w-5 accent-black"
                             />
                             <span className="ml-2">Nam</span>
@@ -173,6 +237,7 @@ const Signup = () => {
                                 value="female"
                                 checked={formData.gender === 'female'}
                                 onChange={handleChange}
+                                disabled={loading}
                                 className="h-5 w-5 accent-black"
                             />
                             <span className="ml-2">Nữ</span>
@@ -184,6 +249,7 @@ const Signup = () => {
                                 value="other"
                                 checked={formData.gender === 'other'}
                                 onChange={handleChange}
+                                disabled={loading}
                                 className="h-5 w-5 accent-black"
                             />
                             <span className="ml-2">Bỏ qua</span>
@@ -201,6 +267,7 @@ const Signup = () => {
                             type="checkbox"
                             checked={formData.agreeToTerms}
                             onChange={handleChange}
+                            disabled={loading}
                             className="h-5 w-5 accent-black border-[#FFFFFF]"
                         />
                         <label htmlFor="agreeToTerms" className="ml-2 block text-[16px] text-gray-700">
@@ -213,9 +280,10 @@ const Signup = () => {
                 {/* Submit */}
                 <button
                     type="submit"
-                    className="flex justify-center py-[10px] px-25 border border-transparent text-[20px] font-medium text-white bg-black hover:bg-[#404040] cursor-pointer"
+                    disabled={loading}
+                    className="flex justify-center py-[10px] px-25 border border-transparent text-[20px] font-medium text-white bg-black hover:bg-[#404040] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    ĐĂNG KÝ
+                    {loading ? 'Đang xử lý...' : 'ĐĂNG KÝ'}
                 </button>
             </form>
         </div>
