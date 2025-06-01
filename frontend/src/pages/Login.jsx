@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook } from 'react-icons/fa';
+import { loginUser, clearError, clearSuccess } from '../redux/slices/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'sonner';
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -10,18 +13,39 @@ const Login = () => {
     });
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState({});
+    
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    
+    // Get auth state from Redux
+    const { loading, error, success, userInfo } = useSelector((state) => state.auth);
+
+    // Handle navigation after successful login
+    useEffect(() => {
+        if (success && userInfo) {
+            toast.success('Đăng nhập thành công!');
+            dispatch(clearSuccess());
+            navigate('/');
+        }
+    }, [success, userInfo, navigate, dispatch]);
+
+    // Handle error display
+    useEffect(() => {
+        if (error) {
+            toast.error(error);
+            dispatch(clearError());
+        }
+    }, [error, dispatch]);
 
     const validateForm = () => {
         const newErrors = {};
 
-        // Email validation
         if (!formData.email) {
             newErrors.email = 'Vui lòng nhập địa chỉ email';
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
             newErrors.email = 'Email không hợp lệ';
         }
 
-        // Password validation
         if (!formData.password) {
             newErrors.password = 'Vui lòng nhập mật khẩu';
         } else if (formData.password.length < 6) {
@@ -35,13 +59,10 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (validateForm()) {
-            try {
-                // Here you would typically make an API call to login the user
-                console.log('Login submitted:', formData);
-                // await loginUser(formData);
-            } catch (error) {
-                console.error('Login error:', error);
-            }
+            dispatch(loginUser({
+                email: formData.email,
+                password: formData.password
+            }));
         }
     };
 
@@ -51,6 +72,18 @@ const Login = () => {
             ...prev,
             [name]: value
         }));
+        // Clear error for this field
+        if (errors[name]) {
+            setErrors(prev => ({
+                ...prev,
+                [name]: ''
+            }));
+        }
+    };
+
+    // Google OAuth handler
+    const handleGoogleLogin = () => {
+        window.location.href = `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:9000'}/api/auth/google`;
     };
 
     return (
@@ -70,8 +103,10 @@ const Login = () => {
                                     name="email"
                                     type="email"
                                     required
+                                    disabled={loading}
                                     className="w-full h-12 placeholder-gray-500 px-3 py-2 border-b-2 border-b-[#898989] bg-[#F5F5F5]
-                                focus:bg-white focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-black"
+                                    focus:bg-white focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-black
+                                    disabled:opacity-50 disabled:cursor-not-allowed"
                                     value={formData.email}
                                     onChange={handleChange}
                                     placeholder='Nhập email hợp lệ'
@@ -90,7 +125,10 @@ const Login = () => {
                                     name="password"
                                     type={showPassword ? "text" : "password"}
                                     required
-                                    className="w-full h-12 placeholder-gray-500 px-3 py-2 border-b-2 border-b-[#898989] bg-[#F5F5F5] focus:bg-white focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-black"
+                                    disabled={loading}
+                                    className="w-full h-12 placeholder-gray-500 px-3 py-2 border-b-2 border-b-[#898989] bg-[#F5F5F5]
+                                    focus:bg-white focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-black
+                                    disabled:opacity-50 disabled:cursor-not-allowed"
                                     value={formData.password}
                                     onChange={handleChange}
                                     placeholder='Nhập mật khẩu'
@@ -116,9 +154,10 @@ const Login = () => {
                         <div className='flex flex-col gap-2'>
                             <button
                                 type="submit"
-                                className="w-full flex justify-center py-[10px] px-25 border border-transparent text-[20px] font-medium text-white bg-black hover:bg-[#404040] cursor-pointer"
+                                disabled={loading}
+                                className="w-full flex justify-center py-[10px] px-25 border border-transparent text-[20px] font-medium text-white bg-black hover:bg-[#404040] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                ĐĂNG NHẬP
+                                {loading ? 'Đang đăng nhập...' : 'ĐĂNG NHẬP'}
                             </button>
 
                             <Link to="/forgot-password" className="block text-[16px] font-medium text-black hover:text-[#444444]">
@@ -138,16 +177,18 @@ const Login = () => {
                             <div className="grid grid-cols-2 gap-3">
                                 <button
                                     type="button"
-                                    onClick={() => console.log('Google login')}
-                                    className="flex items-center justify-center px-4 py-[10px] border border-gray-300 text-[20px] font-medium text-gray-700 bg-white hover:bg-gray-100"
+                                    onClick={handleGoogleLogin}
+                                    disabled={loading}
+                                    className="flex items-center justify-center px-4 py-[10px] border border-gray-300 text-[20px] font-medium text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     <FcGoogle className="h-5 w-5 mr-2" />
                                     Google
                                 </button>
                                 <button
                                     type="button"
-                                    onClick={() => console.log('Facebook login')}
-                                    className="flex items-center justify-center px-4 py-[10px] border border-gray-300 text-[20px] font-medium text-gray-700 bg-white hover:bg-gray-100"
+                                    onClick={() => toast.info('Facebook login chưa được hỗ trợ')}
+                                    disabled={loading}
+                                    className="flex items-center justify-center px-4 py-[10px] border border-gray-300 text-[20px] font-medium text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     <FaFacebook className="h-5 w-5 mr-2 text-blue-600" />
                                     Facebook
@@ -175,10 +216,6 @@ const Login = () => {
                     </Link>
                 </div>
             </div>
-
-
-
-
         </div>
     )
 }

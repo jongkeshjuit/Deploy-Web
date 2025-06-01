@@ -3,7 +3,7 @@ import { useRef, useState, useEffect } from "react";
 import { collections } from "../assets/dummyData";
 import ProductGrid from "../components/Products/ProductGrid";
 import FilterSidebar from "../components/Products/FilterSidebar";
-import SortOptions from "./SortOptions";
+import SortOptions from "../components/Products/SortOptions";
 
 function Collection() {
   const { id } = useParams();
@@ -115,16 +115,14 @@ function Collection() {
   if (!collection) return <h2>Collection not found!</h2>;
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col">
       {/* banner */}
-      <div className="w-ful md:px-[100px] md:h-[500px] px-[50px] my-[50px]">
+      <div className="w-full md:px-[100px] md:h-[500px] px-[50px] my-[50px]">
         <div className="flex justify-center items-center border w-full h-full border-gray-300">
           <div className="w-1/2 h-full p-10">
             <h2 className="text-2xl font-medium">{collection.name}</h2>
             {/* Hiển thị số lượng sản phẩm */}
-            <p className="text-gray-600 mt-2">
-              {filteredAndSortedProducts.length} sản phẩm
-            </p>
+
           </div>
           <img
             src={collection.bannerUrl}
@@ -135,10 +133,10 @@ function Collection() {
       </div>
 
       {/* filter and sort */}
-      <div className="w-full h-10 px-[50px] mb-4 flex items-center justify-between">
+      <div className="w-full h-10 px-[50px] flex items-center justify-between">
         <button
           onClick={toggleSidebar}
-          className="filter-button flex items-center gap-2 rounded-full border border-black px-4 py-1.5 transition-all hover:shadow-[inset_0_0_0_1px_black]">
+          className="filter-button flex items-center gap-2 rounded-full border border-black px-4 py-1.5 transition-all hover:shadow-[inset_0_0_0_1px_black] cursor-pointer">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -174,7 +172,9 @@ function Collection() {
           <SortOptions />
         </div>
       </div>
-
+      <p className="text-black text-[20px] font-medium my-2 px-[50px]">
+        {filteredAndSortedProducts.length} sản phẩm
+      </p>
       {/* Hiển thị "Không tìm thấy sản phẩm" nếu không có kết quả */}
       {filteredAndSortedProducts.length === 0 ? (
         <div className="w-full px-[50px] text-center py-10">

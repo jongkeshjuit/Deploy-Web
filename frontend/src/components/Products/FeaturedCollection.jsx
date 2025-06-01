@@ -11,7 +11,7 @@ const FeaturedCollection = ({ collections }) => {
           return (
             <div
               key={col.id}
-              className="bg-gray-50 featured-collection overflow-hidden"
+              className=" featured-collection overflow-hidden"
             >
               <Link to={`/collections/${col.id}`}>
                 <div className="relative">
@@ -27,11 +27,11 @@ const FeaturedCollection = ({ collections }) => {
                   </div>
                 </div>
               </Link>
-              <div className="px-[50px] pt-5">
+              <div className="px-[150px] pt-5">
                 <h3 className="text-lg font-semibold text-center mb-4">
                   Featured Products
                 </h3>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 ">
                   {featured.map((p) => (
                     <Link
                       key={p._id}

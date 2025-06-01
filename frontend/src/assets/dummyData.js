@@ -7,8 +7,9 @@ function generateProducts(prefix, startIndex) {
     products.push({
       _id: `${prefix}${i + 1}`,
       name: `${prefix} Product ${i + 1}`,
-      price: +(Math.random() * 80 + 20).toFixed(2),
-      discountPrice: +(Math.random() * 80 + 20).toFixed(2),
+      price: Math.floor(Math.random() * 2000000 + 500000),
+      discountPrice: Math.floor(Math.random() * 2000000 + 500000),
+
 
       sizes: ["S", "M", "L", "XL", "XXL"],
       colors: ["red", "blue", "green", "yellow", "purple"],
