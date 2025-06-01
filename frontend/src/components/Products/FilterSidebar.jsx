@@ -105,7 +105,7 @@ const FilterSidebar = () => {
               key={c.value}
               onClick={() => handleFilterChange('color', c.value)}
               className={`w-8 h-8 rounded-full border-2 cursor-pointer transition hover:scale-105 ${filters.color.includes(c.value)
-                ? 'border-amber-500 ring-2 ring-amber-500 ring-offset-2'
+                ? 'border-black'
                 : 'border-gray-300'
                 }`}
               style={{ backgroundColor: c.value }}
@@ -123,9 +123,9 @@ const FilterSidebar = () => {
             <button
               key={s}
               onClick={() => handleFilterChange('size', s)}
-              className={`px-3 py-1 rounded-full border ${filters.size.includes(s)
-                ? 'bg-amber-500 text-white border-amber-500'
-                : 'border-gray-300 hover:border-amber-500'
+              className={`w-10 h-10 flex items-center justify-center border ${filters.size.includes(s)
+                ? ' border-black'
+                : 'border-gray-300 hover:border-black'
                 }`}
             >
               {s}
@@ -142,7 +142,7 @@ const FilterSidebar = () => {
             <label key={p.value} className='flex items-center cursor-pointer group'>
               <input
                 type='checkbox'
-                className='w-4 h-4 rounded border-gray-300 text-amber-500 focus:ring-amber-500'
+                className='w-4 h-4 rounded border-gray-300 accent-black text-black focus:ring-black'
                 checked={filters.price.includes(p.value)}
                 onChange={() => handleFilterChange('price', p.value)}
               />
@@ -160,7 +160,7 @@ const FilterSidebar = () => {
             <label key={m.value} className='flex items-center cursor-pointer group'>
               <input
                 type='checkbox'
-                className='w-4 h-4 rounded border-gray-300 text-amber-500 focus:ring-amber-500'
+                className='w-4 h-4 rounded border-gray-300 accent-black text-black focus:ring-black'
                 checked={filters.material.includes(m.value)}
                 onChange={() => handleFilterChange('material', m.value)}
               />

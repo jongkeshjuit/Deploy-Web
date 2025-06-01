@@ -3,9 +3,11 @@ import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 import ProductGrid from "./ProductGrid";
 import { collections } from "../../assets/dummyData";
+import { useCart } from "../Cart/CartContext";
 
 const ProductDetails = () => {
   const { id } = useParams();
+  const { addToCart } = useCart();
 
   const [product, setProduct] = useState(null);
   const [mainImage, setMainImage] = useState("");
@@ -40,13 +42,13 @@ const ProductDetails = () => {
 
   const handleAddToCart = () => {
     if (!selectedSize || !selectedColor) {
-      toast.error("Please select a size and color");
+      toast.error("Vui lòng chọn kích thước và màu sắc");
       return;
     }
 
     setIsButtonDisabled(true);
+    addToCart(product, quantity, selectedSize, selectedColor);
     setTimeout(() => {
-      toast.success("Added to cart");
       setIsButtonDisabled(false);
     }, 500);
   };
@@ -102,12 +104,20 @@ const ProductDetails = () => {
           {/* right side */}
           <div className="md:w-1/3 md:ml-10">
             <h1 className="text-2xl md:text-3xl mb-2">{product.name}</h1>
-            <p className="text-lg text-gray-600 mb-1 line-through">
-              {product.price.toFixed(2) && `${product.price.toFixed(2)}`}
-            </p>
-            <p className="text-xl font-bold text-red-600 mb-4">
-              ${product.discountPrice.toFixed(2)}
-            </p>
+            {product.discountPrice ? (
+              <>
+                <p className="text-lg text-gray-600 mb-1 line-through">
+                  {product.price.toLocaleString('vi-VN')} VND
+                </p>
+                <p className="text-xl font-bold text-red-600 mb-4">
+                  {product.discountPrice.toLocaleString('vi-VN')} VND
+                </p>
+              </>
+            ) : (
+              <p className="text-xl font-bold text-black mb-4">
+                {product.price.toLocaleString('vi-VN')} VND
+              </p>
+            )}
             <p className="text-gray-600 mb-4">{product.description}</p>
             <div className="mb-4">
               <p className="text-gray-700 font-medium">Màu sắc:</p>
@@ -187,7 +197,7 @@ const ProductDetails = () => {
                 : "hover:bg-gray-800"
                 }`}
             >
-              {isButtonDisabled ? "Adding..." : "Add to Cart"}
+              {isButtonDisabled ? "Đang thêm..." : "Thêm vào giỏ hàng"}
             </button>
 
             <div className="mt-10 text-gray-700">

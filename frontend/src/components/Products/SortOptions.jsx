@@ -24,12 +24,12 @@ const SortOptions = () => {
   }
 
   return (
-    <div className='mb-4 flex items-center justify-end'>
+    <div className='flex items-center justify-end'>
       <select
         id="sort"
         onChange={handleSortChange}
         value={searchParams.get('sort') || 'default'}
-        className='border border-gray-300 rounded-md p-2'
+        className='border border-gray-300 rounded-md text-sm p-2 cursor-pointer'
       >
         <option value="default">Mặc định</option>
         <option value="price-asc">Giá: Tăng dần</option>

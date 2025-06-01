@@ -26,7 +26,7 @@ const ProductGrid = ({ product, onClick }) => {
                 {product.name}
               </h3>
               <p className="text-black font-medium text-lg">
-                ${product.price}
+                {product.price.toLocaleString('vi-VN')} VND
               </p>
             </div>
           </div>
