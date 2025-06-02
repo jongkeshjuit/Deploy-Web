@@ -61,4 +61,16 @@ export const collections = [
     description: "Bộ sưu tập mùa thu 2025 mang đến hơi thở dịu dàng và sâu lắng của thời khắc chuyển mùa, với những thiết kế tinh tế, gam màu ấm áp như nâu đất, cam cháy, be nhạt cùng chất liệu mềm mại, giữ ấm nhẹ nhàng – lý tưởng cho những buổi chiều se lạnh đầy cảm xúc và phong cách.",
     products: generateProducts("Autumn", 41),
   },
+  {
+    id: "man",
+    name: "Đồ nam",
+    bannerUrl: "https://picsum.photos/500/500?random=200",
+    products: generateProducts("Linen", 61),
+  },
+  {
+    id: "Women",
+    name: "Women",
+    bannerUrl: "https://picsum.photos/500/500?random=200",
+    products: generateProducts("Casual", 81),
+  },
 ];

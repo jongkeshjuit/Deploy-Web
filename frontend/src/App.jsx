@@ -21,6 +21,7 @@ import Cart from "./pages/Cart";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import GoogleCallback from "./pages/GoogleCallback";
+import GenderCollection from "./pages/GenderCollection";
 
 const App = () => {
   return (
@@ -35,7 +36,8 @@ const App = () => {
                 <Route path="login" element={<Login />} />
                 <Route path="signup" element={<Signup />} />
                 <Route path="collections/:id" element={<Collection />} />
-                <Route path="product/:id" element={<ProductDetails />} />
+                <Route path="/gendercollections/:id" element={<GenderCollection/>} />
+            <Route path="product/:id" element={<ProductDetails />} />
                 <Route path="cart" element={<Cart />} />
                 <Route path="auth/success" element={<GoogleCallback />} />
                 <Route path="information" element={<Information />}>

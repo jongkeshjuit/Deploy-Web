@@ -8,7 +8,6 @@ const FeaturedCollection = ({ collections }) => {
         {collections.map((col) => {
           const featured = col.products.filter((p) => p.featured);
           if (featured.length === 0) return null;
-
           return (
             <div
               key={col.id}
