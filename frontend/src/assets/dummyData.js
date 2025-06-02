@@ -44,18 +44,21 @@ export const collections = [
     id: "summer",
     name: "Summer Collection",
     bannerUrl: linenWomenBanner,
+    description: "Bộ sưu tập mùa hè 2025 mang đến làn gió mới với những thiết kế trẻ trung, năng động và đầy màu sắc, sử dụng chất liệu nhẹ mát, thoáng khí, phù hợp cho mọi hoạt động ngày hè – từ dạo phố, đi biển đến những buổi hẹn hò đầy cảm hứng.",
     products: generateProducts("Summer", 1),
   },
   {
     id: "winter",
     name: "Winter Collection",
     bannerUrl: "https://picsum.photos/500/500?random=100",
+    description: "Bộ sưu tập mùa đông 2025 là sự kết hợp giữa vẻ đẹp hiện đại và cảm giác ấm áp, với những thiết kế dày dặn, phom dáng ôm vừa vặn, gam màu trung tính sang trọng cùng các chất liệu như len, dạ, lông và nỉ cao cấp – mang đến cho bạn phong cách tinh tế và tự tin trong những ngày đông lạnh giá.",
     products: generateProducts("Winter", 21),
   },
   {
     id: "autumn",
     name: "Autumn Collection",
-    bannerUrl: "https://via.placeholder.com/1000x300?text=Autumn+Collection",
+    bannerUrl: "https://picsum.photos/500/500?random=111",
+    description: "Bộ sưu tập mùa thu 2025 mang đến hơi thở dịu dàng và sâu lắng của thời khắc chuyển mùa, với những thiết kế tinh tế, gam màu ấm áp như nâu đất, cam cháy, be nhạt cùng chất liệu mềm mại, giữ ấm nhẹ nhàng – lý tưởng cho những buổi chiều se lạnh đầy cảm xúc và phong cách.",
     products: generateProducts("Autumn", 41),
   },
 ];
