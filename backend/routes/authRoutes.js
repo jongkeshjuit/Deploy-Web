@@ -19,30 +19,11 @@ router.get('/google',
 router.get('/google/callback', 
   passport.authenticate('google', { 
     failureRedirect: '/login',
-    session: false // Không sử dụng session, dùng JWT
+    session: false 
   }),
-  // (req, res) => {
-  //   try {
-  //     // Tạo JWT token
-  //     const token = jwt.sign(
-  //       { id: req.user._id, role: req.user.role },
-  //       process.env.JWT_SECRET || "your_jwt_secret_key",
-  //       { expiresIn: "7d" }
-  //     );
-
-  //     // Redirect về frontend với token
-  //     // Bạn có thể customize URL này theo frontend của bạn
-  //     const frontendURL = process.env.FRONTEND_URL || 'http://localhost:3000';
-  //     res.redirect(`${frontendURL}/auth/success?token=${token}`);
-      
-  //   } catch (error) {
-  //     console.error('Google callback error:', error);
-  //     res.redirect(`${frontendURL}/auth/error`);
-  //   }
-  // }
   (req, res) => {
     try {
-        const frontendURL = process.env.FRONTEND_URL || 'http://localhost:3000';
+        const frontendURL = process.env.FRONTEND_URL || 'http://localhost:5173';
         
         // Tạo JWT token
         const token = jwt.sign(
@@ -56,10 +37,10 @@ router.get('/google/callback',
         
     } catch (error) {
         console.error('Google callback error:', error);
-        const frontendURL = process.env.FRONTEND_URL || 'http://localhost:3000';
-        res.redirect(`${frontendURL}/auth/error`);
+        const frontendURL = process.env.FRONTEND_URL || 'http://localhost:5173';
+        res.redirect(`${frontendURL}/login?error=auth_failed`);
     }
-    }
+  }
 );
 
 // @route   POST /auth/google/mobile

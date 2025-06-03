@@ -1,18 +1,45 @@
-import React, { useState } from "react";
-
-const userInfo = {
-  email: "nuyngan300405@gmail.com",
-  name: "Nguyễn Văn A",
-  phone: "0123456789",
-  birthday: "19/08/2005",
-  gender: "Nam",
-  address: "123 Đường ABC, Quận 1, TP. HCM",
-};
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import { toast } from "sonner";
 
 const ProfileInfo = () => {
   const [isEdit, setIsEdit] = useState(false);
-  const [form, setForm] = useState(userInfo);
+  const [form, setForm] = useState({
+    email: "",
+    name: "",
+    phone: "",
+    birthday: "",
+    gender: "",
+    address: ""
+  });
+  
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  
+  // Lấy thông tin user từ Redux store
+  const { userInfo, userToken } = useSelector((state) => state.auth);
+  const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:9000';
+  
+  // Cập nhật form với thông tin người dùng từ Redux
+  useEffect(() => {
+    if (userInfo) {
+      setForm({
+        email: userInfo.email || "",
+        name: userInfo.name || "",
+        phone: userInfo.phone || "",
+        birthday: userInfo.birth 
+          ? new Date(userInfo.birth).toLocaleDateString("vi-VN") 
+          : "",
+        gender: userInfo.gender === "male" 
+          ? "Nam" 
+          : userInfo.gender === "female" 
+            ? "Nữ" 
+            : "Khác",
+        address: userInfo.address || ""
+      });
+    }
+  }, [userInfo]);
 
   const validate = () => {
     const newErrors = {};
@@ -21,6 +48,7 @@ const ProfileInfo = () => {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       newErrors.email = "Email không hợp lệ";
     }
+
     if (!form.name) newErrors.name = "Vui lòng nhập tên";
     if (!form.address) newErrors.address = "Vui lòng nhập địa chỉ";
     if (!form.phone) {
@@ -39,11 +67,66 @@ const ProfileInfo = () => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-    // TODO: Gửi dữ liệu lên backend nếu cần
-    setIsEdit(false);
+    
+    setLoading(true);
+    
+    try {
+      // Chuyển đổi giới tính về dạng lưu trong database
+      const genderMapping = {
+        "Nam": "male",
+        "Nữ": "female",
+        "Khác": "other"
+      };
+      
+      // Chuyển đổi ngày sinh về định dạng ISO
+      let birthDate = form.birthday;
+      if (form.birthday && form.birthday.includes('/')) {
+        const parts = form.birthday.split('/');
+        if (parts.length === 3) {
+          birthDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+        }
+      }
+      
+      const userData = {
+        name: form.name,
+        gender: genderMapping[form.gender] || "other",
+        birth: birthDate,
+        address: form.address,
+        phone: form.phone
+      };
+      
+      const response = await axios.put(
+        `${API_URL}/api/users/update-profile`,
+        userData,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${userToken}`
+          }
+        }
+      );
+      
+      toast.success('Cập nhật thông tin thành công!');
+      setIsEdit(false);
+      
+      // Cập nhật thông tin trong localStorage nếu cần
+      const currentUserInfo = JSON.parse(localStorage.getItem('userInfo'));
+      if (currentUserInfo) {
+        localStorage.setItem('userInfo', JSON.stringify({
+          ...currentUserInfo,
+          ...response.data
+        }));
+      }
+      
+    } catch (error) {
+      console.error('Lỗi khi cập nhật thông tin:', error);
+      toast.error('Có lỗi xảy ra khi cập nhật thông tin!');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -54,6 +137,7 @@ const ProfileInfo = () => {
           <button
             className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700 w-full sm:w-auto"
             onClick={() => setIsEdit(false)}
+            disabled={loading}
           >
             Hủy
           </button>
@@ -83,6 +167,7 @@ const ProfileInfo = () => {
               className={`mb-1 w-full border rounded px-3 py-2 ${
                 errors.email ? "border-red-500" : ""
               }`}
+              disabled={true} // Email không thể thay đổi
               required
             />
             {errors.email && (
@@ -164,6 +249,7 @@ const ProfileInfo = () => {
               }`}
               required
             >
+              <option value="">Chọn giới tính</option>
               <option value="Nam">Nam</option>
               <option value="Nữ">Nữ</option>
               <option value="Khác">Khác</option>
@@ -176,8 +262,9 @@ const ProfileInfo = () => {
             <button
               type="submit"
               className="px-6 py-2 bg-black text-white rounded hover:bg-gray-800 w-full md:w-auto"
+              disabled={loading}
             >
-              Lưu
+              {loading ? "Đang lưu..." : "Lưu"}
             </button>
           </div>
         </form>

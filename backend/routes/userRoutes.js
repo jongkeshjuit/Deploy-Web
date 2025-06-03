@@ -98,11 +98,82 @@ router.post("/login", async (req, res) => {
 // @access  Private
 
 // Lấy profile user, đã xác thực qua middleware
+// router.get("/profile", authMiddleware, async (req, res) => {
+//   try {
+//     // Sử dụng trực tiếp user đã được tìm trong middleware
+//     // Không cần query lại database
+//     res.status(200).json(req.user);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// });
+// @route   GET /api/users/profile
+// @desc    Get user profile
+// @access  Private
 router.get("/profile", authMiddleware, async (req, res) => {
   try {
-    // Sử dụng trực tiếp user đã được tìm trong middleware
-    // Không cần query lại database
-    res.status(200).json(req.user);
+    // Lấy thông tin user từ middleware auth (req.user chứa ID)
+    const user = await User.findById(req.user.id).select('-password');
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    
+    // Trả về đầy đủ thông tin cần thiết
+    res.status(200).json({
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      gender: user.gender,
+      birth: user.birth,
+      profileImage: user.profileImage,
+      accountType: user.accountType,
+      createdAt: user.createdAt
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Thêm route update profile vào userRoutes.js
+router.put("/update-profile", authMiddleware, async (req, res) => {
+  try {
+    const { name, gender, birth, address, phone } = req.body;
+    
+    // Tìm user dựa vào ID từ middleware
+    const user = await User.findById(req.user.id);
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    
+    // Cập nhật thông tin
+    if (name) user.name = name;
+    if (gender) user.gender = gender;
+    if (birth) user.birth = birth;
+    if (address) user.address = address;
+    if (phone) user.phone = phone;
+    
+    // Lưu vào database
+    const updatedUser = await user.save();
+    
+    // Trả về thông tin đã cập nhật
+    res.status(200).json({
+      id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      gender: updatedUser.gender,
+      birth: updatedUser.birth,
+      address: updatedUser.address,
+      phone: updatedUser.phone,
+      profileImage: updatedUser.profileImage,
+      accountType: updatedUser.accountType,
+      createdAt: updatedUser.createdAt
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });

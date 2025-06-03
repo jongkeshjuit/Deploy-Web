@@ -1,45 +1,52 @@
 import React, { useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { toast } from 'sonner';
 import axios from 'axios';
 
 const GoogleCallback = () => {
+    const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [searchParams] = useSearchParams();
+    
+    const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:9000';
 
     useEffect(() => {
         const handleGoogleCallback = async () => {
             const token = searchParams.get('token');
             const error = searchParams.get('error');
-
+            
             if (token) {
                 try {
-                    // Save token to localStorage
+                    // Lưu token vào localStorage
                     localStorage.setItem('userToken', token);
                     
-                    // Get user profile with the token
-                    const config = {
+                    // Lấy thông tin người dùng từ API
+                    const response = await axios.get(`${API_URL}/api/users/profile`, {
                         headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    };
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
                     
-                    const { data } = await axios.get(
-                        `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:9000'}/api/users/profile`,
-                        config
-                    );
+                    const data = response.data;
+                    // Chuyển đổi định dạng dữ liệu nếu cần
+                    if (data.birth) {
+                        // Format date để hiển thị đúng
+                        data.birth = new Date(data.birth).toLocaleDateString('vi-VN');
+                    }
                     
-                    // Save user info
+                    // Lưu thông tin người dùng vào localStorage
                     localStorage.setItem('userInfo', JSON.stringify(data));
                     
-                    // Update Redux state
+                    // Cập nhật Redux state - thêm skipToast để ngăn toast kép
                     dispatch({
-                        type: 'auth/loginUser/fulfilled',
+                        type: 'auth/loginSuccess',
                         payload: {
-                            user: data,
-                            token: token
+                            userInfo: {
+                                ...data,
+                                skipToast: true // Thêm flag để tránh hiển thị toast trùng lặp
+                            },
+                            userToken: token
                         }
                     });
                     

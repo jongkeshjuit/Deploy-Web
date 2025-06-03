@@ -36,6 +36,13 @@ const userSchema = new mongoose.Schema(
     birth: {
       type: Date,
     },
+    // Thêm trường mới
+    address: {
+      type: String,
+    },
+    phone: {
+      type: String,
+    },
     // Thêm fields cho Google OAuth
     googleId: {
       type: String,

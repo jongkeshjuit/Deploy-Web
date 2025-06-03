@@ -140,6 +140,17 @@ const authSlice = createSlice({
             state.guestId = `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
             localStorage.setItem('guestId', state.guestId);
         },
+        loginSuccess: (state, action) => {
+            state.loading = false;
+            state.userInfo = action.payload.userInfo;
+            // Thêm skipToast nếu được chỉ định
+            if (action.payload.skipToast) {
+                state.userInfo.skipToast = true;
+            }
+            state.userToken = action.payload.userToken;
+            state.success = true;
+            state.error = null;
+        },
         clearError: (state) => {
             state.error = null;
         },

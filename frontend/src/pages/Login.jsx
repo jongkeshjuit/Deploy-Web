@@ -23,7 +23,10 @@ const Login = () => {
     // Handle navigation after successful login
     useEffect(() => {
         if (success && userInfo) {
-            toast.success('Đăng nhập thành công!');
+            // Chỉ hiển thị toast nếu không có flag skipToast
+            if (!userInfo.skipToast) {
+                toast.success('Đăng nhập thành công!');
+            }
             dispatch(clearSuccess());
             navigate('/');
         }
