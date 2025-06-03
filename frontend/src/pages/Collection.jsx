@@ -120,10 +120,11 @@ function Collection() {
     <div className="flex flex-col">
       {/* banner */}
       <div className="w-full md:px-[100px] md:h-[500px] px-[50px] my-[50px]">
-        <div className="flex justify-center items-center border w-full h-full border-gray-300">
-          <div className="w-1/2 h-full p-10">
-            <h2 className="text-2xl font-medium">{collection.name}</h2>
-            {/* Hiển thị số lượng sản phẩm */}
+        <div className="flex justify-center items-center border w-full h-full border-gray-400">
+          <div className="flex flex-col w-1/2 h-full p-10 gap-2 justify-center">
+            <h2 className="text-4xl font-medium uppercase">{collection.name}</h2>
+            <p className="text-xl font-light">{collection.description}</p>
+
           </div>
           <img
             src={collection.bannerUrl}

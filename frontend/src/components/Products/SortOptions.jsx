@@ -29,7 +29,7 @@ const SortOptions = () => {
         id="sort"
         onChange={handleSortChange}
         value={searchParams.get('sort') || 'default'}
-        className='border border-gray-300 rounded-md text-sm p-2 cursor-pointer'
+        className='border border-gray-300 text-sm p-2 cursor-pointer'
       >
         <option value="default">Mặc định</option>
         <option value="price-asc">Giá: Tăng dần</option>
