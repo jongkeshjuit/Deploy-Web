@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { collections } from "../assets/dummyData";
 import ProductGrid from "../components/Products/ProductGrid";
 import FilterSidebar from "../components/Products/FilterSidebar";
-import SortOptions from "./SortOptions";
+import SortOptions from "../components/Products/SortOptions";
 import { useRef, useState, useEffect } from "react";
 
 function GenderCollection() {
