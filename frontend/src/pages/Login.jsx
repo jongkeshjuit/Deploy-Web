@@ -24,6 +24,8 @@ const Login = () => {
     useEffect(() => {
         if (success && userInfo) {
             // Chỉ hiển thị toast nếu không có flag skipToast
+        //     console.log('Login.jsx useEffect triggered', userInfo);
+        // console.log('skipToast value:', userInfo.skipToast);
             if (!userInfo.skipToast) {
                 toast.success('Đăng nhập thành công!');
             }

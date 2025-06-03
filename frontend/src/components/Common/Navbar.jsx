@@ -1,9 +1,13 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useRef, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { IoMdHeartEmpty } from "react-icons/io"
 import { PiShoppingCartSimple } from "react-icons/pi";
 import { AiOutlineUser } from "react-icons/ai";
-import { useSelector } from 'react-redux';
+import { FiLogOut } from "react-icons/fi";
+import { CgProfile } from "react-icons/cg";
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../../redux/slices/authSlice';
+import { toast } from 'sonner';
 
 import MenuSide from './MenuSide'
 import SearchBar from './SearchBar';
@@ -12,6 +16,31 @@ import { useCart } from '../Cart/CartContext';
 const Navbar = () => {
   const { getTotalItems } = useCart();
   const { userInfo } = useSelector((state) => state.auth);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // Đóng dropdown khi click outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  // Hàm xử lý đăng xuất
+  const handleLogout = () => {
+    dispatch(logout());
+    toast.success('Đăng xuất thành công!');
+    navigate('/');
+  };
 
   return (
     <>
@@ -34,23 +63,57 @@ const Navbar = () => {
         {/* tài khoản + giỏ hàng */}
         <div className="flex items-center gap-[20px]">
           {userInfo ? (
-            // Nếu đã đăng nhập, hiển thị link đến profile với avatar và tên
-            <Link to="/profile" className="flex items-center gap-[10px]">
-              <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gray-100">
-                {userInfo.profileImage ? (
-                  <img 
-                    src={userInfo.profileImage} 
-                    alt={userInfo.name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <AiOutlineUser className="text-[20px]" />
-                )}
+            // Nếu đã đăng nhập, hiển thị avatar với dropdown
+            <div className="relative" ref={dropdownRef}>
+              <div 
+                className="flex items-center gap-[10px] cursor-pointer" 
+                onClick={() => setShowDropdown(!showDropdown)}
+              >
+                <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gray-100">
+                  {userInfo.profileImage ? (
+                    <img 
+                      src={userInfo.profileImage} 
+                      alt={userInfo.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <AiOutlineUser className="text-[20px]" />
+                  )}
+                </div>
+                <span className="text-sm truncate max-w-[120px]">
+                  {userInfo.name || 'Tài khoản'}
+                </span>
               </div>
-              <span className="text-sm truncate max-w-[120px]">
-                {userInfo.name || 'Tài khoản'}
-              </span>
-            </Link>
+              
+              {/* Dropdown Menu */}
+              {showDropdown && (
+                <div className="absolute z-10 right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-1 animate-fadeIn">
+                  <Link 
+                    to="/profile" 
+                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setShowDropdown(false)}
+                  >
+                    <CgProfile className="mr-2" /> Hồ sơ của tôi
+                  </Link>
+                  <Link 
+                    to="/profile/orders" 
+                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setShowDropdown(false)}
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    Đơn hàng của tôi
+                  </Link>
+                  <button 
+                    onClick={handleLogout} 
+                    className="w-full text-left flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                  >
+                    <FiLogOut className="mr-2" /> Đăng xuất
+                  </button>
+                </div>
+              )}
+            </div>
           ) : (
             // Nếu chưa đăng nhập, hiển thị link đến trang đăng nhập
             <Link to="/login" className="flex items-center gap-[10px]">

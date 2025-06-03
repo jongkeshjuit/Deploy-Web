@@ -29,7 +29,15 @@ const App = () => {
       <BrowserRouter>
         <CartProvider>
           <OrderProvider>
-            <Toaster position="top-right" />
+            <Toaster position="top-right"
+                     duration={2000}
+                     closeButton={true}
+                    //  richColors
+                    //  toastOptions={{
+                    //   style: {
+                    //     zIndex: 9999,
+                    //   }}}
+            />
             <Routes>
               <Route path="/" element={<UserLayout />}>
                 <Route index element={<Home />} />

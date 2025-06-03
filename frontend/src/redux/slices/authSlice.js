@@ -143,10 +143,6 @@ const authSlice = createSlice({
         loginSuccess: (state, action) => {
             state.loading = false;
             state.userInfo = action.payload.userInfo;
-            // Thêm skipToast nếu được chỉ định
-            if (action.payload.skipToast) {
-                state.userInfo.skipToast = true;
-            }
             state.userToken = action.payload.userToken;
             state.success = true;
             state.error = null;
