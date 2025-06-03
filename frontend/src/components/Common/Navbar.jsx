@@ -1,12 +1,12 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { IoMdHeartEmpty } from "react-icons/io"
+import React from "react";
+import { Link } from "react-router-dom";
+import { IoMdHeartEmpty } from "react-icons/io";
 import { PiShoppingCartSimple } from "react-icons/pi";
 import { AiOutlineUser } from "react-icons/ai";
 
-import MenuSide from './MenuSide'
-import SearchBar from './SearchBar';
-import { useCart } from '../Cart/CartContext';
+import MenuSide from "./MenuSide";
+import SearchBar from "./SearchBar";
+import { useCart } from "../Cart/CartContext";
 
 const Navbar = () => {
   const { getTotalItems } = useCart();
@@ -35,10 +35,7 @@ const Navbar = () => {
             <AiOutlineUser className="text-[20px]" />
             <span className="text-sm">Tài khoản</span>
           </Link>
-          <Link
-            to="/cart"
-            className="flex items-center gap-[10px] relative"
-          >
+          <Link to="/cart" className="flex items-center gap-[10px] relative">
             {/* Icon giỏ hàng */}
             <div className="relative">
               <PiShoppingCartSimple className="text-[24px]" />
@@ -52,11 +49,10 @@ const Navbar = () => {
             {/* Chữ "Giỏ hàng" */}
             <span className="text-sm">Giỏ hàng</span>
           </Link>
-
         </div>
       </nav>
     </>
   );
-}
+};
 
-export default Navbar
+export default Navbar;

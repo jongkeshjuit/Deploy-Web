@@ -1,18 +1,49 @@
-import React, { useState } from "react";
-
-const userInfo = {
-  email: "nuyngan300405@gmail.com",
-  name: "Nguyễn Văn A",
-  phone: "0123456789",
-  birthday: "19/08/2005",
-  gender: "Nam",
-  address: "123 Đường ABC, Quận 1, TP. HCM",
-};
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserProfile } from "../../redux/slices/authSlice";
 
 const ProfileInfo = () => {
+  const dispatch = useDispatch();
+  const { loading } = useSelector((state) => state.auth);
+
+  // Hardcoded user data for demo purposes
+  const hardcodedUserInfo = {
+    email: "nguyen.vana@example.com",
+    name: "Nguyễn Văn A",
+    phone: "0987654321",
+    address: "123 Đường Lê Lợi, Phường Bến Nghé, Quận 1, TP.HCM",
+    birth: "1990-05-15",
+    gender: "male",
+  };
+
   const [isEdit, setIsEdit] = useState(false);
-  const [form, setForm] = useState(userInfo);
+  const [form, setForm] = useState({
+    email: "",
+    name: "",
+    phone: "",
+    birthday: "",
+    gender: "",
+    address: "",
+  });
   const [errors, setErrors] = useState({});
+  // Initialize form with hardcoded data
+  useEffect(() => {
+    setForm({
+      email: hardcodedUserInfo.email || "",
+      name: hardcodedUserInfo.name || "",
+      phone: hardcodedUserInfo.phone || "",
+      birthday: hardcodedUserInfo.birth
+        ? new Date(hardcodedUserInfo.birth).toLocaleDateString("vi-VN")
+        : "",
+      gender:
+        hardcodedUserInfo.gender === "male"
+          ? "Nam"
+          : hardcodedUserInfo.gender === "female"
+          ? "Nữ"
+          : "Khác",
+      address: hardcodedUserInfo.address || "",
+    });
+  }, []);
 
   const validate = () => {
     const newErrors = {};
@@ -38,22 +69,41 @@ const ProfileInfo = () => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
-
   const handleSave = (e) => {
     e.preventDefault();
     if (!validate()) return;
     // TODO: Gửi dữ liệu lên backend nếu cần
     setIsEdit(false);
   };
+  const handleCancel = () => {
+    // Reset form data to hardcoded values
+    setForm({
+      email: hardcodedUserInfo.email || "",
+      name: hardcodedUserInfo.name || "",
+      phone: hardcodedUserInfo.phone || "",
+      birthday: hardcodedUserInfo.birth
+        ? new Date(hardcodedUserInfo.birth).toLocaleDateString("vi-VN")
+        : "",
+      gender:
+        hardcodedUserInfo.gender === "male"
+          ? "Nam"
+          : hardcodedUserInfo.gender === "female"
+          ? "Nữ"
+          : "Khác",
+      address: hardcodedUserInfo.address || "",
+    });
+    setErrors({}); // Clear any validation errors
+    setIsEdit(false);
+  };
 
   return (
     <section className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 md:p-8 mb-8">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-        <h3 className="text-xl sm:text-2xl font-bold">HỒ SƠ</h3>
+        <h3 className="text-xl sm:text-2xl font-bold">HỒ SƠ</h3>{" "}
         {isEdit ? (
           <button
             className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700 w-full sm:w-auto"
-            onClick={() => setIsEdit(false)}
+            onClick={handleCancel}
           >
             Hủy
           </button>

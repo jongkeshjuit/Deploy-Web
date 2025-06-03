@@ -9,10 +9,7 @@ const FeaturedCollection = ({ collections }) => {
           const featured = col.products.filter((p) => p.featured);
           if (featured.length === 0) return null;
           return (
-            <div
-              key={col.id}
-              className=" featured-collection overflow-hidden"
-            >
+            <div key={col.id} className=" featured-collection overflow-hidden">
               <Link to={`/collections/${col.id}`}>
                 <div className="relative">
                   <img
@@ -65,7 +62,7 @@ const FeaturedCollection = ({ collections }) => {
           );
         })}
       </div>
-    </div >
+    </div>
   );
 };
 
