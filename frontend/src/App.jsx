@@ -18,6 +18,7 @@ import About from "./components/information/About";
 import Sponsorship from "./components/information/Sponsorship";
 import Policy from "./pages/Policy";
 import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import GoogleCallback from "./pages/GoogleCallback";
@@ -44,9 +45,13 @@ const App = () => {
                 <Route path="login" element={<Login />} />
                 <Route path="signup" element={<Signup />} />
                 <Route path="collections/:id" element={<Collection />} />
-                <Route path="/gendercollections/:id" element={<GenderCollection />} />
+                <Route
+                  path="/gendercollections/:id"
+                  element={<GenderCollection />}
+                />
                 <Route path="product/:id" element={<ProductDetails />} />
                 <Route path="cart" element={<Cart />} />
+                <Route path="checkout" element={<Checkout />} />
                 <Route path="auth/success" element={<GoogleCallback />} />
                 <Route path="information" element={<Information />}>
                   <Route path="about" element={<About />} />

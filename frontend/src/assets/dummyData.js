@@ -3,14 +3,21 @@ import linenWomenBanner from "../assets/images/linen/banner-linen-collection-men
 
 function generateProducts(prefix, startIndex) {
   const products = [];
+  const categories = [
+    "Áo phông",
+    "Áo sơ mi",
+    "Quần tây",
+    "Quần short",
+    "Áo khoác",
+  ];
+
   for (let i = 0; i < 20; i++) {
     products.push({
       _id: `${prefix}${i + 1}`,
       name: `${prefix} Product ${i + 1}`,
       price: Math.floor(Math.random() * 2000000 + 500000),
       discountPrice: Math.floor(Math.random() * 2000000 + 500000),
-
-
+      category: categories[Math.floor(Math.random() * categories.length)],
       sizes: ["S", "M", "L", "XL", "XXL"],
       colors: ["red", "blue", "green", "yellow", "purple"],
       material: "cotton",
@@ -68,8 +75,8 @@ export const collections = [
     products: generateProducts("Linen", 61),
   },
   {
-    id: "Women",
-    name: "Women",
+    id: "women",
+    name: "Đồ nữ",
     bannerUrl: "https://picsum.photos/500/500?random=200",
     products: generateProducts("Casual", 81),
   },

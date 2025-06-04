@@ -29,10 +29,16 @@ const ProductDetails = () => {
 
   // 🔥 Không được return trước hooks
   const similarProducts = collections
-    .find(c => c.products.some(p => p._id === id))?.products
-    .filter(p => p._id !== id)
+    .find((c) => c.products.some((p) => p._id === id))
+    ?.products.filter((p) => p._id !== id)
     .sort(() => Math.random() - 0.5)
-    .slice(0, Math.ceil(collections.find(c => c.products.some(p => p._id === id))?.products.length / 2));
+    .slice(
+      0,
+      Math.ceil(
+        collections.find((c) => c.products.some((p) => p._id === id))?.products
+          .length / 2
+      )
+    );
 
   const handleQuantityChange = (action) => {
     setQuantity((prev) =>
@@ -107,15 +113,15 @@ const ProductDetails = () => {
             {product.discountPrice ? (
               <>
                 <p className="text-lg text-gray-600 mb-1 line-through">
-                  {product.price.toLocaleString('vi-VN')} VND
+                  {product.price.toLocaleString("vi-VN")} VND
                 </p>
                 <p className="text-xl font-bold text-red-600 mb-4">
-                  {product.discountPrice.toLocaleString('vi-VN')} VND
+                  {product.discountPrice.toLocaleString("vi-VN")} VND
                 </p>
               </>
             ) : (
               <p className="text-xl font-bold text-black mb-4">
-                {product.price.toLocaleString('vi-VN')} VND
+                {product.price.toLocaleString("vi-VN")} VND
               </p>
             )}
             <p className="text-gray-600 mb-4">{product.description}</p>
@@ -126,10 +132,11 @@ const ProductDetails = () => {
                   <button
                     key={color}
                     onClick={() => setSelectedColor(color)}
-                    className={`w-6 h-6 rounded-full border cursor-pointer ${selectedColor === color
-                      ? "border-2 border-black"
-                      : "border-gray-300"
-                      }`}
+                    className={`w-6 h-6 rounded-full border cursor-pointer ${
+                      selectedColor === color
+                        ? "border-2 border-black"
+                        : "border-gray-300"
+                    }`}
                     style={{
                       backgroundColor: color.toLocaleLowerCase(),
                       filter: "brightness(0.7)",
@@ -146,10 +153,11 @@ const ProductDetails = () => {
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
-                    className={`w-10 h-10 flex items-center justify-center border cursor-pointer text-sm font-medium ${selectedSize === size
-                      ? "border-black text-black"
-                      : "border-gray-400 text-gray-400"
-                      }`}
+                    className={`w-10 h-10 flex items-center justify-center border cursor-pointer text-sm font-medium ${
+                      selectedSize === size
+                        ? "border-black text-black"
+                        : "border-gray-400 text-gray-400"
+                    }`}
                   >
                     {size}
                   </button>
@@ -192,10 +200,11 @@ const ProductDetails = () => {
             <button
               onClick={handleAddToCart}
               disabled={isButtonDisabled}
-              className={`bg-black text-white px-6 py-2 rounded-full w-full ${isButtonDisabled
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:bg-gray-800"
-                }`}
+              className={`bg-black text-white px-6 py-2 rounded-full w-full ${
+                isButtonDisabled
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-gray-800"
+              }`}
             >
               {isButtonDisabled ? "Đang thêm..." : "Thêm vào giỏ hàng"}
             </button>

@@ -9,7 +9,9 @@ function Collection() {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
   const collection = collections.find((c) => c.id === id);
-  const [filteredAndSortedProducts, setFilteredAndSortedProducts] = useState(collection?.products || []);
+  const [filteredAndSortedProducts, setFilteredAndSortedProducts] = useState(
+    collection?.products || []
+  );
 
   const sidebarRef = useRef(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -18,45 +20,45 @@ function Collection() {
     if (!collection) return;
 
     // Lấy các tham số filter từ URL
-    const color = searchParams.get('color')?.split(',') || [];
-    const size = searchParams.get('size')?.split(',') || [];
-    const price = searchParams.get('price')?.split(',') || [];
-    const material = searchParams.get('material')?.split(',') || [];
-    const sortBy = searchParams.get('sort') || 'default';
+    const color = searchParams.get("color")?.split(",") || [];
+    const size = searchParams.get("size")?.split(",") || [];
+    const price = searchParams.get("price")?.split(",") || [];
+    const material = searchParams.get("material")?.split(",") || [];
+    const sortBy = searchParams.get("sort") || "default";
 
     // Bước 1: Lọc sản phẩm
     let filtered = [...collection.products];
 
     if (color.length > 0) {
-      filtered = filtered.filter(product =>
-        product.colors.some(c => color.includes(c))
+      filtered = filtered.filter((product) =>
+        product.colors.some((c) => color.includes(c))
       );
     }
 
     if (size.length > 0) {
-      filtered = filtered.filter(product =>
-        product.sizes.some(s => size.includes(s))
+      filtered = filtered.filter((product) =>
+        product.sizes.some((s) => size.includes(s))
       );
     }
 
     if (material.length > 0) {
-      filtered = filtered.filter(product =>
+      filtered = filtered.filter((product) =>
         material.includes(product.material)
       );
     }
 
     if (price.length > 0) {
-      filtered = filtered.filter(product => {
-        return price.some(priceRange => {
+      filtered = filtered.filter((product) => {
+        return price.some((priceRange) => {
           const productPrice = product.price;
           switch (priceRange) {
-            case 'under-500':
+            case "under-500":
               return productPrice < 500000;
-            case '500-1000':
+            case "500-1000":
               return productPrice >= 500000 && productPrice <= 1000000;
-            case '1000-1500':
+            case "1000-1500":
               return productPrice >= 1000000 && productPrice <= 1500000;
-            case 'above-1500':
+            case "above-1500":
               return productPrice > 1500000;
             default:
               return true;
@@ -67,16 +69,16 @@ function Collection() {
 
     // Bước 2: Sắp xếp sản phẩm đã lọc
     switch (sortBy) {
-      case 'price-asc':
+      case "price-asc":
         filtered.sort((a, b) => a.price - b.price);
         break;
-      case 'price-desc':
+      case "price-desc":
         filtered.sort((a, b) => b.price - a.price);
         break;
-      case 'name-asc':
+      case "name-asc":
         filtered.sort((a, b) => a.name.localeCompare(b.name));
         break;
-      case 'name-desc':
+      case "name-desc":
         filtered.sort((a, b) => b.name.localeCompare(a.name));
         break;
       default:
@@ -99,15 +101,15 @@ function Collection() {
 
   useEffect(() => {
     if (isSidebarOpen) {
-      document.body.classList.add('overflow-hidden');
+      document.body.classList.add("overflow-hidden");
     } else {
-      document.body.classList.remove('overflow-hidden');
+      document.body.classList.remove("overflow-hidden");
     }
 
     document.addEventListener("mousedown", handleOutsideClick);
 
     return () => {
-      document.body.classList.remove('overflow-hidden');
+      document.body.classList.remove("overflow-hidden");
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, [isSidebarOpen]);
@@ -136,7 +138,8 @@ function Collection() {
       <div className="w-full h-10 px-[50px] flex items-center justify-between">
         <button
           onClick={toggleSidebar}
-          className="filter-button flex items-center gap-2 rounded-full border border-black px-4 py-1.5 transition-all hover:shadow-[inset_0_0_0_1px_black] cursor-pointer">
+          className="filter-button flex items-center gap-2 rounded-full border border-black px-4 py-1.5 transition-all hover:shadow-[inset_0_0_0_1px_black] cursor-pointer"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -156,14 +159,21 @@ function Collection() {
 
         {/* overlay */}
         <div
-          className={`fixed inset-0 w-screen h-full bg-black/75 z-50 transition-[opacity,visibility] duration-200 ease-in-out ${isSidebarOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}
+          className={`fixed inset-0 w-screen h-full bg-black/75 z-50 transition-[opacity,visibility] duration-200 ease-in-out ${
+            isSidebarOpen
+              ? "opacity-100 visible"
+              : "opacity-0 invisible pointer-events-none"
+          }`}
           onClick={() => setIsSidebarOpen(false)}
         />
 
         {/* filter sidebar */}
         <div
           ref={sidebarRef}
-          className={`${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} fixed inset-y-0 z-50 left-0 w-80 overflow-y-auto transition-transform duration-300 ease-in-out bg-white`}>
+          className={`${
+            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } fixed inset-y-0 z-50 left-0 w-80 overflow-y-auto transition-transform duration-300 ease-in-out bg-white`}
+        >
           <FilterSidebar />
         </div>
 
@@ -178,7 +188,9 @@ function Collection() {
       {/* Hiển thị "Không tìm thấy sản phẩm" nếu không có kết quả */}
       {filteredAndSortedProducts.length === 0 ? (
         <div className="w-full px-[50px] text-center py-10">
-          <p className="text-gray-500">Không tìm thấy sản phẩm phù hợp với bộ lọc đã chọn</p>
+          <p className="text-gray-500">
+            Không tìm thấy sản phẩm phù hợp với bộ lọc đã chọn
+          </p>
         </div>
       ) : (
         <div className="w-full px-[50px]">
