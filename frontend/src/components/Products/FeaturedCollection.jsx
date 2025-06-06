@@ -25,9 +25,6 @@ const FeaturedCollection = ({ collections }) => {
                 </div>
               </Link>
               <div className="px-[150px] pt-5">
-                <h3 className="text-lg font-semibold text-center mb-4">
-                  Featured Products
-                </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 ">
                   {featured.map((p) => (
                     <Link

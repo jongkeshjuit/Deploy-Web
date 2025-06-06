@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+// user
 import UserLayout from "./components/Layout/UserLayout";
 import Home from "./pages/Home";
 import MyOdersPage from "./components/profile/MyOdersPage";
@@ -23,7 +24,15 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 import GoogleCallback from "./pages/GoogleCallback";
 import GenderCollection from "./pages/GenderCollection";
-
+// ==================================================
+// admin
+import AdminHomePage from "./pages/AdminHomePage";
+import AdminLayout from "./components/Admin/AdminLayout";
+import UserManagement from "./components/Admin/UserManagement";
+import ProductManagement from "./components/Admin/ProductManagement";
+import EditProductPage from "./components/Admin/EditProductPage";
+import OrderManagement from "./components/Admin/OrderManagement";
+// ==================================================
 const App = () => {
   return (
     <Provider store={store}>
@@ -31,13 +40,13 @@ const App = () => {
         <CartProvider>
           <OrderProvider>
             <Toaster position="top-right"
-                     duration={2000}
-                     closeButton={true}
-                    //  richColors
-                    //  toastOptions={{
-                    //   style: {
-                    //     zIndex: 9999,
-                    //   }}}
+              duration={2000}
+              closeButton={true}
+            //  richColors
+            //  toastOptions={{
+            //   style: {
+            //     zIndex: 9999,
+            //   }}}
             />
             <Routes>
               <Route path="/" element={<UserLayout />}>
@@ -64,6 +73,14 @@ const App = () => {
                   <Route path="orders" element={<MyOdersPage />} />
                   <Route path="orders/:id" element={<OrderDetailPage />} />
                 </Route>
+              </Route>
+
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<AdminHomePage />} />
+                <Route path="users" element={<UserManagement />} />
+                <Route path="products" element={<ProductManagement />} />
+                <Route path="products/:id" element={<EditProductPage />} />
+                <Route path="orders" element={<OrderManagement />} />
               </Route>
             </Routes>
           </OrderProvider>

@@ -62,6 +62,8 @@ const Navbar = () => {
 
         {/* tài khoản + giỏ hàng */}
         <div className="flex items-center gap-[20px]">
+          <Link to="/admin" 
+          className="block bg-black text-sm text-white px-4 py-1">Admin</Link>
           {userInfo ? (
             // Nếu đã đăng nhập, hiển thị avatar với dropdown
             <div className="relative" ref={dropdownRef}>
