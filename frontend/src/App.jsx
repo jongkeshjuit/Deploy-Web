@@ -4,7 +4,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import UserLayout from "./components/Layout/UserLayout";
 import Home from "./pages/Home";
 import MyOdersPage from "./components/profile/MyOdersPage";
-import ProfileLayout from "./components/Layout/ProfileLayout";
+
+import ProfileLayout from "./components/profile/ProfileLayout";
 import ProfileInfo from "./components/profile/ProfileInfo";
 import OrderDetailPage from "./components/profile/OrderDetailPage";
 import { OrderProvider } from "./components/profile/OrderContext";
@@ -39,25 +40,14 @@ const App = () => {
       <BrowserRouter>
         <CartProvider>
           <OrderProvider>
-            <Toaster position="top-right"
-              duration={2000}
-              // closeButton={true}
-            //  richColors
-            //  toastOptions={{
-            //   style: {
-            //     zIndex: 9999,
-            //   }}}
-            />
+            <Toaster position="top-right" duration={2000} />
             <Routes>
               <Route path="/" element={<UserLayout />}>
                 <Route index element={<Home />} />
                 <Route path="login" element={<Login />} />
                 <Route path="signup" element={<Signup />} />
                 <Route path="collections/:id" element={<Collection />} />
-                <Route
-                  path="/gendercollections/:id"
-                  element={<GenderCollection />}
-                />
+                <Route path="gendercollections/:id" element={<GenderCollection />} />
                 <Route path="product/:id" element={<ProductDetails />} />
                 <Route path="cart" element={<Cart />} />
                 <Route path="checkout" element={<Checkout />} />
@@ -67,6 +57,7 @@ const App = () => {
                   <Route path="sponsorship" element={<Sponsorship />} />
                 </Route>
                 <Route path="policy" element={<Policy />} />
+
                 <Route path="profile" element={<ProfileLayout />}>
                   <Route index element={<ProfileInfo />} />
                   <Route path="info" element={<ProfileInfo />} />

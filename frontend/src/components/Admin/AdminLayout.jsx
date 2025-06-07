@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { GrClose, GrMenu } from "react-icons/gr";
-import { AdminSidevar } from './AdminSidevar';
+import AdminSidebar from './AdminSidebar';
 import { Outlet } from 'react-router-dom';
 
 const AdminLayout = () => {
@@ -32,7 +32,7 @@ const AdminLayout = () => {
             {/* sidebar */}
             <div className={`bg-black w-64 min-h-screen text-white absolute md:relative transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} transition-transform duration-300 md:translate-x-0 md:static ease-in-out z-20`}>
                 {/* sidebar */}
-                <AdminSidevar />
+                <AdminSidebar />
             </div>
 
             {/* main content */}

@@ -18,9 +18,9 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: function() {
-        // Password chỉ required nếu không có googleId
-        return !this.googleId;
+      required: function () {
+        // Password only required if no OAuth IDs
+        return !this.googleId && !this.facebookId;
       },
       minlength: 6,
     },
@@ -48,13 +48,17 @@ const userSchema = new mongoose.Schema(
       type: String,
       sparse: true, // Cho phép null và unique
     },
+    facebookId: {
+      type: String,
+      sparse: true,
+    },
     profileImage: {
       type: String,
     },
     // Đánh dấu account type
     accountType: {
       type: String,
-      enum: ["local", "google", "hybrid"],
+      enum: ["local", "google", "facebook", "hybrid"],
       default: "local"
     }
   },
@@ -65,9 +69,8 @@ const userSchema = new mongoose.Schema(
 
 // Hash mật khẩu trước khi lưu (chỉ cho local accounts)
 userSchema.pre("save", async function (next) {
-  // Bỏ qua hash nếu là Google OAuth user hoặc password không thay đổi
-  if (!this.isModified("password") || this.googleId) return next();
-  
+  if (!this.isModified("password") || this.googleId || this.facebookId) return next();
+
   try {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
@@ -78,11 +81,13 @@ userSchema.pre("save", async function (next) {
 });
 
 // Cập nhật account type trước khi lưu
-userSchema.pre("save", function(next) {
-  if (this.googleId && this.password !== 'google_oauth_user') {
+userSchema.pre("save", function (next) {
+  if ((this.googleId || this.facebookId) && this.password !== 'google_oauth_user' && this.password !== 'facebook_oauth_user') {
     this.accountType = 'hybrid';
   } else if (this.googleId) {
     this.accountType = 'google';
+  } else if (this.facebookId) {
+    this.accountType = 'facebook';
   } else {
     this.accountType = 'local';
   }
@@ -99,8 +104,8 @@ userSchema.pre("save", function(next) {
 // };
 
 userSchema.methods.comparePassword = async function (candidatePassword) {
-  if (this.accountType === 'google' || !this.password) {
-      return false;
+  if (this.accountType === 'google' || this.accountType === 'facebook' || !this.password) {
+    return false;
   }
   return await bcrypt.compare(candidatePassword, this.password);
 };

@@ -1,4 +1,4 @@
-import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 // Base URL for API
@@ -12,8 +12,8 @@ const userFromStorage = localStorage.getItem('userInfo')
 const tokenFromStorage = localStorage.getItem('userToken') || null;
 
 // Check for an existing token in localStorage or generate a new one
-const initialGuestId = 
-   localStorage.getItem('guestId') || `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+const initialGuestId =
+    localStorage.getItem('guestId') || `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 localStorage.setItem('guestId', initialGuestId);
 
 // Initialize state with user info and guest ID
@@ -29,25 +29,25 @@ const initialState = {
 // Async thunk for user login
 export const loginUser = createAsyncThunk(
     'auth/loginUser',
-    async (userData, {rejectWithValue}) => {
+    async (userData, { rejectWithValue }) => {
         try {
             const config = {
                 headers: {
                     'Content-Type': 'application/json',
                 },
             };
-            
+
             // Đúng endpoint: /api/users/login
             const response = await axios.post(
-                `${API_URL}/api/users/login`, 
+                `${API_URL}/api/users/login`,
                 userData,
                 config
             );
-            
+
             // Lưu thông tin vào localStorage
             localStorage.setItem('userInfo', JSON.stringify(response.data.user));
             localStorage.setItem('userToken', response.data.token);
-            
+
             return response.data; // Return cả user và token
         } catch (error) {
             // Handle error response
@@ -63,25 +63,25 @@ export const loginUser = createAsyncThunk(
 // Async thunk for user Registration
 export const registerUser = createAsyncThunk(
     'auth/registerUser',
-    async (userData, {rejectWithValue}) => {
+    async (userData, { rejectWithValue }) => {
         try {
             const config = {
                 headers: {
                     'Content-Type': 'application/json',
                 },
             };
-            
+
             // Đúng endpoint: /api/users/register
             const response = await axios.post(
-                `${API_URL}/api/users/register`, 
+                `${API_URL}/api/users/register`,
                 userData,
                 config
             );
-            
+
             // Lưu thông tin vào localStorage
             localStorage.setItem('userInfo', JSON.stringify(response.data.user));
             localStorage.setItem('userToken', response.data.token);
-            
+
             return response.data; // Return cả user và token
         } catch (error) {
             // Handle error response
@@ -97,21 +97,21 @@ export const registerUser = createAsyncThunk(
 // Async thunk for getting user profile
 export const getUserProfile = createAsyncThunk(
     'auth/getUserProfile',
-    async (_, {getState, rejectWithValue}) => {
+    async (_, { getState, rejectWithValue }) => {
         try {
             const token = getState().auth.userToken;
-            
+
             const config = {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             };
-            
+
             const response = await axios.get(
                 `${API_URL}/api/users/profile`,
                 config
             );
-            
+
             return response.data;
         } catch (error) {
             if (error.response && error.response.data.message) {
@@ -211,5 +211,5 @@ const authSlice = createSlice({
     },
 });
 
-export const {logout, clearError, clearSuccess, generateNewGuestId} = authSlice.actions;
+export const { logout, clearError, clearSuccess, generateNewGuestId } = authSlice.actions;
 export default authSlice.reducer;

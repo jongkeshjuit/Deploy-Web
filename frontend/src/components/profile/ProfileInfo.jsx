@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
 
@@ -13,14 +14,19 @@ const ProfileInfo = () => {
     gender: "",
     address: ""
   });
-  
+
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  
+
   // Lấy thông tin user từ Redux store
   const { userInfo, userToken } = useSelector((state) => state.auth);
   const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:9000';
-  
+
+  // Redirect to login if not authenticated
+  if (!userToken) {
+    return <Navigate to="/login" replace />;
+  }
+
   // Cập nhật form với thông tin người dùng từ Redux
   useEffect(() => {
     if (userInfo) {
@@ -28,13 +34,13 @@ const ProfileInfo = () => {
         email: userInfo.email || "",
         name: userInfo.name || "",
         phone: userInfo.phone || "",
-        birthday: userInfo.birth 
-          ? new Date(userInfo.birth).toLocaleDateString("vi-VN") 
+        birthday: userInfo.birth
+          ? new Date(userInfo.birth).toLocaleDateString("vi-VN")
           : "",
-        gender: userInfo.gender === "male" 
-          ? "Nam" 
-          : userInfo.gender === "female" 
-            ? "Nữ" 
+        gender: userInfo.gender === "male"
+          ? "Nam"
+          : userInfo.gender === "female"
+            ? "Nữ"
             : "Khác",
         address: userInfo.address || ""
       });
@@ -70,9 +76,9 @@ const ProfileInfo = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-    
+
     setLoading(true);
-    
+
     try {
       // Chuyển đổi giới tính về dạng lưu trong database
       const genderMapping = {
@@ -80,7 +86,7 @@ const ProfileInfo = () => {
         "Nữ": "female",
         "Khác": "other"
       };
-      
+
       // Chuyển đổi ngày sinh về định dạng ISO
       let birthDate = form.birthday;
       if (form.birthday && form.birthday.includes('/')) {
@@ -89,7 +95,7 @@ const ProfileInfo = () => {
           birthDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
         }
       }
-      
+
       const userData = {
         name: form.name,
         gender: genderMapping[form.gender] || "other",
@@ -97,7 +103,7 @@ const ProfileInfo = () => {
         address: form.address,
         phone: form.phone
       };
-      
+
       const response = await axios.put(
         `${API_URL}/api/users/update-profile`,
         userData,
@@ -108,10 +114,10 @@ const ProfileInfo = () => {
           }
         }
       );
-      
+
       toast.success('Cập nhật thông tin thành công!');
       setIsEdit(false);
-      
+
       // Cập nhật thông tin trong localStorage nếu cần
       const currentUserInfo = JSON.parse(localStorage.getItem('userInfo'));
       if (currentUserInfo) {
@@ -120,7 +126,7 @@ const ProfileInfo = () => {
           ...response.data
         }));
       }
-      
+
     } catch (error) {
       console.error('Lỗi khi cập nhật thông tin:', error);
       toast.error('Có lỗi xảy ra khi cập nhật thông tin!');
@@ -130,12 +136,12 @@ const ProfileInfo = () => {
   };
 
   return (
-    <section className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 md:p-8 mb-8">
+    <section className="bg-white border border-gray-200 p-4 sm:p-6 md:p-8 mb-8">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-        <h3 className="text-xl sm:text-2xl font-bold">HỒ SƠ</h3>
+        <h3 className="text-xl sm:text-2xl font-medium">HỒ SƠ CÁ NHÂN</h3>
         {isEdit ? (
           <button
-            className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700 w-full sm:w-auto"
+            className=""
             onClick={() => setIsEdit(false)}
             disabled={loading}
           >
@@ -164,9 +170,8 @@ const ProfileInfo = () => {
               name="email"
               value={form.email}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${
-                errors.email ? "border-red-500" : ""
-              }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${errors.email ? "border-red-500" : ""
+                }`}
               disabled={true} // Email không thể thay đổi
               required
             />
@@ -179,9 +184,8 @@ const ProfileInfo = () => {
               name="name"
               value={form.name}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${
-                errors.name ? "border-red-500" : ""
-              }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${errors.name ? "border-red-500" : ""
+                }`}
               required
             />
             {errors.name && (
@@ -193,9 +197,8 @@ const ProfileInfo = () => {
               name="address"
               value={form.address}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${
-                errors.address ? "border-red-500" : ""
-              }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${errors.address ? "border-red-500" : ""
+                }`}
               required
             />
             {errors.address && (
@@ -211,9 +214,8 @@ const ProfileInfo = () => {
               name="phone"
               value={form.phone}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${
-                errors.phone ? "border-red-500" : ""
-              }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${errors.phone ? "border-red-500" : ""
+                }`}
               required
             />
             {errors.phone && (
@@ -231,9 +233,8 @@ const ProfileInfo = () => {
                   birthday: val.split("-").reverse().join("/"),
                 }));
               }}
-              className={`mb-1 w-full border rounded px-3 py-2 ${
-                errors.birthday ? "border-red-500" : ""
-              }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${errors.birthday ? "border-red-500" : ""
+                }`}
               required
             />
             {errors.birthday && (
@@ -244,9 +245,8 @@ const ProfileInfo = () => {
               name="gender"
               value={form.gender}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${
-                errors.gender ? "border-red-500" : ""
-              }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${errors.gender ? "border-red-500" : ""
+                }`}
               required
             >
               <option value="">Chọn giới tính</option>

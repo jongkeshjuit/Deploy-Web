@@ -71,19 +71,9 @@ const Navbar = () => {
                 className="flex items-center gap-[10px] cursor-pointer" 
                 onClick={() => setShowDropdown(!showDropdown)}
               >
-                <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gray-100">
-                  {userInfo.profileImage ? (
-                    <img 
-                      src={userInfo.profileImage} 
-                      alt={userInfo.name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <AiOutlineUser className="text-[20px]" />
-                  )}
-                </div>
+                <AiOutlineUser className="text-[20px]" />
                 <span className="text-sm truncate max-w-[120px]">
-                  {userInfo.name || 'Tài khoản'}
+                  Tài khoản
                 </span>
               </div>
               
@@ -118,7 +108,7 @@ const Navbar = () => {
             </div>
           ) : (
             // Nếu chưa đăng nhập, hiển thị link đến trang đăng nhập
-            <Link to="/login" className="flex items-center gap-[10px]">
+            <Link to="/profile" className="flex items-center gap-[10px]">
               <AiOutlineUser className="text-[20px]" />
               <span className="text-sm">Tài khoản</span>
             </Link>
