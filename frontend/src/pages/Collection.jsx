@@ -122,9 +122,10 @@ function Collection() {
       <div className="w-full md:px-[100px] md:h-[500px] px-[50px] my-[50px]">
         <div className="flex justify-center items-center border w-full h-full border-gray-400">
           <div className="flex flex-col w-1/2 h-full p-10 gap-2 justify-center">
-            <h2 className="text-4xl font-medium uppercase">{collection.name}</h2>
+            <h2 className="text-4xl font-medium uppercase">
+              {collection.name}
+            </h2>
             <p className="text-xl font-light">{collection.description}</p>
-
           </div>
           <img
             src={collection.bannerUrl}

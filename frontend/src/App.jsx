@@ -41,7 +41,7 @@ const App = () => {
           <OrderProvider>
             <Toaster position="top-right"
               duration={2000}
-              closeButton={true}
+              // closeButton={true}
             //  richColors
             //  toastOptions={{
             //   style: {

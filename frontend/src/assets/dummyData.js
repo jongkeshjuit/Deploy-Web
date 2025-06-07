@@ -28,15 +28,15 @@ function generateProducts(prefix, startIndex) {
           altText: `${prefix} Product ${i + 1}`,
         },
         {
-          url: `https://picsum.photos/500/500?random=${startIndex + i}`,
+          url: `https://picsum.photos/500/500?random=${startIndex + i + 75}`,
           altText: `${prefix} Product ${i + 1}`,
         },
         {
-          url: `https://picsum.photos/500/500?random=${startIndex + i}`,
+          url: `https://picsum.photos/500/500?random=${startIndex + i + 150}`,
           altText: `${prefix} Product ${i + 1}`,
         },
         {
-          url: `https://picsum.photos/500/500?random=${startIndex + i}`,
+          url: `https://picsum.photos/500/500?random=${startIndex + i + 225}`,
           altText: `${prefix} Product ${i + 1}`,
         },
       ],

@@ -148,17 +148,19 @@ function GenderCollection() {
 
         {/* overlay */}
         <div
-          className={`fixed inset-0 w-screen h-full bg-black/75 z-50 transition-[opacity,visibility] duration-200 ease-in-out ${isSidebarOpen
+          className={`fixed inset-0 w-screen h-full bg-black/75 z-50 transition-[opacity,visibility] duration-200 ease-in-out ${
+            isSidebarOpen
               ? "opacity-100 visible"
               : "opacity-0 invisible pointer-events-none"
-            }`}
+          }`}
           onClick={() => setIsSidebarOpen(false)}
         />
         {/* filter sidebar */}
         <div
           ref={sidebarRef}
-          className={`${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-            } fixed inset-y-0 z-50 left-0 w-80 overflow-y-auto transition-transform duration-300 ease-in-out bg-white`}
+          className={`${
+            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } fixed inset-y-0 z-50 left-0 w-80 overflow-y-auto transition-transform duration-300 ease-in-out bg-white`}
         >
           <FilterSidebar />
         </div>
