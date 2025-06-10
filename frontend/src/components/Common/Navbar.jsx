@@ -5,6 +5,7 @@ import { PiShoppingCartSimple } from "react-icons/pi";
 import { AiOutlineUser } from "react-icons/ai";
 import { FiLogOut } from "react-icons/fi";
 import { CgProfile } from "react-icons/cg";
+import { RiAdminLine } from "react-icons/ri";
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../redux/slices/authSlice';
 import { toast } from 'sonner';
@@ -20,6 +21,9 @@ const Navbar = () => {
   const dropdownRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  // Kiểm tra quyền admin
+  const isAdmin = userInfo?.role === 'admin';
 
   // Đóng dropdown khi click outside
   useEffect(() => {
@@ -40,6 +44,7 @@ const Navbar = () => {
     dispatch(logout());
     toast.success('Đăng xuất thành công!');
     navigate('/');
+    setShowDropdown(false);
   };
 
   return (
@@ -62,8 +67,17 @@ const Navbar = () => {
 
         {/* tài khoản + giỏ hàng */}
         <div className="flex items-center gap-[20px]">
-          <Link to="/admin" 
-          className="block bg-black text-sm text-white px-4 py-1">Admin</Link>
+          {/* Admin button - chỉ hiển thị cho admin */}
+          {isAdmin && (
+            <Link 
+              to="/admin" 
+              className="flex items-center gap-1 bg-black text-white text-sm px-4 py-2 rounded hover:bg-gray-800 transition-colors"
+            >
+              <RiAdminLine className="text-[16px]" />
+              <span>Admin</span>
+            </Link>
+          )}
+          
           {userInfo ? (
             // Nếu đã đăng nhập, hiển thị avatar với dropdown
             <div className="relative" ref={dropdownRef}>
@@ -71,9 +85,17 @@ const Navbar = () => {
                 className="flex items-center gap-[10px] cursor-pointer" 
                 onClick={() => setShowDropdown(!showDropdown)}
               >
-                <AiOutlineUser className="text-[20px]" />
+                {userInfo.profileImage ? (
+                  <img 
+                    src={userInfo.profileImage} 
+                    alt={userInfo.name}
+                    className="w-[30px] h-[30px] rounded-full object-cover"
+                  />
+                ) : (
+                  <AiOutlineUser className="text-[20px]" />
+                )}
                 <span className="text-sm truncate max-w-[120px]">
-                  Tài khoản
+                  {userInfo.name || 'Tài khoản'}
                 </span>
               </div>
               
@@ -97,6 +119,16 @@ const Navbar = () => {
                     </svg>
                     Đơn hàng của tôi
                   </Link>
+                  {/* Admin menu item */}
+                  {isAdmin && (
+                    <Link 
+                      to="/admin" 
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setShowDropdown(false)}
+                    >
+                      <RiAdminLine className="mr-2" /> Quản trị
+                    </Link>
+                  )}
                   <button 
                     onClick={handleLogout} 
                     className="w-full text-left flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
@@ -108,7 +140,7 @@ const Navbar = () => {
             </div>
           ) : (
             // Nếu chưa đăng nhập, hiển thị link đến trang đăng nhập
-            <Link to="/profile" className="flex items-center gap-[10px]">
+            <Link to="/login" className="flex items-center gap-[10px]">
               <AiOutlineUser className="text-[20px]" />
               <span className="text-sm">Tài khoản</span>
             </Link>

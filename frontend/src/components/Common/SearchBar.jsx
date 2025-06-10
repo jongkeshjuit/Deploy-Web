@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { GrSearch, GrClose } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
-import { collections } from "../../assets/dummyData";
 import ProductGrid from "../Products/ProductGrid";
+import axios from "axios";
 
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  
+  const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:9000';
 
   const toggleSearch = () => setIsOpen((prev) => !prev);
   const clearSearch = () => {
@@ -18,21 +21,31 @@ const SearchBar = () => {
 
   // Debounce search
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const timer = setTimeout(async () => {
       if (searchTerm.trim()) {
-        const results = collections.flatMap((collection) =>
-          collection.products.filter((product) =>
-            product.name.toLowerCase().includes(searchTerm.toLowerCase())
-          )
-        );
-        setSearchResults(results);
+        try {
+          setLoading(true);
+          const response = await axios.get(`${API_URL}/api/products`, {
+            params: {
+              search: searchTerm,
+              limit: 12
+            }
+          });
+          
+          setSearchResults(response.data.products || []);
+        } catch (error) {
+          console.error("Error searching products:", error);
+          setSearchResults([]);
+        } finally {
+          setLoading(false);
+        }
       } else {
         setSearchResults([]);
       }
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [searchTerm]);
+  }, [searchTerm, API_URL]);
 
   // Disable body scroll when search is open
   useEffect(() => {
@@ -99,21 +112,55 @@ const SearchBar = () => {
               </button>
             </div>
 
+            {/* Loading indicator */}
+            {loading && (
+              <div className="flex justify-center my-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+              </div>
+            )}
+
             {/* Tiêu đề kết quả nếu có */}
-            {searchResults.length > 0 && (
+            {searchResults.length > 0 && !loading && (
               <h3 className="text-lg font-normal my-2 mx-[50px]">
-                Kết quả tìm kiếm:
+                Kết quả tìm kiếm ({searchResults.length}):
               </h3>
+            )}
+
+            {/* No results message */}
+            {searchTerm && !loading && searchResults.length === 0 && (
+              <div className="text-center my-4 mx-[50px]">
+                <p className="text-gray-500">Không tìm thấy sản phẩm nào cho "{searchTerm}"</p>
+              </div>
             )}
           </div>
 
           {/* Danh sách kết quả */}
-          {searchResults.length > 0 && (
+          {searchResults.length > 0 && !loading && (
             <div className="w-full px-[50px] mb-10">
               <ProductGrid
                 product={searchResults}
                 onClick={() => setIsOpen(false)}
               />
+            </div>
+          )}
+
+          {/* Popular searches or suggestions when no search term */}
+          {!searchTerm && !loading && (
+            <div className="w-full px-[50px] mb-10">
+              <h3 className="text-lg font-normal my-2">Gợi ý tìm kiếm:</h3>
+              <div className="flex flex-wrap gap-2 mt-4">
+                {['Áo phông', 'Quần jean', 'Áo khoác', 'Váy', 'Giày'].map((suggestion) => (
+                  <button
+                    key={suggestion}
+                    onClick={() => {
+                      setSearchTerm(suggestion);
+                    }}
+                    className="px-4 py-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors text-sm"
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
         </div>
