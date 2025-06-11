@@ -4,11 +4,11 @@ import axios from "axios";
 // Async thunk to create a checkout session
 export const createCheckoutSession = createAsyncThunk(
   "checkout/createCheckoutSession",
-  async ({ checkoutData }, { rejectWithValue }) => {
+  async (orderData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/checkout`,
-        checkoutData,
+        `${import.meta.env.VITE_API_URL}/api/orders`,
+        orderData,
         {
           headers: {
             Authorization: `Bearer ${
@@ -19,9 +19,9 @@ export const createCheckoutSession = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      console.error("Error creating checkout session:", error);
+      console.error("Error creating order:", error);
       return rejectWithValue(
-        error.response?.data || error.message || "Unknown error"
+        error.response?.data?.message || error.message || "Unknown error"
       );
     }
   }
@@ -35,7 +35,13 @@ const checkoutSlice = createSlice({
     error: null,
     sessionId: null,
   },
-  reducers: {},
+  reducers: {
+    clearCheckout: (state) => {
+      state.checkout = null;
+      state.sessionId = null;
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createCheckoutSession.pending, (state) => {
@@ -49,9 +55,10 @@ const checkoutSlice = createSlice({
       })
       .addCase(createCheckoutSession.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Failed to create checkout session";
+        state.error = action.payload || "Failed to create order";
       });
   },
 });
 
+export const { clearCheckout } = checkoutSlice.actions;
 export default checkoutSlice.reducer;

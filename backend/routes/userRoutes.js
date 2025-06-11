@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
-const {authMiddleware} = require("../middleware/authMiddleware");
+const { authMiddleware } = require("../middleware/authMiddleware");
 
 // @route   POST /api/users/register
 // @desc    Register a new user
@@ -32,7 +32,7 @@ router.post("/register", async (req, res) => {
     const token = jwt.sign(
       { id: newUser._id, role: newUser.role },
       process.env.JWT_SECRET || "your_jwt_secret_key",
-      { expiresIn: "7d" },
+      { expiresIn: "7d" }
     );
 
     // Trả về thông tin cơ bản và token
@@ -73,7 +73,7 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET || "your_jwt_secret_key",
-      { expiresIn: "7d" },
+      { expiresIn: "7d" }
     );
     // Trả về thông tin cơ bản và token
     res.status(200).json({
@@ -90,8 +90,7 @@ router.post("/login", async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
-}
-);
+});
 
 // @route   GET /api/users/profile
 // @desc    Get user profile
@@ -114,12 +113,12 @@ router.post("/login", async (req, res) => {
 router.get("/profile", authMiddleware, async (req, res) => {
   try {
     // Lấy thông tin user từ middleware auth (req.user chứa ID)
-    const user = await User.findById(req.user.id).select('-password');
-    
+    const user = await User.findById(req.user.id).select("-password");
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    
+
     // Trả về đầy đủ thông tin cần thiết
     res.status(200).json({
       id: user._id,
@@ -130,7 +129,7 @@ router.get("/profile", authMiddleware, async (req, res) => {
       birth: user.birth,
       profileImage: user.profileImage,
       accountType: user.accountType,
-      createdAt: user.createdAt
+      createdAt: user.createdAt,
     });
   } catch (error) {
     console.error(error);
@@ -141,25 +140,29 @@ router.get("/profile", authMiddleware, async (req, res) => {
 // Thêm route update profile vào userRoutes.js
 router.put("/update-profile", authMiddleware, async (req, res) => {
   try {
-    const { name, gender, birth, address, phone } = req.body;
-    
+    const { name, gender, birth, address, phone, city, district, ward } =
+      req.body;
+
     // Tìm user dựa vào ID từ middleware
     const user = await User.findById(req.user.id);
-    
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    
+
     // Cập nhật thông tin
     if (name) user.name = name;
     if (gender) user.gender = gender;
     if (birth) user.birth = birth;
     if (address) user.address = address;
+    if (city) user.city = city;
     if (phone) user.phone = phone;
-    
+    if (district) user.district = district;
+    if (ward) user.ward = ward;
+
     // Lưu vào database
     const updatedUser = await user.save();
-    
+
     // Trả về thông tin đã cập nhật
     res.status(200).json({
       id: updatedUser._id,
@@ -169,10 +172,13 @@ router.put("/update-profile", authMiddleware, async (req, res) => {
       gender: updatedUser.gender,
       birth: updatedUser.birth,
       address: updatedUser.address,
+      city: updatedUser.city,
+      district: updatedUser.district,
+      ward: updatedUser.ward,
       phone: updatedUser.phone,
       profileImage: updatedUser.profileImage,
       accountType: updatedUser.accountType,
-      createdAt: updatedUser.createdAt
+      createdAt: updatedUser.createdAt,
     });
   } catch (error) {
     console.error(error);

@@ -229,22 +229,16 @@ const FilterSidebar = () => {
           <div className="flex flex-wrap gap-2">
             {Object.entries(filters).map(([type, values]) =>
               values.map((value) => {
-                const label = (() => {
-                  switch (type) {
-                    case "color":
-                      return colorOptions.find((c) => c === value)?.name;
-                    case "size":
-                      return value;
-                    case "price":
-                      return price.find((p) => p.value === value)?.name;
-                    case "material":
-                      return materialOptions.find((m) => m === value)?.name;
-                    case "category":
-                      return categoryOptions.find((c) => c === value)?.name;
-                    default:
-                      return value;
-                  }
-                })();
+                let label = value;
+                if (type === "price") {
+                  label = price.find((p) => p.value === value)?.name || value;
+                } else if (type === "color") {
+                  label = value;
+                } else if (type === "material") {
+                  label = value;
+                } else if (type === "category") {
+                  label = value;
+                }
 
                 return (
                   <button

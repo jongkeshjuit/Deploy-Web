@@ -4,12 +4,20 @@ import { useSelector, useDispatch } from "react-redux";
 import { createCheckoutSession } from "../redux/slices/checkoutSlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import {
+  BANK_INFO,
+  generateVietQRUrl,
+  generateOrderCode,
+  QR_FALLBACK_SVG,
+  fetchRecentTransactionsAndCheckPayment,
+} from "../utils/bankInfo";
 
 const Checkout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { cartItems, getTotalPrice, clearCart } = useCart();
   const { loading, error } = useSelector((state) => state.checkout);
+  const { userInfo } = useSelector((state) => state.auth);
 
   // Hardcoded user data from ProfileInfo
   const hardcodedUserInfo = {
@@ -51,42 +59,51 @@ const Checkout = () => {
       };
     }
   };
-  // Initialize form with hardcoded user data
+  // Initialize form with user data from Redux store
   const initializeFormData = () => {
-    const parsedAddress = parseAddress(hardcodedUserInfo?.address);
-
+    const user = userInfo || {};
+    const parsedAddress = parseAddress(user.address);
+    // Chuẩn hóa ngày sinh về yyyy-MM-dd nếu có
+    let birth = "";
+    if (user.birth) {
+      const d = new Date(user.birth);
+      if (!isNaN(d.getTime())) {
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, "0");
+        const dd = String(d.getDate()).padStart(2, "0");
+        birth = `${yyyy}-${mm}-${dd}`;
+      }
+    }
     return {
-      // Shipping Information
-      fullName: hardcodedUserInfo?.name || "",
-      email: hardcodedUserInfo?.email || "",
-      phone: hardcodedUserInfo?.phone || "",
+      fullName: user.name || "",
+      email: user.email || "",
+      phone: user.phone || "",
       address: parsedAddress.address,
-      city: parsedAddress.city,
-      district: parsedAddress.district,
-      ward: parsedAddress.ward,
-      postalCode: "",
+      city: user.city || parsedAddress.city || "",
+      district: user.district || parsedAddress.district || "",
+      ward: user.ward || parsedAddress.ward || "",
+      postalCode: "700000",
       country: "Vietnam",
-
-      // Payment Information - default to credit card to match the new design
-      paymentMethod: "credit_card",
-
-      // Additional notes
+      paymentMethod: "cod",
       notes: "",
+      birth, // thêm birth nếu cần dùng cho input type="date"
     };
   };
-
   // Form state
   const [formData, setFormData] = useState(initializeFormData());
-
   const [errors, setErrors] = useState({});
-  const [isProcessing, setIsProcessing] = useState(false); // Redirect if cart is empty
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [isPaymentVerified, setIsPaymentVerified] = useState(false);
+  const [isCheckingPayment, setIsCheckingPayment] = useState(false);
+  const [paymentCheckResult, setPaymentCheckResult] = useState(null);
+
+  // Redirect if cart is empty
   useEffect(() => {
     if (cartItems.length === 0) {
       toast.error("Giỏ hàng của bạn đang trống!");
       navigate("/cart");
     }
-  }, [cartItems, navigate]);
-  // Handle input changes (only for payment method and notes)
+  }, [cartItems, navigate]); // Handle input changes (only for payment method and notes)
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -94,11 +111,10 @@ const Checkout = () => {
       [name]: value,
     }));
   };
+
   // Validate form
   const validateForm = () => {
     const newErrors = {};
-
-    // Check if user profile has required information
     if (!formData.fullName.trim())
       newErrors.fullName = "Vui lòng cập nhật tên trong hồ sơ";
     if (!formData.email.trim())
@@ -107,12 +123,6 @@ const Checkout = () => {
       newErrors.phone = "Vui lòng cập nhật số điện thoại trong hồ sơ";
     if (!formData.address.trim())
       newErrors.address = "Vui lòng cập nhật địa chỉ trong hồ sơ";
-    if (!formData.city.trim())
-      newErrors.city = "Vui lòng cập nhật thành phố trong hồ sơ";
-    if (!formData.district.trim())
-      newErrors.district = "Vui lòng cập nhật quận/huyện trong hồ sơ";
-    if (!formData.ward.trim())
-      newErrors.ward = "Vui lòng cập nhật phường/xã trong hồ sơ";
 
     // Email validation (only if email exists)
     if (formData.email && formData.email.trim()) {
@@ -131,66 +141,106 @@ const Checkout = () => {
     }
 
     setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      toast.error(
+        "Vui lòng nhập đầy đủ thông tin giao hàng trong hồ sơ cá nhân!"
+      );
+    }
     return Object.keys(newErrors).length === 0;
   };
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) {
-      toast.error(
-        "Vui lòng cập nhật đầy đủ thông tin trong hồ sơ để tiến hành thanh toán"
-      );
+      toast.error("Vui lòng kiểm tra lại thông tin đơn hàng!");
       return;
     }
-
-    // For demo purposes, we'll skip the login check since we're using hardcoded data
-    // In a real application, you would check for authentication here
-
+    // Kiểm tra các trường bắt buộc trong formData
+    const requiredFields = [
+      "address",
+      "city",
+      "district",
+      "ward",
+      "postalCode",
+      "country",
+    ];
+    for (const field of requiredFields) {
+      if (!formData[field] || formData[field].trim() === "") {
+        toast.error(`Thiếu thông tin: ${field}`);
+        return;
+      }
+    }
     setIsProcessing(true);
-
     try {
-      // Prepare checkout data
-      const checkoutData = {
-        checkoutItems: cartItems.map((item) => ({
-          productId: item.product._id,
-          name: item.product.name,
-          image: item.product.images?.[0]?.url || "",
-          price: item.product.discountPrice || item.product.price,
-          size: item.size,
-          color: item.color,
-          quantity: item.quantity,
-        })),
-        shippingAddress: {
-          fullName: formData.fullName,
-          email: formData.email,
-          phone: formData.phone,
-          address: formData.address,
-          city: formData.city,
-          district: formData.district,
-          ward: formData.ward,
-          postalCode: formData.postalCode,
-          country: formData.country,
-          notes: formData.notes,
-        },
-        paymentMethod: formData.paymentMethod,
-        totalPrice: getTotalPrice(),
+      // Prepare order data
+      const orderData = {
+        formData,
+        cartItems,
+        totalPrice: getTotalPrice() + 50000, // Including shipping cost
       };
-
-      // Create checkout session
-      const result = await dispatch(createCheckoutSession({ checkoutData }));
-
-      if (createCheckoutSession.fulfilled.match(result)) {
-        toast.success("Đơn hàng đã được tạo thành công!");
-        clearCart(); // Clear the cart after successful checkout
-        navigate("/profile/orders"); // Redirect to orders page
-      } else {
-        throw new Error(result.payload || "Không thể tạo đơn hàng");
+      // Log dữ liệu gửi lên để kiểm tra
+      console.log("orderData gửi lên:", orderData);
+      // Create order
+      const response = await dispatch(
+        createCheckoutSession(orderData)
+      ).unwrap();
+      if (response) {
+        clearCart();
+        if (formData.paymentMethod === "bank_transfer") {
+          toast.success(
+            "Đặt hàng thành công! Đơn hàng đã được ghi nhận là ĐÃ THANH TOÁN."
+          );
+          setIsPaymentVerified(true);
+          return;
+        } else {
+          toast.success("Đặt hàng thành công!");
+          navigate(`/order/${response._id}`);
+        }
       }
     } catch (error) {
-      console.error("Checkout error:", error);
-      toast.error(error.message || "Có lỗi xảy ra khi xử lý đơn hàng");
+      // Thêm log chi tiết lỗi trả về từ backend
+      console.log("[DEBUG] error object:", error);
+      console.log("[DEBUG] error.response:", error.response);
+      console.log("[DEBUG] error.response.data:", error.response?.data);
+      console.log("[DEBUG] error.response.status:", error.response?.status);
+      toast.error(error.message || "Có lỗi xảy ra khi đặt hàng!");
     } finally {
       setIsProcessing(false);
+    }
+  };
+
+  // Check payment status
+  const handleCheckPayment = async () => {
+    setIsCheckingPayment(true);
+    setPaymentCheckResult(null);
+    setIsPaymentVerified(false);
+    const orderCode =
+      document
+        .querySelector(".font-mono.text-xs.bg-white.p-2.border.rounded.mt-1")
+        ?.textContent?.split(" ")[0] || generateOrderCode();
+    const amount = getTotalPrice() + 50000;
+    const phone = hardcodedUserInfo.phone;
+    const result = await fetchRecentTransactionsAndCheckPayment(
+      orderCode,
+      amount,
+      phone
+    );
+    setIsCheckingPayment(false);
+    if (result) {
+      setIsPaymentVerified(true);
+      setPaymentCheckResult({
+        success: true,
+        message: "Đã xác nhận thanh toán thành công!",
+      });
+      toast.success("Đã xác nhận thanh toán thành công!");
+    } else {
+      setIsPaymentVerified(false);
+      setPaymentCheckResult({
+        success: false,
+        message:
+          "Chưa tìm thấy giao dịch phù hợp. Vui lòng kiểm tra lại sau khi chuyển khoản!",
+      });
+      toast.error("Chưa tìm thấy giao dịch phù hợp.");
     }
   };
 
@@ -208,19 +258,8 @@ const Checkout = () => {
         <div className="flex-1 border p-4 sm:p-6 md:p-8 bg-white min-w-0">
           <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 uppercase tracking-wide">
             PHƯƠNG THỨC THANH TOÁN
-          </h2>
+          </h2>{" "}
           <div className="flex flex-col sm:flex-row sm:items-center mb-4 sm:mb-6 gap-4 sm:gap-8">
-            <label className="flex items-center font-medium text-base">
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="credit_card"
-                checked={formData.paymentMethod === "credit_card"}
-                onChange={handleInputChange}
-                className="mr-2 accent-black"
-              />
-              <span className="text-sm sm:text-base">Thẻ Tín Dụng/Ghi Nợ</span>
-            </label>
             <label className="flex items-center font-medium text-base">
               <input
                 type="radio"
@@ -245,76 +284,136 @@ const Checkout = () => {
               />
               <span className="text-sm sm:text-base">
                 Chuyển khoản ngân hàng
-              </span>
-            </label>
+              </span>{" "}
+            </label>{" "}
           </div>
-
-          {/* Credit Card Fields */}
-          {formData.paymentMethod === "credit_card" && (
-            <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
-              <div>
-                <label className="block font-bold text-xs sm:text-sm mb-1">
-                  MÃ SỐ THẺ*
-                </label>
-                <input
-                  type="text"
-                  name="cardNumber"
-                  placeholder="Vui lòng nhập mã số thẻ của bạn"
-                  className="w-full border border-gray-300 rounded px-2 py-2 sm:px-3 focus:outline-none focus:border-black text-sm"
-                />
-              </div>
-              <div>
-                <label className="block font-bold text-xs sm:text-sm mb-1">
-                  NGÀY HẾT HẠN*
-                </label>
-                <input
-                  type="text"
-                  name="cardExpiry"
-                  placeholder="Vui lòng nhập tên của bạn"
-                  className="w-full border border-gray-300 rounded px-2 py-2 sm:px-3 focus:outline-none focus:border-black text-sm"
-                />
-              </div>
-              <div>
-                <label className="block font-bold text-xs sm:text-sm mb-1">
-                  MÃ BẢO MẬT*
-                </label>
-                <input
-                  type="text"
-                  name="cardCVC"
-                  placeholder="3 digit"
-                  className="w-full border border-gray-300 rounded px-2 py-2 sm:px-3 focus:outline-none focus:border-black text-sm"
-                />
-                <div className="flex space-x-2 mt-1">
-                  <img
-                    src="https://cdn-icons-png.flaticon.com/512/349/349221.png"
-                    alt="Visa"
-                    className="h-5"
-                  />
-                  <img
-                    src="https://cdn-icons-png.flaticon.com/512/349/349228.png"
-                    alt="Mastercard"
-                    className="h-5"
-                  />
+          {/* Bank Transfer Information with VietQR */}
+          {formData.paymentMethod === "bank_transfer" && (
+            <div className="space-y-4 mb-6 p-4 border border-gray-300 rounded-lg bg-gray-50">
+              <h3 className="font-bold text-lg mb-3">THÔNG TIN CHUYỂN KHOẢN</h3>{" "}
+              {/* Bank Information */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <div className="text-sm">
+                    <span className="font-semibold">Ngân hàng:</span>{" "}
+                    {BANK_INFO.bankName}
+                  </div>
+                  <div className="text-sm">
+                    <span className="font-semibold">Số tài khoản:</span>{" "}
+                    {BANK_INFO.accountNumber}
+                  </div>
+                  <div className="text-sm">
+                    <span className="font-semibold">Tên tài khoản:</span>{" "}
+                    {BANK_INFO.accountName}
+                  </div>
+                  <div className="text-sm">
+                    <span className="font-semibold">Số tiền:</span>
+                    <span className="font-bold text-red-600 ml-1">
+                      {(getTotalPrice() + 50000).toLocaleString("vi-VN")} VND
+                    </span>
+                  </div>{" "}
+                  <div className="text-sm">
+                    <span className="font-semibold">
+                      Nội dung chuyển khoản:
+                    </span>{" "}
+                    <div className="font-mono text-xs bg-white p-2 border rounded mt-1">
+                      {generateOrderCode()} {hardcodedUserInfo.phone}
+                    </div>
+                  </div>
+                </div>{" "}
+                {/* VietQR Code */}
+                <div className="flex flex-col items-center">
+                  <div className="text-sm font-semibold mb-2">
+                    Quét mã QR để chuyển khoản
+                  </div>
+                  <div className="bg-white p-4 border border-gray-300 rounded">
+                    {" "}
+                    <img
+                      src={generateVietQRUrl(
+                        getTotalPrice() + 50000,
+                        generateOrderCode(),
+                        hardcodedUserInfo.phone
+                      )}
+                      alt="VietQR Code"
+                      className="w-56 h-56 object-contain"
+                      onError={(e) => {
+                        e.target.src = QR_FALLBACK_SVG;
+                      }}
+                    />
+                  </div>
+                  <div className="text-xs text-gray-600 mt-2 text-center">
+                    Sử dụng app ngân hàng để quét mã QR
+                  </div>
+                </div>
+              </div>{" "}
+              {/* Important Notes */}
+              <div className="bg-yellow-50 border border-yellow-200 rounded p-3 mt-4">
+                <div className="text-sm text-yellow-800">
+                  <div className="font-semibold mb-1">📋 Lưu ý quan trọng:</div>
+                  <ul className="list-disc list-inside space-y-1 text-xs">
+                    <li>
+                      Vui lòng chuyển khoản đúng số tiền và nội dung như trên
+                    </li>
+                    <li>
+                      Đơn hàng sẽ được xác nhận sau khi chúng tôi nhận được tiền
+                    </li>
+                    <li>Thời gian xử lý: {BANK_INFO.contact.processingTime}</li>
+                    <li>
+                      Liên hệ hotline: {BANK_INFO.contact.hotline} nếu cần hỗ
+                      trợ
+                    </li>
+                  </ul>
                 </div>
               </div>
-              <div>
-                <label className="block font-bold text-xs sm:text-sm mb-1">
-                  HỌ VÀ TÊN*
-                </label>
-                <input
-                  type="text"
-                  name="cardName"
-                  placeholder="Vui lòng nhập tên của bạn"
-                  className="w-full border border-gray-300 rounded px-2 py-2 sm:px-3 focus:outline-none focus:border-black text-sm"
-                />
+              {/* Nút kiểm tra thanh toán và trạng thái */}
+              <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={handleCheckPayment}
+                  disabled={isCheckingPayment}
+                  className="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors flex items-center"
+                >
+                  {isCheckingPayment ? (
+                    <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>
+                  ) : (
+                    <svg
+                      className="w-4 h-4 mr-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-7 4h12l-1 1H6l-1-1z"
+                      />
+                    </svg>
+                  )}
+                  Kiểm tra thanh toán
+                </button>
+                {paymentCheckResult && (
+                  <div
+                    className={`mt-2 text-sm ${
+                      paymentCheckResult.success
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    {paymentCheckResult.message}
+                  </div>
+                )}
               </div>
             </div>
           )}
-
           <button
             type="submit"
             onClick={handleSubmit}
-            disabled={isProcessing || loading}
+            disabled={
+              isProcessing ||
+              loading ||
+              (formData.paymentMethod === "bank_transfer" && !isPaymentVerified)
+            }
             className="w-full sm:w-48 h-12 bg-red-600 hover:bg-red-700 text-white font-bold text-base sm:text-lg uppercase rounded transition-colors duration-150 mt-2"
             style={{ letterSpacing: 1 }}
           >

@@ -1,5 +1,5 @@
-import React from 'react'
-import { useSearchParams } from 'react-router-dom';
+import React from "react";
+import { useSearchParams } from "react-router-dom";
 
 const SortOptions = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -12,33 +12,33 @@ const SortOptions = () => {
       currentParams[key] = value;
     });
 
-    // Cập nhật hoặc thêm mới param sort
-    if (sortBy === 'default') {
-      delete currentParams.sort;
+    // Cập nhật hoặc thêm mới param sortBy
+    if (sortBy === "default") {
+      delete currentParams.sortBy;
     } else {
-      currentParams.sort = sortBy;
+      currentParams.sortBy = sortBy;
     }
 
     // Set lại tất cả params
     setSearchParams(currentParams);
-  }
+  };
 
   return (
-    <div className='flex items-center justify-end'>
+    <div className="flex items-center justify-end">
       <select
         id="sort"
         onChange={handleSortChange}
-        value={searchParams.get('sort') || 'default'}
-        className='border border-gray-300 text-sm p-2 cursor-pointer'
+        value={searchParams.get("sortBy") || "default"}
+        className="border border-gray-300 text-sm p-2 cursor-pointer"
       >
         <option value="default">Mặc định</option>
-        <option value="price-asc">Giá: Tăng dần</option>
-        <option value="price-desc">Giá: Giảm dần</option>
-        <option value="name-asc">Tên: A-Z</option>
-        <option value="name-desc">Tên: Z-A</option>
+        <option value="price_asc">Giá: Tăng dần</option>
+        <option value="price_desc">Giá: Giảm dần</option>
+        <option value="name_asc">Tên: A-Z</option>
+        <option value="name_desc">Tên: Z-A</option>
       </select>
     </div>
-  )
-}
+  );
+};
 
-export default SortOptions
+export default SortOptions;

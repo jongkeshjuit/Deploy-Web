@@ -12,7 +12,10 @@ const ProfileInfo = () => {
     phone: "",
     birthday: "",
     gender: "",
-    address: ""
+    address: "",
+    city: "",
+    district: "",
+    ward: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -20,7 +23,7 @@ const ProfileInfo = () => {
 
   // Lấy thông tin user từ Redux store
   const { userInfo, userToken } = useSelector((state) => state.auth);
-  const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:9000';
+  const API_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000";
 
   // Redirect to login if not authenticated
   if (!userToken) {
@@ -37,12 +40,16 @@ const ProfileInfo = () => {
         birthday: userInfo.birth
           ? new Date(userInfo.birth).toLocaleDateString("vi-VN")
           : "",
-        gender: userInfo.gender === "male"
-          ? "Nam"
-          : userInfo.gender === "female"
+        gender:
+          userInfo.gender === "male"
+            ? "Nam"
+            : userInfo.gender === "female"
             ? "Nữ"
             : "Khác",
-        address: userInfo.address || ""
+        address: userInfo.address || "",
+        city: userInfo.city || "",
+        district: userInfo.district || "",
+        ward: userInfo.ward || "",
       });
     }
   }, [userInfo]);
@@ -57,6 +64,9 @@ const ProfileInfo = () => {
 
     if (!form.name) newErrors.name = "Vui lòng nhập tên";
     if (!form.address) newErrors.address = "Vui lòng nhập địa chỉ";
+    if (!form.city) newErrors.city = "Vui lòng nhập thành phố";
+    if (!form.district) newErrors.district = "Vui lòng nhập quận/huyện";
+    if (!form.ward) newErrors.ward = "Vui lòng nhập phường/xã";
     if (!form.phone) {
       newErrors.phone = "Vui lòng nhập số điện thoại";
     } else if (!/^\d{9,11}$/.test(form.phone)) {
@@ -82,15 +92,15 @@ const ProfileInfo = () => {
     try {
       // Chuyển đổi giới tính về dạng lưu trong database
       const genderMapping = {
-        "Nam": "male",
-        "Nữ": "female",
-        "Khác": "other"
+        Nam: "male",
+        Nữ: "female",
+        Khác: "other",
       };
 
       // Chuyển đổi ngày sinh về định dạng ISO
       let birthDate = form.birthday;
-      if (form.birthday && form.birthday.includes('/')) {
-        const parts = form.birthday.split('/');
+      if (form.birthday && form.birthday.includes("/")) {
+        const parts = form.birthday.split("/");
         if (parts.length === 3) {
           birthDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
         }
@@ -101,7 +111,10 @@ const ProfileInfo = () => {
         gender: genderMapping[form.gender] || "other",
         birth: birthDate,
         address: form.address,
-        phone: form.phone
+        city: form.city,
+        district: form.district,
+        ward: form.ward,
+        phone: form.phone,
       };
 
       const response = await axios.put(
@@ -109,27 +122,29 @@ const ProfileInfo = () => {
         userData,
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${userToken}`
-          }
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${userToken}`,
+          },
         }
       );
 
-      toast.success('Cập nhật thông tin thành công!');
+      toast.success("Cập nhật thông tin thành công!");
       setIsEdit(false);
 
       // Cập nhật thông tin trong localStorage nếu cần
-      const currentUserInfo = JSON.parse(localStorage.getItem('userInfo'));
+      const currentUserInfo = JSON.parse(localStorage.getItem("userInfo"));
       if (currentUserInfo) {
-        localStorage.setItem('userInfo', JSON.stringify({
-          ...currentUserInfo,
-          ...response.data
-        }));
+        localStorage.setItem(
+          "userInfo",
+          JSON.stringify({
+            ...currentUserInfo,
+            ...response.data,
+          })
+        );
       }
-
     } catch (error) {
-      console.error('Lỗi khi cập nhật thông tin:', error);
-      toast.error('Có lỗi xảy ra khi cập nhật thông tin!');
+      console.error("Lỗi khi cập nhật thông tin:", error);
+      toast.error("Có lỗi xảy ra khi cập nhật thông tin!");
     } finally {
       setLoading(false);
     }
@@ -170,8 +185,9 @@ const ProfileInfo = () => {
               name="email"
               value={form.email}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${errors.email ? "border-red-500" : ""
-                }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${
+                errors.email ? "border-red-500" : ""
+              }`}
               disabled={true} // Email không thể thay đổi
               required
             />
@@ -184,8 +200,9 @@ const ProfileInfo = () => {
               name="name"
               value={form.name}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${errors.name ? "border-red-500" : ""
-                }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${
+                errors.name ? "border-red-500" : ""
+              }`}
               required
             />
             {errors.name && (
@@ -197,12 +214,55 @@ const ProfileInfo = () => {
               name="address"
               value={form.address}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${errors.address ? "border-red-500" : ""
-                }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${
+                errors.address ? "border-red-500" : ""
+              }`}
               required
             />
             {errors.address && (
               <div className="text-red-500 text-sm mb-3">{errors.address}</div>
+            )}
+            <div className="mb-2 text-gray-600 font-semibold">THÀNH PHỐ</div>
+            <input
+              type="text"
+              name="city"
+              value={form.city}
+              onChange={handleChange}
+              className={`mb-1 w-full border rounded px-3 py-2 ${
+                errors.city ? "border-red-500" : ""
+              }`}
+              required
+            />
+            {errors.city && (
+              <div className="text-red-500 text-sm mb-3">{errors.city}</div>
+            )}
+            <div className="mb-2 text-gray-600 font-semibold">QUẬN/HUYỆN</div>
+            <input
+              type="text"
+              name="district"
+              value={form.district}
+              onChange={handleChange}
+              className={`mb-1 w-full border rounded px-3 py-2 ${
+                errors.district ? "border-red-500" : ""
+              }`}
+              required
+            />
+            {errors.district && (
+              <div className="text-red-500 text-sm mb-3">{errors.district}</div>
+            )}
+            <div className="mb-2 text-gray-600 font-semibold">PHƯỜNG/XÃ</div>
+            <input
+              type="text"
+              name="ward"
+              value={form.ward}
+              onChange={handleChange}
+              className={`mb-1 w-full border rounded px-3 py-2 ${
+                errors.ward ? "border-red-500" : ""
+              }`}
+              required
+            />
+            {errors.ward && (
+              <div className="text-red-500 text-sm mb-3">{errors.ward}</div>
             )}
           </div>
           <div>
@@ -214,8 +274,9 @@ const ProfileInfo = () => {
               name="phone"
               value={form.phone}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${errors.phone ? "border-red-500" : ""
-                }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${
+                errors.phone ? "border-red-500" : ""
+              }`}
               required
             />
             {errors.phone && (
@@ -233,8 +294,9 @@ const ProfileInfo = () => {
                   birthday: val.split("-").reverse().join("/"),
                 }));
               }}
-              className={`mb-1 w-full border rounded px-3 py-2 ${errors.birthday ? "border-red-500" : ""
-                }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${
+                errors.birthday ? "border-red-500" : ""
+              }`}
               required
             />
             {errors.birthday && (
@@ -245,8 +307,9 @@ const ProfileInfo = () => {
               name="gender"
               value={form.gender}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${errors.gender ? "border-red-500" : ""
-                }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${
+                errors.gender ? "border-red-500" : ""
+              }`}
               required
             >
               <option value="">Chọn giới tính</option>
@@ -279,6 +342,12 @@ const ProfileInfo = () => {
             <div className="mb-4">{form.name}</div>
             <div className="mb-2 text-gray-600 font-semibold">ĐỊA CHỈ</div>
             <div className="mb-4">{form.address}</div>
+            <div className="mb-2 text-gray-600 font-semibold">THÀNH PHỐ</div>
+            <div className="mb-4">{form.city}</div>
+            <div className="mb-2 text-gray-600 font-semibold">QUẬN/HUYỆN</div>
+            <div className="mb-4">{form.district}</div>
+            <div className="mb-2 text-gray-600 font-semibold">PHƯỜNG/XÃ</div>
+            <div className="mb-4">{form.ward}</div>
           </div>
           <div>
             <div className="mb-2 text-gray-600 font-semibold">
