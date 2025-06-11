@@ -1,4 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import axios from "axios";
+import { getAuthToken, removeAuthTokens } from "../../utils/auth";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:9000";
 
 // Tạo context
 const OrderContext = createContext();
@@ -7,168 +11,159 @@ export const useOrders = () => useContext(OrderContext);
 
 export const OrderProvider = ({ children }) => {
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null); // Hàm fetch đơn hàng từ API
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-  useEffect(() => {
-    // Mock data giống trong MyOdersPage
+      const token = getAuthToken();
+      if (!token) {
+        console.warn("No auth token found");
+        console.log(
+          "To test orders functionality, please login first or check localStorage for userToken"
+        );
+        console.log("Using fallback mock data for demo purposes");
+        setOrders(getMockOrders());
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.get(`${API_URL}/api/orders/my-orders`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Orders fetched successfully:", response.data);
+      setOrders(response.data || []);
+    } catch (error) {
+      console.error("Error fetching orders:", error); // Nếu token hết hạn hoặc không hợp lệ
+      if (error.response?.status === 401) {
+        console.warn("Token expired or invalid");
+        removeAuthTokens();
+        setOrders([]);
+      } else {
+        setError(
+          error.response?.data?.message || "Có lỗi xảy ra khi tải đơn hàng"
+        );
+
+        // Fallback to mock data nếu server không có data
+        if (error.response?.status === 500 || !error.response) {
+          console.warn("Using fallback mock data");
+          setOrders(getMockOrders());
+        }
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Mock data làm fallback
+  const getMockOrders = () => {
     const deliveryStatuses = ["preparing", "shipping", "delivered"];
     const getRandomStatus = () =>
       deliveryStatuses[Math.floor(Math.random() * deliveryStatuses.length)];
-    const mockOders = [
+
+    return [
       {
-        _id: "12345",
-        createAt: new Date(),
+        _id: "mock-12345",
+        createdAt: new Date().toISOString(),
         shippingAddress: {
+          address: "123 Main St",
           city: "Ho Chi Minh",
           country: "Viet Nam",
-          detail: "123 Main St, Ho Chi Minh, Viet Nam",
+          postalCode: "700000",
         },
-        oderItems: [
+        orderItems: [
           {
-            product: {
-              name: "Product 1",
-              imageUrl: "https://via.placeholder.com/150",
-            },
+            productId: "prod1",
+            name: "Áo Thun Nam Basic Cotton",
+            image:
+              "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&h=600&fit=crop",
             quantity: 2,
-            price: 100,
+            price: 299000,
+            size: "M",
+            color: "Đen",
           },
           {
-            product: {
-              name: "Product 2",
-              imageUrl: "https://via.placeholder.com/150",
-            },
+            productId: "prod2",
+            name: "Quần Jean Nam Slim Fit",
+            image:
+              "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500&h=600&fit=crop",
             quantity: 1,
-            price: 50,
+            price: 750000,
+            size: "32",
+            color: "Xanh",
           },
         ],
-        totalPrice: 250,
+        totalPrice: 1348000,
         isPaid: true,
-        deliveryStatus: getRandomStatus(),
+        isDelivered: false,
+        status: getRandomStatus(),
+        paymentMethod: "Credit Card",
       },
       {
-        _id: "23456",
-        createAt: new Date(),
+        _id: "mock-23456",
+        createdAt: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
         shippingAddress: {
+          address: "456 Nguyen Hue St",
           city: "Ha Noi",
           country: "Viet Nam",
-          detail: "456 Main St, Ha Noi, Viet Nam",
+          postalCode: "100000",
         },
-        oderItems: [
+        orderItems: [
           {
-            product: {
-              name: "Product 3",
-              imageUrl: "https://via.placeholder.com/150",
-            },
-            quantity: 3,
-            price: 80,
-          },
-        ],
-        totalPrice: 240,
-        isPaid: false,
-        deliveryStatus: getRandomStatus(),
-      },
-      {
-        _id: "34567",
-        createAt: new Date(),
-        shippingAddress: {
-          city: "Da Nang",
-          country: "Viet Nam",
-          detail: "789 Main St, Da Nang, Viet Nam",
-        },
-        oderItems: [
-          {
-            product: {
-              name: "Product 4",
-              imageUrl: "https://via.placeholder.com/150",
-            },
+            productId: "prod3",
+            name: "Váy Midi Nữ Elegant",
+            image:
+              "https://images.unsplash.com/photo-1566479179817-7c3c8c86e2e1?w=500&h=600&fit=crop",
             quantity: 1,
-            price: 120,
-          },
-          {
-            product: {
-              name: "Product 5",
-              imageUrl: "https://via.placeholder.com/150",
-            },
-            quantity: 2,
-            price: 60,
+            price: 680000,
+            size: "M",
+            color: "Đen",
           },
         ],
-        totalPrice: 240,
-        isPaid: true,
-        deliveryStatus: getRandomStatus(),
-      },
-      {
-        _id: "45678",
-        createAt: new Date(),
-        shippingAddress: {
-          city: "Can Tho",
-          country: "Viet Nam",
-          detail: "101 Main St, Can Tho, Viet Nam",
-        },
-        oderItems: [
-          {
-            product: {
-              name: "Product 6",
-              imageUrl: "https://via.placeholder.com/150",
-            },
-            quantity: 2,
-            price: 90,
-          },
-        ],
-        totalPrice: 180,
+        totalPrice: 680000,
         isPaid: false,
-        deliveryStatus: getRandomStatus(),
-      },
-      {
-        _id: "56789",
-        createAt: new Date(),
-        shippingAddress: {
-          city: "Nha Trang",
-          country: "Viet Nam",
-          detail: "202 Main St, Nha Trang, Viet Nam",
-        },
-        oderItems: [
-          {
-            product: {
-              name: "Product 7",
-              imageUrl: "https://via.placeholder.com/150",
-            },
-            quantity: 1,
-            price: 200,
-          },
-        ],
-        totalPrice: 200,
-        isPaid: true,
-        deliveryStatus: getRandomStatus(),
-      },
-      {
-        _id: "67890",
-        createAt: new Date(),
-        shippingAddress: {
-          city: "Vung Tau",
-          country: "Viet Nam",
-          detail: "303 Main St, Vung Tau, Viet Nam",
-        },
-        oderItems: [
-          {
-            product: {
-              name: "Product 8",
-              imageUrl: "https://via.placeholder.com/150",
-            },
-            quantity: 2,
-            price: 110,
-          },
-        ],
-        totalPrice: 220,
-        isPaid: false,
-        deliveryStatus: getRandomStatus(),
+        isDelivered: false,
+        status: getRandomStatus(),
+        paymentMethod: "Cash on Delivery",
       },
     ];
-    setTimeout(() => setOrders(mockOders), 500);
+  };
+
+  useEffect(() => {
+    fetchOrders();
   }, []);
 
+  // Hàm refresh đơn hàng
+  const refreshOrders = () => {
+    fetchOrders();
+  };
+
+  // Hàm cập nhật một đơn hàng cụ thể
+  const updateOrder = (orderId, updatedData) => {
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order._id === orderId ? { ...order, ...updatedData } : order
+      )
+    );
+  };
+
+  const value = {
+    orders,
+    loading,
+    error,
+    setOrders,
+    refreshOrders,
+    updateOrder,
+    fetchOrders,
+  };
+
   return (
-    <OrderContext.Provider value={{ orders, setOrders }}>
-      {children}
-    </OrderContext.Provider>
+    <OrderContext.Provider value={value}>{children}</OrderContext.Provider>
   );
 };

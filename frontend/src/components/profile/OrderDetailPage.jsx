@@ -1,14 +1,88 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useOrders } from "./OrderContext";
+import axios from "axios";
+import { getAuthToken } from "../../utils/auth";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:9000";
 
 const OrderDetailPage = () => {
-  const { orders } = useOrders();
+  const { orders, loading } = useOrders();
   const navigate = useNavigate();
   const { id } = useParams();
-  const order = orders?.find((o) => o._id === id);
+  const [order, setOrder] = useState(null);
+  const [orderLoading, setOrderLoading] = useState(false);
+  const [orderError, setOrderError] = useState(null);
 
-  if (!order) {
+  // Helper function để format giá tiền
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(price);
+  };
+
+  // Helper function để translate status
+  const getStatusLabel = (status) => {
+    const statusMap = {
+      Processing: "Đang xử lý",
+      Shipped: "Đang giao",
+      Delivered: "Đã giao",
+      Cancelled: "Đã hủy",
+      preparing: "Đang chuẩn bị",
+      shipping: "Đang giao",
+      delivered: "Đã giao",
+    };
+    return statusMap[status] || status;
+  };
+
+  // Lấy chi tiết đơn hàng từ API nếu cần
+  useEffect(() => {
+    const foundOrder = orders?.find((o) => o._id === id);
+    if (foundOrder) {
+      setOrder(foundOrder);
+    } else if (!loading && orders.length > 0) {
+      // Nếu không tìm thấy trong context, gọi API để lấy chi tiết
+      fetchOrderDetail();
+    }
+  }, [id, orders, loading]);
+  const fetchOrderDetail = async () => {
+    try {
+      setOrderLoading(true);
+      const token = getAuthToken();
+      if (!token) {
+        setOrderError("Vui lòng đăng nhập để xem đơn hàng");
+        return;
+      }
+
+      const response = await axios.get(`${API_URL}/api/orders/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      setOrder(response.data);
+    } catch (error) {
+      console.error("Error fetching order detail:", error);
+      setOrderError("Không thể tải chi tiết đơn hàng");
+    } finally {
+      setOrderLoading(false);
+    }
+  };
+
+  if (loading || orderLoading) {
+    return (
+      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-4 sm:p-8 mt-4">
+        <div className="flex justify-center items-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          <span className="ml-2">Đang tải chi tiết đơn hàng...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!order || orderError) {
     return (
       <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-4 sm:p-8 mt-4">
         <button
@@ -18,11 +92,13 @@ const OrderDetailPage = () => {
           ← Quay lại danh sách đơn hàng
         </button>
         <div className="text-red-500 font-semibold">
-          Không tìm thấy đơn hàng!
+          {orderError || "Không tìm thấy đơn hàng!"}
         </div>
       </div>
     );
   }
+
+  const orderItems = order.orderItems || order.oderItems || [];
 
   return (
     <div className="max-w-5xl mx-auto bg-white rounded-lg shadow-lg p-2 sm:p-4 md:p-8 mt-2 sm:mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 text-sm sm:text-base">
@@ -32,27 +108,33 @@ const OrderDetailPage = () => {
           Đơn hàng của bạn
         </h4>
         <div className="divide-y divide-gray-200">
-          {order.oderItems.map((item, idx) => (
+          {orderItems.map((item, idx) => (
             <div
               key={idx}
               className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 py-2 sm:py-4"
             >
               <img
-                src={item.product.imageUrl}
-                alt={item.product.name}
+                src={
+                  item.image ||
+                  item.product?.imageUrl ||
+                  "https://via.placeholder.com/150"
+                }
+                alt={item.name || item.product?.name}
                 className="w-20 h-20 sm:w-16 sm:h-16 object-cover rounded border"
               />
               <div className="flex-1">
                 <div className="font-medium text-gray-900 text-xs sm:text-sm">
-                  {item.product.name}
+                  {item.name || item.product?.name}
                 </div>
                 <div className="text-gray-600 text-xs">
-                  Giá:{" "}
-                  {item.price.toLocaleString("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  })}
+                  Giá: {formatPrice(item.price)}
                 </div>
+                {item.size && (
+                  <div className="text-gray-600 text-xs">Size: {item.size}</div>
+                )}
+                {item.color && (
+                  <div className="text-gray-600 text-xs">Màu: {item.color}</div>
+                )}{" "}
                 <div className="text-gray-600 text-xs">
                   Số lượng: {item.quantity}
                 </div>
