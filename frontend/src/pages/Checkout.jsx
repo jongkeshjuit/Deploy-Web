@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useCart } from "../components/Cart/CartContext";
 import { useSelector, useDispatch } from "react-redux";
 import { createCheckoutSession } from "../redux/slices/checkoutSlice";
 import { useNavigate } from "react-router-dom";
@@ -11,13 +10,26 @@ import {
   QR_FALLBACK_SVG,
   fetchRecentTransactionsAndCheckPayment,
 } from "../utils/bankInfo";
+import { clearCart, clearCartServer, fetchCart } from "../redux/slices/cartSlice";
+import { useCart } from "../components/Cart/CartContext";
 
 const Checkout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { cartItems, getTotalPrice, clearCart } = useCart();
+  const { cart } = useSelector((state) => state.cart);
+  const cartItems = cart?.products || [];
+  const getTotalPrice = () => {
+    if (!cartItems || cartItems.length === 0) return 0;
+    return cartItems.reduce((total, item) => {
+      const product = item.productId || item.product;
+      const price = product?.discountPrice || product?.price || item.price || 0;
+      return total + price * item.quantity;
+    }, 0);
+  };
   const { loading, error } = useSelector((state) => state.checkout);
-  const { userInfo } = useSelector((state) => state.auth);
+  const { userInfo, guestId } = useSelector((state) => state.auth);
+  const userId = userInfo ? userInfo.id || userInfo._id : null;
+  const { clearCart: clearCartContext } = useCart();
 
   // Hardcoded user data from ProfileInfo
   const hardcodedUserInfo = {
@@ -99,7 +111,7 @@ const Checkout = () => {
 
   // Redirect if cart is empty
   useEffect(() => {
-    if (cartItems.length === 0) {
+    if (!cartItems || cartItems.length === 0) {
       toast.error("Giỏ hàng của bạn đang trống!");
       navigate("/cart");
     }
@@ -174,9 +186,24 @@ const Checkout = () => {
     try {
       // Prepare order data
       const orderData = {
-        formData,
-        cartItems,
-        totalPrice: getTotalPrice() + 50000, // Including shipping cost
+        checkoutItems: cartItems.map(item => ({
+          ...item,
+          productId: item.productId?._id || item.productId
+        })),
+        shippingAddress: {
+          address: formData.address,
+          city: formData.city,
+          district: formData.district,
+          ward: formData.ward,
+          postalCode: formData.postalCode,
+          country: formData.country,
+          fullName: formData.fullName,
+          phone: formData.phone,
+          email: formData.email,
+          notes: formData.notes,
+        },
+        paymentMethod: formData.paymentMethod,
+        totalPrice: getTotalPrice() + 50000,
       };
       // Log dữ liệu gửi lên để kiểm tra
       console.log("orderData gửi lên:", orderData);
@@ -185,7 +212,15 @@ const Checkout = () => {
         createCheckoutSession(orderData)
       ).unwrap();
       if (response) {
-        clearCart();
+        // Xóa giỏ hàng sau khi đặt hàng thành công
+        if (userId || guestId) {
+          await dispatch(clearCartServer({ userId, guestId }));
+          await dispatch(fetchCart({ userId, guestId }));
+          clearCartContext();
+        } else {
+          dispatch(clearCart());
+          clearCartContext();
+        }
         if (formData.paymentMethod === "bank_transfer") {
           toast.success(
             "Đặt hàng thành công! Đơn hàng đã được ghi nhận là ĐÃ THANH TOÁN."
@@ -194,7 +229,7 @@ const Checkout = () => {
           return;
         } else {
           toast.success("Đặt hàng thành công!");
-          navigate(`/order/${response._id}`);
+          navigate("/");
         }
       }
     } catch (error) {
@@ -248,7 +283,7 @@ const Checkout = () => {
   const shippingCost = 0;
   const totalAmount = getTotalPrice() + shippingCost;
 
-  if (cartItems.length === 0) {
+  if (!cartItems || cartItems.length === 0) {
     return null; // Will be redirected by useEffect
   }
   return (
@@ -394,11 +429,10 @@ const Checkout = () => {
                 </button>
                 {paymentCheckResult && (
                   <div
-                    className={`mt-2 text-sm ${
-                      paymentCheckResult.success
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }`}
+                    className={`mt-2 text-sm ${paymentCheckResult.success
+                      ? "text-green-600"
+                      : "text-red-600"
+                      }`}
                   >
                     {paymentCheckResult.message}
                   </div>

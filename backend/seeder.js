@@ -4,7 +4,7 @@ const Product = require("./models/Product");
 const User = require("./models/User");
 const products = require("./data/products"); // Dữ liệu sản phẩm mẫu
 const users = require("./data/users"); // Dữ liệu người dùng mẫu (nếu có)
-const Cart = require("./models/Cart"); // Nếu cần sử dụng Cart
+const cart = require("./models/cart"); // Nếu cần sử dụng Cart
 const bcrypt = require("bcryptjs");
 
 // Load env vars
@@ -25,7 +25,7 @@ const importData = async () => {
     // Xóa dữ liệu hiện có
     await Product.deleteMany();
     await User.deleteMany();
-    await Cart.deleteMany();
+    await cart.deleteMany();
 
     console.log("Data deleted successfully");
 

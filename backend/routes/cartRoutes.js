@@ -31,7 +31,7 @@ const getCartByUserOrGuestId = async (userId, guestId) => {
 // @access Public
 router.post('/', async (req, res) => {
     const { productId, quantity = 1, size, color, guestId, userId } = req.body;
-    
+
     try {
         // Input validation
         if (!productId || !size || !color) {
@@ -67,16 +67,16 @@ router.post('/', async (req, res) => {
 
         // Determine if the user is logged in or a guest
         let cart = await getCartByUserOrGuestId(userId, guestId);
-        
+
         // If cart exists, update it
         if (cart) {
             const productIndex = cart.products.findIndex(
-                (p) => 
-                p.productId._id.toString() === productId && 
-                p.size === size && 
-                p.color === color
+                (p) =>
+                    p.productId._id.toString() === productId &&
+                    p.size === size &&
+                    p.color === color
             );
-            
+
             if (productIndex > -1) {
                 // Check total quantity after addition
                 const newQuantity = cart.products[productIndex].quantity + quantity;
@@ -96,13 +96,13 @@ router.post('/', async (req, res) => {
                     color
                 });
             }
-            
+
             await cart.save();
             return res.status(200).json(cart);
         } else {
             // Create new cart
             const finalGuestId = guestId || `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-            
+
             const newCart = new Cart({
                 user: userId && isValidObjectId(userId) ? userId : undefined,
                 guestId: !userId ? finalGuestId : undefined,
@@ -116,7 +116,7 @@ router.post('/', async (req, res) => {
                     color
                 }]
             });
-            
+
             await newCart.save();
             return res.status(201).json(newCart);
         }
@@ -131,7 +131,7 @@ router.post('/', async (req, res) => {
 // @access Public
 router.put('/', async (req, res) => {
     const { productId, quantity, size, color, guestId, userId } = req.body;
-    
+
     try {
         // Input validation
         if (!productId || !size || !color || quantity === undefined) {
@@ -164,12 +164,12 @@ router.put('/', async (req, res) => {
 
         // Find the product in the cart
         const productIndex = cart.products.findIndex(
-            (p) => 
-            p.productId._id.toString() === productId && 
-            p.size === size && 
-            p.color === color
+            (p) =>
+                p.productId._id.toString() === productId &&
+                p.size === size &&
+                p.color === color
         );
-        
+
         if (productIndex > -1) {
             if (quantity === 0) {
                 // Remove product if quantity is 0
@@ -178,7 +178,7 @@ router.put('/', async (req, res) => {
                 // Update quantity
                 cart.products[productIndex].quantity = quantity;
             }
-            
+
             await cart.save();
             return res.status(200).json(cart);
         } else {
@@ -195,7 +195,7 @@ router.put('/', async (req, res) => {
 // @access Public
 router.delete('/', async (req, res) => {
     const { productId, size, color, guestId, userId } = req.body;
-    
+
     try {
         // Input validation
         if (!productId || !size || !color) {
@@ -214,12 +214,12 @@ router.delete('/', async (req, res) => {
 
         // Find the product in the cart
         const productIndex = cart.products.findIndex(
-            (p) => 
-            p.productId._id.toString() === productId && 
-            p.size === size && 
-            p.color === color
+            (p) =>
+                p.productId._id.toString() === productId &&
+                p.size === size &&
+                p.color === color
         );
-        
+
         if (productIndex > -1) {
             cart.products.splice(productIndex, 1);
             await cart.save();
@@ -238,7 +238,7 @@ router.delete('/', async (req, res) => {
 // @access Public
 router.get('/', async (req, res) => {
     const { guestId, userId } = req.query;
-    
+
     try {
         if (!userId && !guestId) {
             return res.status(400).json({ message: 'Either userId or guestId must be provided' });
@@ -248,7 +248,7 @@ router.get('/', async (req, res) => {
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });
         }
-        
+
         return res.status(200).json(cart);
     } catch (error) {
         console.error('Error fetching cart:', error);
@@ -306,7 +306,7 @@ router.post('/merge', authMiddleware, async (req, res) => {
         if (!guestCart.products || guestCart.products.length === 0) {
             console.log('ℹ️ Guest cart is empty');
             await Cart.findOneAndDelete({ guestId: guestId });
-            
+
             return res.status(200).json({
                 message: 'Guest cart was empty and has been cleaned up',
                 cart: userCart || null
@@ -315,11 +315,11 @@ router.post('/merge', authMiddleware, async (req, res) => {
 
         // Validate all products in guest cart still exist and get current prices
         const productIds = guestCart.products.map(item => item.productId);
-        const existingProducts = await Product.find({ 
+        const existingProducts = await Product.find({
             _id: { $in: productIds },
-            isPublished: true 
+            isPublished: true
         }).lean();
-        
+
         const productMap = new Map(
             existingProducts.map(p => [p._id.toString(), p])
         );
@@ -327,7 +327,7 @@ router.post('/merge', authMiddleware, async (req, res) => {
         // Case 3: User has existing cart - merge products
         if (userCart) {
             console.log('🔄 Merging into existing user cart...');
-            
+
             let mergeCount = 0;
             let updateCount = 0;
             let skippedCount = 0;
@@ -335,7 +335,7 @@ router.post('/merge', authMiddleware, async (req, res) => {
             for (const guestItem of guestCart.products) {
                 const productIdStr = guestItem.productId.toString();
                 const currentProduct = productMap.get(productIdStr);
-                
+
                 if (!currentProduct) {
                     console.log(`⚠️ Skipping product ${productIdStr} - no longer available`);
                     skippedCount++;
@@ -346,16 +346,16 @@ router.post('/merge', authMiddleware, async (req, res) => {
                 const currentPrice = currentProduct.discountPrice || currentProduct.price;
 
                 const existingIndex = userCart.products.findIndex(
-                    userItem => 
-                    userItem.productId.toString() === productIdStr &&
-                    userItem.size === guestItem.size &&
-                    userItem.color === guestItem.color
+                    userItem =>
+                        userItem.productId.toString() === productIdStr &&
+                        userItem.size === guestItem.size &&
+                        userItem.color === guestItem.color
                 );
-                
+
                 if (existingIndex > -1) {
                     // Product exists - add quantities
                     const newQuantity = userCart.products[existingIndex].quantity + guestItem.quantity;
-                    
+
                     // Check stock limit
                     if (newQuantity <= currentProduct.countInStock) {
                         userCart.products[existingIndex].quantity = newQuantity;
@@ -386,7 +386,7 @@ router.post('/merge', authMiddleware, async (req, res) => {
 
             // Save merged cart
             await userCart.save();
-            
+
             // Delete guest cart
             await Cart.findOneAndDelete({ guestId: guestId });
 
@@ -400,7 +400,7 @@ router.post('/merge', authMiddleware, async (req, res) => {
         } else {
             // Case 4: No user cart - convert guest cart to user cart
             console.log('🔄 Converting guest cart to user cart...');
-            
+
             // Filter out non-existent products and update prices
             const validProducts = [];
             let skippedCount = 0;
@@ -408,7 +408,7 @@ router.post('/merge', authMiddleware, async (req, res) => {
             for (const item of guestCart.products) {
                 const productIdStr = item.productId.toString();
                 const currentProduct = productMap.get(productIdStr);
-                
+
                 if (currentProduct) {
                     validProducts.push({
                         productId: item.productId,
@@ -428,7 +428,7 @@ router.post('/merge', authMiddleware, async (req, res) => {
             guestCart.user = req.user._id;
             guestCart.guestId = undefined;
             guestCart.products = validProducts;
-            
+
             await guestCart.save();
 
             console.log('✅ Guest cart converted to user cart');
@@ -440,9 +440,9 @@ router.post('/merge', authMiddleware, async (req, res) => {
 
     } catch (error) {
         console.error('❌ Error merging carts:', error);
-        return res.status(500).json({ 
-            message: 'Error merging carts', 
-            error: error.message 
+        return res.status(500).json({
+            message: 'Error merging carts',
+            error: error.message
         });
     }
 });
@@ -452,14 +452,14 @@ router.post('/merge', authMiddleware, async (req, res) => {
 // @access Public
 router.delete('/clear', async (req, res) => {
     const { guestId, userId } = req.body;
-    
+
     try {
         if (!userId && !guestId) {
             return res.status(400).json({ message: 'Either userId or guestId must be provided' });
         }
 
         const result = await Cart.findOneAndDelete(
-            userId && isValidObjectId(userId) 
+            userId && isValidObjectId(userId)
                 ? { user: userId }
                 : { guestId: guestId }
         );

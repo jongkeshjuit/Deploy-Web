@@ -7,13 +7,12 @@ export const createCheckoutSession = createAsyncThunk(
   async (orderData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/orders`,
+        `${import.meta.env.VITE_API_URL}/api/checkout`, // ✅ Sửa từ /api/orders thành /api/checkout
         orderData,
         {
           headers: {
-            Authorization: `Bearer ${
-              localStorage.getItem("userToken") || localStorage.getItem("token")
-            }`,
+            Authorization: `Bearer ${localStorage.getItem("userToken") || localStorage.getItem("token")
+              }`,
           },
         }
       );

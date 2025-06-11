@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
+import { getUserProfile } from "../../redux/slices/authSlice";
 
 const ProfileInfo = () => {
   const [isEdit, setIsEdit] = useState(false);
@@ -24,6 +25,7 @@ const ProfileInfo = () => {
   // Lấy thông tin user từ Redux store
   const { userInfo, userToken } = useSelector((state) => state.auth);
   const API_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000";
+  const dispatch = useDispatch();
 
   // Redirect to login if not authenticated
   if (!userToken) {
@@ -44,8 +46,8 @@ const ProfileInfo = () => {
           userInfo.gender === "male"
             ? "Nam"
             : userInfo.gender === "female"
-            ? "Nữ"
-            : "Khác",
+              ? "Nữ"
+              : "Khác",
         address: userInfo.address || "",
         city: userInfo.city || "",
         district: userInfo.district || "",
@@ -131,17 +133,8 @@ const ProfileInfo = () => {
       toast.success("Cập nhật thông tin thành công!");
       setIsEdit(false);
 
-      // Cập nhật thông tin trong localStorage nếu cần
-      const currentUserInfo = JSON.parse(localStorage.getItem("userInfo"));
-      if (currentUserInfo) {
-        localStorage.setItem(
-          "userInfo",
-          JSON.stringify({
-            ...currentUserInfo,
-            ...response.data,
-          })
-        );
-      }
+      // Cập nhật lại profile từ backend và Redux
+      await dispatch(getUserProfile());
     } catch (error) {
       console.error("Lỗi khi cập nhật thông tin:", error);
       toast.error("Có lỗi xảy ra khi cập nhật thông tin!");
@@ -185,9 +178,8 @@ const ProfileInfo = () => {
               name="email"
               value={form.email}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${
-                errors.email ? "border-red-500" : ""
-              }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${errors.email ? "border-red-500" : ""
+                }`}
               disabled={true} // Email không thể thay đổi
               required
             />
@@ -200,9 +192,8 @@ const ProfileInfo = () => {
               name="name"
               value={form.name}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${
-                errors.name ? "border-red-500" : ""
-              }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${errors.name ? "border-red-500" : ""
+                }`}
               required
             />
             {errors.name && (
@@ -214,9 +205,8 @@ const ProfileInfo = () => {
               name="address"
               value={form.address}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${
-                errors.address ? "border-red-500" : ""
-              }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${errors.address ? "border-red-500" : ""
+                }`}
               required
             />
             {errors.address && (
@@ -228,9 +218,8 @@ const ProfileInfo = () => {
               name="city"
               value={form.city}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${
-                errors.city ? "border-red-500" : ""
-              }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${errors.city ? "border-red-500" : ""
+                }`}
               required
             />
             {errors.city && (
@@ -242,9 +231,8 @@ const ProfileInfo = () => {
               name="district"
               value={form.district}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${
-                errors.district ? "border-red-500" : ""
-              }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${errors.district ? "border-red-500" : ""
+                }`}
               required
             />
             {errors.district && (
@@ -256,9 +244,8 @@ const ProfileInfo = () => {
               name="ward"
               value={form.ward}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${
-                errors.ward ? "border-red-500" : ""
-              }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${errors.ward ? "border-red-500" : ""
+                }`}
               required
             />
             {errors.ward && (
@@ -274,9 +261,8 @@ const ProfileInfo = () => {
               name="phone"
               value={form.phone}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${
-                errors.phone ? "border-red-500" : ""
-              }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${errors.phone ? "border-red-500" : ""
+                }`}
               required
             />
             {errors.phone && (
@@ -294,9 +280,8 @@ const ProfileInfo = () => {
                   birthday: val.split("-").reverse().join("/"),
                 }));
               }}
-              className={`mb-1 w-full border rounded px-3 py-2 ${
-                errors.birthday ? "border-red-500" : ""
-              }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${errors.birthday ? "border-red-500" : ""
+                }`}
               required
             />
             {errors.birthday && (
@@ -307,9 +292,8 @@ const ProfileInfo = () => {
               name="gender"
               value={form.gender}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${
-                errors.gender ? "border-red-500" : ""
-              }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${errors.gender ? "border-red-500" : ""
+                }`}
               required
             >
               <option value="">Chọn giới tính</option>
