@@ -1,93 +1,47 @@
-import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
-import { collections } from "../assets/dummyData";
+import axios from "axios";
 import ProductGrid from "../components/Products/ProductGrid";
 import FilterSidebar from "../components/Products/FilterSidebar";
 import SortOptions from "../components/Products/SortOptions";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:9000";
+
 function Collection() {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
-  const collection = collections.find((c) => c.id === id);
-  const [filteredAndSortedProducts, setFilteredAndSortedProducts] = useState(
-    collection?.products || []
-  );
+  const [collection, setCollection] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const sidebarRef = useRef(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
-    if (!collection) return;
-
-    // Lấy các tham số filter từ URL
-    const color = searchParams.get("color")?.split(",") || [];
-    const size = searchParams.get("size")?.split(",") || [];
-    const price = searchParams.get("price")?.split(",") || [];
-    const material = searchParams.get("material")?.split(",") || [];
-    const sortBy = searchParams.get("sort") || "default";
-
-    // Bước 1: Lọc sản phẩm
-    let filtered = [...collection.products];
-
-    if (color.length > 0) {
-      filtered = filtered.filter((product) =>
-        product.colors.some((c) => color.includes(c))
-      );
-    }
-
-    if (size.length > 0) {
-      filtered = filtered.filter((product) =>
-        product.sizes.some((s) => size.includes(s))
-      );
-    }
-
-    if (material.length > 0) {
-      filtered = filtered.filter((product) =>
-        material.includes(product.material)
-      );
-    }
-
-    if (price.length > 0) {
-      filtered = filtered.filter((product) => {
-        return price.some((priceRange) => {
-          const productPrice = product.price;
-          switch (priceRange) {
-            case "under-500":
-              return productPrice < 500000;
-            case "500-1000":
-              return productPrice >= 500000 && productPrice <= 1000000;
-            case "1000-1500":
-              return productPrice >= 1000000 && productPrice <= 1500000;
-            case "above-1500":
-              return productPrice > 1500000;
-            default:
-              return true;
-          }
-        });
-      });
-    }
-
-    // Bước 2: Sắp xếp sản phẩm đã lọc
-    switch (sortBy) {
-      case "price-asc":
-        filtered.sort((a, b) => a.price - b.price);
-        break;
-      case "price-desc":
-        filtered.sort((a, b) => b.price - a.price);
-        break;
-      case "name-asc":
-        filtered.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case "name-desc":
-        filtered.sort((a, b) => b.name.localeCompare(a.name));
-        break;
-      default:
-        // Giữ nguyên thứ tự mặc định
-        break;
-    }
-
-    setFilteredAndSortedProducts(filtered);
-  }, [collection, searchParams]); // Re-run khi collection hoặc searchParams thay đổi
+    const fetchCollectionAndProducts = async () => {
+      try {
+        // Lấy thông tin bộ sưu tập (luôn dùng API_URL backend)
+        const collectionRes = await axios.get(
+          `${API_URL}/api/collections/${id}`
+        );
+        setCollection(collectionRes.data);
+        // Lấy params filter từ URL
+        const params = Object.fromEntries(searchParams.entries());
+        // Gọi API lấy sản phẩm theo collection và filter
+        const productsRes = await axios.get(
+          `${API_URL}/api/collections/${id}/products`,
+          { params }
+        );
+        setProducts(productsRes.data);
+        setLoading(false);
+      } catch (err) {
+        setError("Không thể tải dữ liệu bộ sưu tập");
+        setLoading(false);
+      }
+    };
+    fetchCollectionAndProducts();
+  }, [id, searchParams]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -105,16 +59,19 @@ function Collection() {
     } else {
       document.body.classList.remove("overflow-hidden");
     }
-
     document.addEventListener("mousedown", handleOutsideClick);
-
     return () => {
       document.body.classList.remove("overflow-hidden");
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, [isSidebarOpen]);
 
-  if (!collection) return <h2>Collection not found!</h2>;
+  if (loading) return <div className="text-center mt-10">Đang tải...</div>;
+  if (error)
+    return <div className="text-center text-red-500 mt-10">{error}</div>;
+  if (!collection) return <h2>Không tìm thấy bộ sưu tập!</h2>;
+
+  console.log("collection state:", collection);
 
   return (
     <div className="flex flex-col">
@@ -134,7 +91,6 @@ function Collection() {
           />
         </div>
       </div>
-
       {/* filter and sort */}
       <div className="w-full h-10 px-[50px] flex items-center justify-between">
         <button
@@ -157,7 +113,6 @@ function Collection() {
           </svg>
           <span className="text-sm">Bộ lọc</span>
         </button>
-
         {/* overlay */}
         <div
           className={`fixed inset-0 w-screen h-full bg-black/75 z-50 transition-[opacity,visibility] duration-200 ease-in-out ${
@@ -167,7 +122,6 @@ function Collection() {
           }`}
           onClick={() => setIsSidebarOpen(false)}
         />
-
         {/* filter sidebar */}
         <div
           ref={sidebarRef}
@@ -177,17 +131,17 @@ function Collection() {
         >
           <FilterSidebar />
         </div>
-
         {/* sort options */}
         <div>
           <SortOptions />
         </div>
       </div>
       <p className="text-black text-[20px] font-medium my-2 px-[50px]">
-        {filteredAndSortedProducts.length} sản phẩm
+        {products.length} sản phẩm
       </p>
+      {console.log("products state:", products)}
       {/* Hiển thị "Không tìm thấy sản phẩm" nếu không có kết quả */}
-      {filteredAndSortedProducts.length === 0 ? (
+      {products.length === 0 ? (
         <div className="w-full px-[50px] text-center py-10">
           <p className="text-gray-500">
             Không tìm thấy sản phẩm phù hợp với bộ lọc đã chọn
@@ -195,7 +149,7 @@ function Collection() {
         </div>
       ) : (
         <div className="w-full px-[50px]">
-          <ProductGrid product={filteredAndSortedProducts} />
+          <ProductGrid products={products} />
         </div>
       )}
     </div>

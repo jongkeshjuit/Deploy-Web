@@ -1,22 +1,52 @@
 import { useParams, useSearchParams } from "react-router-dom";
-import { collections } from "../assets/dummyData";
+import { useRef, useState, useEffect } from "react";
+import axios from "axios";
+import { getProducts } from "../services/productService";
 import ProductGrid from "../components/Products/ProductGrid";
 import FilterSidebar from "../components/Products/FilterSidebar";
 import SortOptions from "../components/Products/SortOptions";
-import { useRef, useState, useEffect } from "react";
 
 function GenderCollection() {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
-  const collection = collections.find((c) => c.id === id);
-  if (!collection) return <h2>Collection not found!</h2>;
-
-  const [filteredAndSortedProducts, setFilteredAndSortedProducts] = useState(
-    collection?.products || []
-  );
+  const [collection, setCollection] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const sidebarRef = useRef(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchCollectionAndProducts = async () => {
+      try {
+        // Lấy thông tin bộ sưu tập từ API
+        const res = await axios.get(`/api/collections/${id}`);
+        setCollection(res.data);
+
+        // Lấy sản phẩm theo gender (và các filter khác)
+        const filters = { gender: id };
+        const color = searchParams.get("color");
+        const size = searchParams.get("size");
+        const material = searchParams.get("material");
+        const category = searchParams.get("category");
+        const sortBy = searchParams.get("sort");
+        if (color) filters.colors = color;
+        if (size) filters.sizes = size;
+        if (material) filters.material = material;
+        if (category) filters.category = category;
+        if (sortBy) filters.sortBy = sortBy;
+        const response = await getProducts(filters);
+        const products = response.products || [];
+        setProducts(products);
+        setLoading(false);
+      } catch (err) {
+        setError("Không thể tải dữ liệu bộ sưu tập");
+        setLoading(false);
+      }
+    };
+    fetchCollectionAndProducts();
+  }, [id, searchParams]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -28,87 +58,6 @@ function GenderCollection() {
     }
   };
 
-  // Thêm useEffect để xử lý filtering
-  useEffect(() => {
-    if (!collection) return;
-
-    // Lấy các tham số filter từ URL
-    const color = searchParams.get("color")?.split(",") || [];
-    const size = searchParams.get("size")?.split(",") || [];
-    const price = searchParams.get("price")?.split(",") || [];
-    const material = searchParams.get("material")?.split(",") || [];
-    const category = searchParams.get("category")?.split(",") || [];
-    const sortBy = searchParams.get("sort") || "default";
-
-    // Bước 1: Lọc sản phẩm
-    let filtered = [...collection.products];
-
-    if (color.length > 0) {
-      filtered = filtered.filter((product) =>
-        product.colors.some((c) => color.includes(c))
-      );
-    }
-
-    if (size.length > 0) {
-      filtered = filtered.filter((product) =>
-        product.sizes.some((s) => size.includes(s))
-      );
-    }
-
-    if (material.length > 0) {
-      filtered = filtered.filter((product) =>
-        material.includes(product.material)
-      );
-    }
-
-    if (category.length > 0) {
-      filtered = filtered.filter((product) =>
-        category.includes(product.category)
-      );
-    }
-
-    if (price.length > 0) {
-      filtered = filtered.filter((product) => {
-        return price.some((priceRange) => {
-          const productPrice = product.price;
-          switch (priceRange) {
-            case "under-500":
-              return productPrice < 500000;
-            case "500-1000":
-              return productPrice >= 500000 && productPrice <= 1000000;
-            case "1000-1500":
-              return productPrice >= 1000000 && productPrice <= 1500000;
-            case "above-1500":
-              return productPrice > 1500000;
-            default:
-              return true;
-          }
-        });
-      });
-    }
-
-    // Bước 2: Sắp xếp sản phẩm đã lọc
-    switch (sortBy) {
-      case "price-asc":
-        filtered.sort((a, b) => a.price - b.price);
-        break;
-      case "price-desc":
-        filtered.sort((a, b) => b.price - a.price);
-        break;
-      case "name-asc":
-        filtered.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case "name-desc":
-        filtered.sort((a, b) => b.name.localeCompare(a.name));
-        break;
-      default:
-        // Giữ nguyên thứ tự mặc định
-        break;
-    }
-
-    setFilteredAndSortedProducts(filtered);
-  }, [collection, searchParams]); // Re-run khi collection hoặc searchParams thay đổi
-
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
     return () => {
@@ -116,12 +65,27 @@ function GenderCollection() {
     };
   }, []);
 
+  if (loading) return <div className="text-center mt-10">Đang tải...</div>;
+  if (error)
+    return <div className="text-center text-red-500 mt-10">{error}</div>;
+  if (!collection) return <h2>Không tìm thấy bộ sưu tập!</h2>;
+
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="w-full px-[50px]">
         <h2 className="text-2xl text-left font-medium mb-6 mt-10">
           {collection.name}
         </h2>
+        {collection.bannerUrl && (
+          <img
+            src={collection.bannerUrl}
+            alt={collection.name}
+            className="w-full max-h-[300px] object-cover rounded mb-4"
+          />
+        )}
+        {collection.description && (
+          <p className="text-lg text-gray-700 mb-4">{collection.description}</p>
+        )}
       </div>
       {/* filter sidebar */}
       <div className="w-full px-[50px] flex justify-between">
@@ -145,7 +109,6 @@ function GenderCollection() {
           </svg>
           Filters
         </button>
-
         {/* overlay */}
         <div
           className={`fixed inset-0 w-screen h-full bg-black/75 z-50 transition-[opacity,visibility] duration-200 ease-in-out ${
@@ -164,20 +127,17 @@ function GenderCollection() {
         >
           <FilterSidebar />
         </div>
-
         {/* sort options */}
         <div>
           <SortOptions />{" "}
         </div>
       </div>
-
       {/* Hiển thị số lượng sản phẩm */}
       <p className="text-black text-[20px] font-medium my-2 px-[50px]">
-        {filteredAndSortedProducts.length} sản phẩm
+        {products.length} sản phẩm
       </p>
-
       {/* Hiển thị "Không tìm thấy sản phẩm" nếu không có kết quả */}
-      {filteredAndSortedProducts.length === 0 ? (
+      {products.length === 0 ? (
         <div className="w-full px-[50px] text-center py-10">
           <p className="text-gray-500">
             Không tìm thấy sản phẩm phù hợp với bộ lọc đã chọn
@@ -185,7 +145,7 @@ function GenderCollection() {
         </div>
       ) : (
         <div className="w-full px-[50px]">
-          <ProductGrid product={filteredAndSortedProducts} />
+          <ProductGrid products={products} />
         </div>
       )}
     </div>

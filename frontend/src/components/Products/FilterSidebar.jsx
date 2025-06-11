@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import axios from "axios";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:9000";
 
 const FilterSidebar = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -10,17 +13,9 @@ const FilterSidebar = () => {
     material: [],
     category: [],
   });
-
-  const color = [
-    { name: "Red", value: "red" },
-    { name: "Blue", value: "blue" },
-    { name: "Green", value: "green" },
-    { name: "Yellow", value: "yellow" },
-    { name: "Black", value: "black" },
-    { name: "White", value: "white" },
-    { name: "Brown", value: "brown" },
-    { name: "Pink", value: "pink" },
-  ];
+  const [colorOptions, setColorOptions] = useState([]);
+  const [materialOptions, setMaterialOptions] = useState([]);
+  const [categoryOptions, setCategoryOptions] = useState([]);
 
   const size = ["S", "M", "L", "XL", "XXL"];
 
@@ -30,24 +25,36 @@ const FilterSidebar = () => {
     { name: "1.000.000đ - 1.500.000đ", value: "1000-1500" },
     { name: "Trên 1.500.000đ", value: "above-1500" },
   ];
-  const materials = [
-    { name: "Cotton", value: "cotton" },
-    { name: "Linen (Vải lanh)", value: "linen" },
-    { name: "Polyester", value: "polyester" },
-    { name: "Jean / Denim", value: "denim" },
-    { name: "Da (Leather)", value: "leather" },
-    { name: "Lụa (Silk)", value: "silk" },
-    { name: "Len (Wool)", value: "wool" },
-    { name: "Nỉ (Fleece)", value: "fleece" },
-  ];
 
-  const categories = [
-    { name: "Áo phông", value: "Áo phông" },
-    { name: "Áo sơ mi", value: "Áo sơ mi" },
-    { name: "Quần tây", value: "Quần tây" },
-    { name: "Quần short", value: "Quần short" },
-    { name: "Áo khoác", value: "Áo khoác" },
-  ];
+  useEffect(() => {
+    // Lấy tất cả sản phẩm để sinh filter động
+    const fetchOptions = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/api/products`);
+        const products = res.data.products || [];
+        // Lấy tất cả màu
+        const colorSet = new Set();
+        const materialSet = new Set();
+        const categorySet = new Set();
+        products.forEach((p) => {
+          (p.colors || []).forEach((c) => colorSet.add(c));
+          if (p.material) materialSet.add(p.material);
+          if (p.category) categorySet.add(p.category);
+        });
+        // Loại bỏ trùng lặp bằng Set và sort cho đẹp
+        setColorOptions(Array.from(colorSet));
+        setMaterialOptions(Array.from(materialSet));
+        setCategoryOptions(Array.from(categorySet));
+      } catch (err) {
+        // fallback nếu lỗi
+        setColorOptions([]);
+        setMaterialOptions([]);
+        setCategoryOptions([]);
+      }
+    };
+    fetchOptions();
+  }, []);
+
   useEffect(() => {
     const params = Object.fromEntries(searchParams);
     setFilters({
@@ -58,14 +65,18 @@ const FilterSidebar = () => {
       category: params.category ? params.category.split(",") : [],
     });
   }, [searchParams]);
-
   const handleFilterChange = (type, value) => {
+    console.log("Filter change:", type, value);
     const newFilters = { ...filters };
 
-    if (newFilters[type].includes(value)) {
-      newFilters[type] = newFilters[type].filter((v) => v !== value);
+    if (type === "price") {
+      newFilters.price = [value];
     } else {
-      newFilters[type] = [...newFilters[type], value];
+      if (newFilters[type].includes(value)) {
+        newFilters[type] = newFilters[type].filter((v) => v !== value);
+      } else {
+        newFilters[type] = [...newFilters[type], value];
+      }
     }
 
     setFilters(newFilters);
@@ -77,6 +88,7 @@ const FilterSidebar = () => {
         newParams[key] = values.join(",");
       }
     });
+    console.log("New params:", newParams);
     setSearchParams(newParams);
   };
   const clearFilters = () => {
@@ -102,28 +114,24 @@ const FilterSidebar = () => {
             Xóa tất cả
           </button>
         )}
-      </div>
-
+      </div>{" "}
       {/* Màu sắc */}
       <div className="mb-6">
         <label className="block font-medium text-gray-700 mb-3">Màu sắc</label>
         <div className="flex flex-wrap gap-2">
-          {color.map((c) => (
+          {colorOptions.map((c) => (
             <button
-              key={c.value}
-              onClick={() => handleFilterChange("color", c.value)}
+              key={c}
+              onClick={() => handleFilterChange("color", c)}
               className={`w-8 h-8 rounded-full border-2 cursor-pointer transition hover:scale-105 ${
-                filters.color.includes(c.value)
-                  ? "border-black"
-                  : "border-gray-300"
+                filters.color.includes(c) ? "border-black" : "border-gray-300"
               }`}
-              style={{ backgroundColor: c.value }}
-              title={c.name}
-            />
+              style={{ backgroundColor: c.toLowerCase() }}
+              title={c}
+            ></button>
           ))}
         </div>
       </div>
-
       {/* Kích thước */}
       <div className="mb-6">
         <label className="block font-medium text-gray-700 mb-3">
@@ -145,7 +153,6 @@ const FilterSidebar = () => {
           ))}
         </div>
       </div>
-
       {/* Giá */}
       <div className="mb-6">
         <label className="block font-medium text-gray-700 mb-3">Giá</label>
@@ -156,9 +163,10 @@ const FilterSidebar = () => {
               className="flex items-center cursor-pointer group"
             >
               <input
-                type="checkbox"
+                type="radio"
+                name="price"
                 className="w-4 h-4 rounded border-gray-300 accent-black text-black focus:ring-black"
-                checked={filters.price.includes(p.value)}
+                checked={filters.price[0] === p.value}
                 onChange={() => handleFilterChange("price", p.value)}
               />
               <span className="ml-2 text-gray-600 group-hover:text-gray-900">
@@ -168,55 +176,52 @@ const FilterSidebar = () => {
           ))}
         </div>
       </div>
-
       {/* Chất liệu */}
       <div className="mb-6">
         <label className="block font-medium text-gray-700 mb-3">
           Chất liệu
         </label>
         <div className="space-y-2">
-          {materials.map((m) => (
+          {materialOptions.map((m, idx) => (
             <label
-              key={m.value}
+              key={m + "-" + idx}
               className="flex items-center cursor-pointer group"
             >
               <input
                 type="checkbox"
                 className="w-4 h-4 rounded border-gray-300 accent-black text-black focus:ring-black"
-                checked={filters.material.includes(m.value)}
-                onChange={() => handleFilterChange("material", m.value)}
+                checked={filters.material.includes(m)}
+                onChange={() => handleFilterChange("material", m)}
               />
               <span className="ml-2 text-gray-600 group-hover:text-gray-900">
-                {m.name}
+                {m}
               </span>
             </label>
           ))}
         </div>{" "}
       </div>
-
       {/* Danh mục */}
       <div className="mb-6">
         <label className="block font-medium text-gray-700 mb-3">Danh mục</label>
         <div className="space-y-2">
-          {categories.map((cat) => (
+          {categoryOptions.map((cat, idx) => (
             <label
-              key={cat.value}
+              key={cat + "-" + idx}
               className="flex items-center cursor-pointer group"
             >
               <input
                 type="checkbox"
                 className="w-4 h-4 rounded border-gray-300 accent-black text-black focus:ring-black"
-                checked={filters.category.includes(cat.value)}
-                onChange={() => handleFilterChange("category", cat.value)}
+                checked={filters.category.includes(cat)}
+                onChange={() => handleFilterChange("category", cat)}
               />
               <span className="ml-2 text-gray-600 group-hover:text-gray-900">
-                {cat.name}
+                {cat}
               </span>
             </label>
           ))}
         </div>
       </div>
-
       {/* Active Filters Summary */}
       {Object.values(filters).some((arr) => arr.length > 0) && (
         <div className="mt-8 pt-6 border-t">
@@ -227,15 +232,15 @@ const FilterSidebar = () => {
                 const label = (() => {
                   switch (type) {
                     case "color":
-                      return color.find((c) => c.value === value)?.name;
+                      return colorOptions.find((c) => c === value)?.name;
                     case "size":
                       return value;
                     case "price":
                       return price.find((p) => p.value === value)?.name;
                     case "material":
-                      return materials.find((m) => m.value === value)?.name;
+                      return materialOptions.find((m) => m === value)?.name;
                     case "category":
-                      return categories.find((c) => c.value === value)?.name;
+                      return categoryOptions.find((c) => c === value)?.name;
                     default:
                       return value;
                   }

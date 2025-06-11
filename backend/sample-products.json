@@ -1,0 +1,1339 @@
+[
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c78f1" },
+    "name": "Áo Polo Nam Classic",
+    "description": "Áo polo nam thiết kế classic, chất liệu cotton cao cấp, form slim fit thanh lịch, phù hợp đi làm và dạo phố.",
+    "price": { "$numberInt": "450000" },
+    "discountPrice": { "$numberInt": "399000" },
+    "countInStock": { "$numberInt": "35" },
+    "sku": "POLO-CLASSIC-001",
+    "category": "Áo polo",
+    "brand": "Wukudada",
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["Navy", "White", "Black"],
+    "collection": "summer",
+    "material": "100% Cotton",
+    "gender": "man",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?w=500&h=600&fit=crop",
+        "altText": "Áo polo nam classic navy"
+      }
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.6" },
+    "numReviews": { "$numberInt": "124" },
+    "tags": ["polo", "classic", "cotton", "slim fit"],
+    "metaTitle": "Áo Polo Nam Classic - Thanh Lịch Đẳng Cấp",
+    "metaDescription": "Áo polo nam classic cotton cao cấp, form slim fit thanh lịch, phù hợp đi làm.",
+    "metaKeywords": ["áo polo nam", "classic", "cotton", "slim fit"],
+    "dimensions": {
+      "length": { "$numberInt": "72" },
+      "width": { "$numberInt": "54" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.25" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c78f2" },
+    "name": "Váy Midi Nữ Elegant",
+    "description": "Váy midi nữ thiết kế elegant, chất liệu chiffon mềm mại, form A-line tôn dáng, phù hợp dự tiệc và công sở.",
+    "price": { "$numberInt": "680000" },
+    "discountPrice": { "$numberInt": "599000" },
+    "countInStock": { "$numberInt": "28" },
+    "sku": "DRESS-MIDI-001",
+    "category": "Váy",
+    "brand": "Wukudada",
+    "sizes": ["XS", "S", "M", "L"],
+    "colors": ["Black", "#8B0000", "Navy"],
+    "collection": "autumn",
+    "material": "Chiffon",
+    "gender": "woman",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1566479179817-7c3c8c86e2e1?w=500&h=600&fit=crop",
+        "altText": "Váy midi nữ elegant đen"
+      }
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.8" },
+    "numReviews": { "$numberInt": "89" },
+    "tags": ["váy", "midi", "elegant", "chiffon"],
+    "metaTitle": "Váy Midi Nữ Elegant - Sang Trọng Thanh Lịch",
+    "metaDescription": "Váy midi nữ chiffon mềm mại, form A-line tôn dáng, phù hợp dự tiệc.",
+    "metaKeywords": ["váy midi", "elegant", "chiffon", "A-line"],
+    "dimensions": {
+      "length": { "$numberInt": "85" },
+      "width": { "$numberInt": "45" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.3" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c78f3" },
+    "name": "Quần Jean Nam Slim Fit",
+    "description": "Quần jean nam slim fit, chất liệu denim cao cấp, thiết kế hiện đại, form ôm vừa phải tôn dáng.",
+    "price": { "$numberInt": "750000" },
+    "discountPrice": { "$numberInt": "649000" },
+    "countInStock": { "$numberInt": "42" },
+    "sku": "JEAN-SLIM-001",
+    "category": "Quần jean",
+    "brand": "Wukudada",
+    "sizes": ["28", "30", "32", "34", "36"],
+    "colors": ["#4169E1", "Black", "#36454F"],
+    "collection": "winter",
+    "material": "Denim",
+    "gender": "man",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500&h=600&fit=crop",
+        "altText": "Quần jean nam slim fit xanh"
+      }
+    ],
+    "isFeatured": false,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.5" },
+    "numReviews": { "$numberInt": "167" },
+    "tags": ["jean", "slim fit", "denim", "nam"],
+    "metaTitle": "Quần Jean Nam Slim Fit - Hiện Đại Tôn Dáng",
+    "metaDescription": "Quần jean nam slim fit denim cao cấp, thiết kế hiện đại tôn dáng.",
+    "metaKeywords": ["quần jean nam", "slim fit", "denim", "hiện đại"],
+    "dimensions": {
+      "length": { "$numberInt": "105" },
+      "width": { "$numberInt": "38" },
+      "height": { "$numberInt": "2" },
+      "weight": { "$numberDouble": "0.6" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c78f4" },
+    "name": "Áo Hoodie Unisex Oversized",
+    "description": "Áo hoodie unisex form oversized trendy, chất liệu cotton blend thoáng mát, phù hợp cả nam và nữ.",
+    "price": { "$numberInt": "590000" },
+    "discountPrice": { "$numberInt": "499000" },
+    "countInStock": { "$numberInt": "65" },
+    "sku": "HOODIE-OVER-001",
+    "category": "Áo hoodie",
+    "brand": "Wukudada",
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "colors": ["Black", "Gray", "#F5F5DC", "#228B22"],
+    "collection": "winter",
+    "material": "Cotton Blend",
+    "gender": "unisex",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500&h=600&fit=crop",
+        "altText": "Áo hoodie unisex oversized đen"
+      }
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.7" },
+    "numReviews": { "$numberInt": "203" },
+    "tags": ["hoodie", "unisex", "oversized", "trendy"],
+    "metaTitle": "Áo Hoodie Unisex Oversized - Phong Cách Trẻ Trung",
+    "metaDescription": "Áo hoodie unisex oversized cotton blend, phong cách trẻ trung cho cả nam và nữ.",
+    "metaKeywords": ["áo hoodie", "unisex", "oversized", "cotton blend"],
+    "dimensions": {
+      "length": { "$numberInt": "70" },
+      "width": { "$numberInt": "60" },
+      "height": { "$numberInt": "3" },
+      "weight": { "$numberDouble": "0.7" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c78f5" },
+    "name": "Áo Blazer Nữ Office",
+    "description": "Áo blazer nữ chuyên nghiệp, chất liệu polyester cao cấp, thiết kế thanh lịch phù hợp môi trường công sở.",
+    "price": { "$numberInt": "950000" },
+    "discountPrice": { "$numberInt": "829000" },
+    "countInStock": { "$numberInt": "22" },
+    "sku": "BLAZER-OFF-001",
+    "category": "Áo blazer",
+    "brand": "Wukudada",
+    "sizes": ["XS", "S", "M", "L"],
+    "colors": ["Black", "Navy", "Gray"],
+    "collection": "autumn",
+    "material": "Polyester",
+    "gender": "woman",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=500&h=600&fit=crop",
+        "altText": "Áo blazer nữ office đen"
+      }
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.6" },
+    "numReviews": { "$numberInt": "95" },
+    "tags": ["blazer", "office", "chuyên nghiệp", "nữ"],
+    "metaTitle": "Áo Blazer Nữ Office - Thanh Lịch Công Sở",
+    "metaDescription": "Áo blazer nữ polyester cao cấp, thiết kế thanh lịch phù hợp công sở.",
+    "metaKeywords": ["áo blazer nữ", "office", "polyester", "công sở"],
+    "dimensions": {
+      "length": { "$numberInt": "65" },
+      "width": { "$numberInt": "48" },
+      "height": { "$numberInt": "2" },
+      "weight": { "$numberDouble": "0.4" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c78f6" },
+    "name": "Quần Short Thể Thao Nam",
+    "description": "Quần short thể thao nam, chất liệu polyester thoáng khí, có túi zip, phù hợp tập gym và chạy bộ.",
+    "price": { "$numberInt": "320000" },
+    "discountPrice": { "$numberInt": "279000" },
+    "countInStock": { "$numberInt": "78" },
+    "sku": "SHORT-SPORT-001",
+    "category": "Quần short",
+    "brand": "Wukudada",
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "colors": ["Black", "Navy", "#4682B4"],
+    "collection": "summer",
+    "material": "Polyester",
+    "gender": "man",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=500&h=600&fit=crop",
+        "altText": "Quần short thể thao nam đen"
+      }
+    ],
+    "isFeatured": false,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.4" },
+    "numReviews": { "$numberInt": "156" },
+    "tags": ["short", "thể thao", "polyester", "nam"],
+    "metaTitle": "Quần Short Thể Thao Nam - Thoáng Khí Gym",
+    "metaDescription": "Quần short thể thao nam polyester thoáng khí, phù hợp gym và chạy bộ.",
+    "metaKeywords": ["quần short nam", "thể thao", "polyester", "gym"],
+    "dimensions": {
+      "length": { "$numberInt": "45" },
+      "width": { "$numberInt": "35" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.2" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c78f7" },
+    "name": "Áo Tank Top Nữ Yoga",
+    "description": "Áo tank top nữ chuyên yoga, chất liệu spandex co giãn 4 chiều, thiết kế ôm dáng thoáng mát.",
+    "price": { "$numberInt": "280000" },
+    "discountPrice": { "$numberInt": "239000" },
+    "countInStock": { "$numberInt": "45" },
+    "sku": "TANK-YOGA-001",
+    "category": "Áo tank top",
+    "brand": "Wukudada",
+    "sizes": ["XS", "S", "M", "L"],
+    "colors": ["#FF69B4", "Black", "Gray", "#9370DB"],
+    "collection": "summer",
+    "material": "Spandex",
+    "gender": "woman",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1506629905607-0c11d2b39519?w=500&h=600&fit=crop",
+        "altText": "Áo tank top nữ yoga hồng"
+      }
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.8" },
+    "numReviews": { "$numberInt": "187" },
+    "tags": ["tank top", "yoga", "spandex", "nữ"],
+    "metaTitle": "Áo Tank Top Nữ Yoga - Co Giãn 4 Chiều",
+    "metaDescription": "Áo tank top nữ yoga spandex co giãn 4 chiều, ôm dáng thoáng mát.",
+    "metaKeywords": ["áo tank top", "yoga", "spandex", "co giãn"],
+    "dimensions": {
+      "length": { "$numberInt": "55" },
+      "width": { "$numberInt": "40" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.12" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c78f8" },
+    "name": "Áo Sơ Mi Nam Premium",
+    "description": "Áo sơ mi nam cao cấp, chất liệu cotton pha silk, thiết kế formal thanh lịch, phù hợp dự tiệc.",
+    "price": { "$numberInt": "1200000" },
+    "discountPrice": { "$numberInt": "999000" },
+    "countInStock": { "$numberInt": "18" },
+    "sku": "SHIRT-PREM-001",
+    "category": "Áo sơ mi",
+    "brand": "Wukudada Premium",
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["White", "Navy", "Black"],
+    "collection": "autumn",
+    "material": "Cotton Silk",
+    "gender": "man",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=500&h=600&fit=crop",
+        "altText": "Áo sơ mi nam premium trắng"
+      }
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.9" },
+    "numReviews": { "$numberInt": "67" },
+    "tags": ["sơ mi", "premium", "cotton silk", "formal"],
+    "metaTitle": "Áo Sơ Mi Nam Premium - Sang Trọng Đẳng Cấp",
+    "metaDescription": "Áo sơ mi nam premium cotton silk, thiết kế formal thanh lịch.",
+    "metaKeywords": ["áo sơ mi nam", "premium", "cotton silk", "formal"],
+    "dimensions": {
+      "length": { "$numberInt": "75" },
+      "width": { "$numberInt": "55" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.25" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c78f9" },
+    "name": "Chân Váy Denim Nữ",
+    "description": "Chân váy denim nữ phong cách vintage, chất liệu jean mềm, form A-line trẻ trung năng động.",
+    "price": { "$numberInt": "520000" },
+    "discountPrice": { "$numberInt": "459000" },
+    "countInStock": { "$numberInt": "33" },
+    "sku": "SKIRT-DENIM-001",
+    "category": "Chân váy",
+    "brand": "Wukudada",
+    "sizes": ["XS", "S", "M", "L"],
+    "colors": ["#4169E1", "Black", "#87CEEB"],
+    "collection": "summer",
+    "material": "Denim",
+    "gender": "woman",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1583846112030-1ffe3fc0c22a?w=500&h=600&fit=crop",
+        "altText": "Chân váy denim nữ xanh"
+      }
+    ],
+    "isFeatured": false,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.5" },
+    "numReviews": { "$numberInt": "134" },
+    "tags": ["chân váy", "denim", "vintage", "A-line"],
+    "metaTitle": "Chân Váy Denim Nữ - Phong Cách Vintage",
+    "metaDescription": "Chân váy denim nữ vintage, form A-line trẻ trung năng động.",
+    "metaKeywords": ["chân váy denim", "vintage", "A-line", "trẻ trung"],
+    "dimensions": {
+      "length": { "$numberInt": "50" },
+      "width": { "$numberInt": "38" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.3" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c78fa" },
+    "name": "Áo Vest Nam Classic",
+    "description": "Áo vest nam classic formal, chất liệu wool blend cao cấp, thiết kế 2 nút elegant phù hợp công sở.",
+    "price": { "$numberInt": "1800000" },
+    "discountPrice": { "$numberInt": "1549000" },
+    "countInStock": { "$numberInt": "12" },
+    "sku": "VEST-CLASSIC-001",
+    "category": "Áo vest",
+    "brand": "Wukudada Premium",
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["#36454F", "#2F4F4F", "Black"],
+    "collection": "winter",
+    "material": "Wool Blend",
+    "gender": "man",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=600&fit=crop",
+        "altText": "Áo vest nam classic xám"
+      }
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.8" },
+    "numReviews": { "$numberInt": "45" },
+    "tags": ["vest", "classic", "wool blend", "formal"],
+    "metaTitle": "Áo Vest Nam Classic - Formal Đẳng Cấp",
+    "metaDescription": "Áo vest nam classic wool blend cao cấp, thiết kế 2 nút elegant.",
+    "metaKeywords": ["áo vest nam", "classic", "wool blend", "formal"],
+    "dimensions": {
+      "length": { "$numberInt": "75" },
+      "width": { "$numberInt": "50" },
+      "height": { "$numberInt": "2" },
+      "weight": { "$numberDouble": "0.8" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c78fb" },
+    "name": "Quần Jogger Nữ",
+    "description": "Quần jogger nữ thoải mái, chất liệu cotton blend mềm mại, có dây rút, phù hợp mặc nhà và dạo phố.",
+    "price": { "$numberInt": "380000" },
+    "discountPrice": { "$numberInt": "329000" },
+    "countInStock": { "$numberInt": "56" },
+    "sku": "JOGGER-WOMAN-001",
+    "category": "Quần jogger",
+    "brand": "Wukudada",
+    "sizes": ["XS", "S", "M", "L", "XL"],
+    "colors": ["Black", "Gray", "#8B4513", "#FF69B4"],
+    "collection": "autumn",
+    "material": "Cotton Blend",
+    "gender": "woman",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=500&h=600&fit=crop",
+        "altText": "Quần jogger nữ đen"
+      }
+    ],
+    "isFeatured": false,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.6" },
+    "numReviews": { "$numberInt": "178" },
+    "tags": ["jogger", "thoải mái", "cotton blend", "nữ"],
+    "metaTitle": "Quần Jogger Nữ - Thoải Mái Hàng Ngày",
+    "metaDescription": "Quần jogger nữ cotton blend mềm mại, thoải mái cho mọi hoạt động.",
+    "metaKeywords": ["quần jogger nữ", "thoải mái", "cotton blend", "dạo phố"],
+    "dimensions": {
+      "length": { "$numberInt": "95" },
+      "width": { "$numberInt": "32" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.35" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c78fc" },
+    "name": "Áo Cardigan Nữ",
+    "description": "Áo cardigan nữ dệt kim mềm mại, thiết kế oversized trendy, phù hợp layering và thời tiết mát mẻ.",
+    "price": { "$numberInt": "650000" },
+    "discountPrice": { "$numberInt": "569000" },
+    "countInStock": { "$numberInt": "29" },
+    "sku": "CARDIGAN-001",
+    "category": "Áo cardigan",
+    "brand": "Wukudada",
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["#F5F5DC", "Gray", "#DDA0DD", "#8FBC8F"],
+    "collection": "winter",
+    "material": "Knit",
+    "gender": "woman",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=500&h=600&fit=crop",
+        "altText": "Áo cardigan nữ be"
+      }
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.7" },
+    "numReviews": { "$numberInt": "112" },
+    "tags": ["cardigan", "dệt kim", "oversized", "layering"],
+    "metaTitle": "Áo Cardigan Nữ - Dệt Kim Mềm Mại",
+    "metaDescription": "Áo cardigan nữ dệt kim oversized, phù hợp layering thời tiết mát.",
+    "metaKeywords": ["áo cardigan", "dệt kim", "oversized", "layering"],
+    "dimensions": {
+      "length": { "$numberInt": "68" },
+      "width": { "$numberInt": "58" },
+      "height": { "$numberInt": "2" },
+      "weight": { "$numberDouble": "0.45" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c78fd" },
+    "name": "Quần Cargo Nam",
+    "description": "Quần cargo nam phong cách military, chất liệu cotton bền chắc, nhiều túi tiện lợi, form loose fit.",
+    "price": { "$numberInt": "620000" },
+    "discountPrice": { "$numberInt": "549000" },
+    "countInStock": { "$numberInt": "41" },
+    "sku": "CARGO-MAN-001",
+    "category": "Quần cargo",
+    "brand": "Wukudada",
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "colors": ["#8B4513", "Black", "#556B2F"],
+    "collection": "autumn",
+    "material": "Cotton",
+    "gender": "man",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500&h=600&fit=crop",
+        "altText": "Quần cargo nam nâu"
+      }
+    ],
+    "isFeatured": false,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.5" },
+    "numReviews": { "$numberInt": "145" },
+    "tags": ["cargo", "military", "cotton", "loose fit"],
+    "metaTitle": "Quần Cargo Nam - Phong Cách Military",
+    "metaDescription": "Quần cargo nam cotton bền chắc, phong cách military với nhiều túi tiện lợi.",
+    "metaKeywords": ["quần cargo nam", "military", "cotton", "nhiều túi"],
+    "dimensions": {
+      "length": { "$numberInt": "108" },
+      "width": { "$numberInt": "40" },
+      "height": { "$numberInt": "2" },
+      "weight": { "$numberDouble": "0.55" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c78fe" },
+    "name": "Đầm Cocktail Nữ",
+    "description": "Đầm cocktail nữ sang trọng, chất liệu satin bóng mịn, thiết kế bodycon tôn dáng, phù hợp dự tiệc.",
+    "price": { "$numberInt": "1350000" },
+    "discountPrice": { "$numberInt": "1149000" },
+    "countInStock": { "$numberInt": "16" },
+    "sku": "DRESS-COCKTAIL-001",
+    "category": "Đầm dự tiệc",
+    "brand": "Wukudada Premium",
+    "sizes": ["XS", "S", "M", "L"],
+    "colors": ["Black", "#8B0000", "Navy"],
+    "collection": "winter",
+    "material": "Satin",
+    "gender": "woman",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1566479179817-7c3c8c86e2e1?w=500&h=600&fit=crop",
+        "altText": "Đầm cocktail nữ đen"
+      }
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.9" },
+    "numReviews": { "$numberInt": "73" },
+    "tags": ["đầm", "cocktail", "satin", "bodycon"],
+    "metaTitle": "Đầm Cocktail Nữ - Sang Trọng Dự Tiệc",
+    "metaDescription": "Đầm cocktail nữ satin bóng mịn, thiết kế bodycon tôn dáng sang trọng.",
+    "metaKeywords": ["đầm cocktail", "satin", "bodycon", "dự tiệc"],
+    "dimensions": {
+      "length": { "$numberInt": "95" },
+      "width": { "$numberInt": "42" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.35" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c78ff" },
+    "name": "Áo Khoác Bomber Nam",
+    "description": "Áo khoác bomber nam phong cách streetwear, chất liệu polyester chống gió, thiết kế reversible độc đáo.",
+    "price": { "$numberInt": "850000" },
+    "discountPrice": { "$numberInt": "729000" },
+    "countInStock": { "$numberInt": "37" },
+    "sku": "BOMBER-MAN-001",
+    "category": "Áo khoác",
+    "brand": "Wukudada",
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "colors": ["Black", "Navy", "#8B4513"],
+    "collection": "winter",
+    "material": "Polyester",
+    "gender": "man",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500&h=600&fit=crop",
+        "altText": "Áo khoác bomber nam đen"
+      }
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.6" },
+    "numReviews": { "$numberInt": "189" },
+    "tags": ["bomber", "streetwear", "polyester", "reversible"],
+    "metaTitle": "Áo Khoác Bomber Nam - Streetwear Độc Đáo",
+    "metaDescription": "Áo khoác bomber nam polyester chống gió, thiết kế reversible streetwear.",
+    "metaKeywords": ["áo bomber nam", "streetwear", "polyester", "reversible"],
+    "dimensions": {
+      "length": { "$numberInt": "68" },
+      "width": { "$numberInt": "56" },
+      "height": { "$numberInt": "3" },
+      "weight": { "$numberDouble": "0.6" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c7900" },
+    "name": "Quần Legging Nữ Yoga",
+    "description": "Quần legging nữ chuyên yoga, chất liệu spandex co giãn tối đa, thiết kế high waist tôn dáng.",
+    "price": { "$numberInt": "350000" },
+    "discountPrice": { "$numberInt": "299000" },
+    "countInStock": { "$numberInt": "62" },
+    "sku": "LEGGING-YOGA-001",
+    "category": "Quần legging",
+    "brand": "Wukudada",
+    "sizes": ["XS", "S", "M", "L", "XL"],
+    "colors": ["Black", "#FF69B4", "#9370DB", "Gray"],
+    "collection": "summer",
+    "material": "Spandex",
+    "gender": "woman",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1506629905607-0c11d2b39519?w=500&h=600&fit=crop",
+        "altText": "Quần legging nữ yoga đen"
+      }
+    ],
+    "isFeatured": false,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.7" },
+    "numReviews": { "$numberInt": "234" },
+    "tags": ["legging", "yoga", "spandex", "high waist"],
+    "metaTitle": "Quần Legging Nữ Yoga - Co Giãn Tối Đa",
+    "metaDescription": "Quần legging nữ yoga spandex co giãn tối đa, high waist tôn dáng.",
+    "metaKeywords": ["quần legging", "yoga", "spandex", "high waist"],
+    "dimensions": {
+      "length": { "$numberInt": "95" },
+      "width": { "$numberInt": "28" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.18" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c7901" },
+    "name": "Áo Sweater Nam",
+    "description": "Áo sweater nam dệt kim ấm áp, thiết kế crew neck classic, chất liệu wool blend cao cấp cho mùa đông.",
+    "price": { "$numberInt": "780000" },
+    "discountPrice": { "$numberInt": "679000" },
+    "countInStock": { "$numberInt": "34" },
+    "sku": "SWEATER-MAN-001",
+    "category": "Áo sweater",
+    "brand": "Wukudada",
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["Navy", "Gray", "#8B4513", "Black"],
+    "collection": "winter",
+    "material": "Wool Blend",
+    "gender": "man",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=500&h=600&fit=crop",
+        "altText": "Áo sweater nam navy"
+      }
+    ],
+    "isFeatured": false,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.5" },
+    "numReviews": { "$numberInt": "126" },
+    "tags": ["sweater", "dệt kim", "wool blend", "crew neck"],
+    "metaTitle": "Áo Sweater Nam - Dệt Kim Ấm Áp",
+    "metaDescription": "Áo sweater nam wool blend cao cấp, thiết kế crew neck classic cho mùa đông.",
+    "metaKeywords": ["áo sweater nam", "dệt kim", "wool blend", "mùa đông"],
+    "dimensions": {
+      "length": { "$numberInt": "68" },
+      "width": { "$numberInt": "52" },
+      "height": { "$numberInt": "2" },
+      "weight": { "$numberDouble": "0.5" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c7902" },
+    "name": "Quần Culottes Nữ",
+    "description": "Quần culottes nữ wide leg thanh lịch, chất liệu crepe mềm mại, form high waist tôn dáng, phù hợp công sở.",
+    "price": { "$numberInt": "560000" },
+    "discountPrice": { "$numberInt": "489000" },
+    "countInStock": { "$numberInt": "26" },
+    "sku": "CULOTTES-001",
+    "category": "Quần culottes",
+    "brand": "Wukudada",
+    "sizes": ["XS", "S", "M", "L"],
+    "colors": ["Black", "Navy", "#F5F5DC", "Gray"],
+    "collection": "autumn",
+    "material": "Crepe",
+    "gender": "woman",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=500&h=600&fit=crop",
+        "altText": "Quần culottes nữ đen"
+      }
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.6" },
+    "numReviews": { "$numberInt": "98" },
+    "tags": ["culottes", "wide leg", "crepe", "high waist"],
+    "metaTitle": "Quần Culottes Nữ - Wide Leg Thanh Lịch",
+    "metaDescription": "Quần culottes nữ crepe mềm mại, wide leg high waist tôn dáng thanh lịch.",
+    "metaKeywords": ["quần culottes", "wide leg", "crepe", "công sở"],
+    "dimensions": {
+      "length": { "$numberInt": "85" },
+      "width": { "$numberInt": "45" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.32" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c7903" },
+    "name": "Áo Crop Top Nữ",
+    "description": "Áo crop top nữ trendy, chất liệu cotton stretch thoáng mát, thiết kế fitted tôn dáng, phù hợp mix đồ.",
+    "price": { "$numberInt": "250000" },
+    "discountPrice": { "$numberInt": "219000" },
+    "countInStock": { "$numberInt": "85" },
+    "sku": "CROP-TOP-001",
+    "category": "Áo crop top",
+    "brand": "Wukudada",
+    "sizes": ["XS", "S", "M", "L"],
+    "colors": ["White", "Black", "#FF69B4", "#87CEEB"],
+    "collection": "summer",
+    "material": "Cotton Stretch",
+    "gender": "woman",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=500&h=600&fit=crop",
+        "altText": "Áo crop top nữ trắng"
+      }
+    ],
+    "isFeatured": false,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.4" },
+    "numReviews": { "$numberInt": "267" },
+    "tags": ["crop top", "trendy", "cotton stretch", "fitted"],
+    "metaTitle": "Áo Crop Top Nữ - Trendy Mix Đồ",
+    "metaDescription": "Áo crop top nữ cotton stretch thoáng mát, thiết kế fitted trendy.",
+    "metaKeywords": ["áo crop top", "trendy", "cotton stretch", "mix đồ"],
+    "dimensions": {
+      "length": { "$numberInt": "45" },
+      "width": { "$numberInt": "40" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.1" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c7904" },
+    "name": "Áo Khoác Denim Nữ",
+    "description": "Áo khoác denim nữ vintage wash, chất liệu jean mềm mại, thiết kế oversized trendy, phù hợp layering.",
+    "price": { "$numberInt": "720000" },
+    "discountPrice": { "$numberInt": "649000" },
+    "countInStock": { "$numberInt": "31" },
+    "sku": "JACKET-DENIM-001",
+    "category": "Áo khoác",
+    "brand": "Wukudada",
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["#4169E1", "#87CEEB", "Black"],
+    "collection": "spring",
+    "material": "Denim",
+    "gender": "woman",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=500&h=600&fit=crop",
+        "altText": "Áo khoác denim nữ xanh"
+      }
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.6" },
+    "numReviews": { "$numberInt": "154" },
+    "tags": ["khoác", "denim", "vintage", "oversized"],
+    "metaTitle": "Áo Khoác Denim Nữ - Vintage Oversized",
+    "metaDescription": "Áo khoác denim nữ vintage wash, thiết kế oversized trendy cho layering.",
+    "metaKeywords": ["áo khoác denim", "vintage", "oversized", "layering"],
+    "dimensions": {
+      "length": { "$numberInt": "65" },
+      "width": { "$numberInt": "55" },
+      "height": { "$numberInt": "2" },
+      "weight": { "$numberDouble": "0.7" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c7905" },
+    "name": "Quần Tây Nam Formal",
+    "description": "Quần tây nam formal cao cấp, chất liệu wool premium, thiết kế slim fit thanh lịch, phù hợp công sở.",
+    "price": { "$numberInt": "890000" },
+    "discountPrice": { "$numberInt": "769000" },
+    "countInStock": { "$numberInt": "25" },
+    "sku": "TROUSER-FORMAL-001",
+    "category": "Quần tây",
+    "brand": "Wukudada Premium",
+    "sizes": ["30", "32", "34", "36", "38"],
+    "colors": ["Black", "Navy", "#36454F"],
+    "collection": "autumn",
+    "material": "Wool",
+    "gender": "man",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=500&h=600&fit=crop",
+        "altText": "Quần tây nam formal đen"
+      }
+    ],
+    "isFeatured": false,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.7" },
+    "numReviews": { "$numberInt": "87" },
+    "tags": ["quần tây", "formal", "wool", "slim fit"],
+    "metaTitle": "Quần Tây Nam Formal - Wool Premium",
+    "metaDescription": "Quần tây nam formal wool premium, slim fit thanh lịch cho công sở.",
+    "metaKeywords": ["quần tây nam", "formal", "wool", "công sở"],
+    "dimensions": {
+      "length": { "$numberInt": "108" },
+      "width": { "$numberInt": "40" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.5" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c7906" },
+    "name": "Đầm Maxi Nữ Bohemian",
+    "description": "Đầm maxi nữ phong cách bohemian, chất liệu chiffon print họa tiết, thiết kế flowing romantic.",
+    "price": { "$numberInt": "980000" },
+    "discountPrice": { "$numberInt": "839000" },
+    "countInStock": { "$numberInt": "19" },
+    "sku": "DRESS-MAXI-001",
+    "category": "Đầm maxi",
+    "brand": "Wukudada",
+    "sizes": ["XS", "S", "M", "L"],
+    "colors": ["#DDA0DD", "#F0E68C", "#98FB98"],
+    "collection": "spring",
+    "material": "Chiffon",
+    "gender": "woman",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=500&h=600&fit=crop",
+        "altText": "Đầm maxi nữ bohemian tím"
+      }
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.8" },
+    "numReviews": { "$numberInt": "112" },
+    "tags": ["đầm", "maxi", "bohemian", "chiffon"],
+    "metaTitle": "Đầm Maxi Nữ Bohemian - Romantic Flowing",
+    "metaDescription": "Đầm maxi nữ bohemian chiffon print, thiết kế flowing romantic.",
+    "metaKeywords": ["đầm maxi", "bohemian", "chiffon", "romantic"],
+    "dimensions": {
+      "length": { "$numberInt": "140" },
+      "width": { "$numberInt": "48" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.4" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c7907" },
+    "name": "Áo Thun Polo Nữ",
+    "description": "Áo thun polo nữ sporty chic, chất liệu pique cotton thoáng mát, thiết kế fitted tôn dáng.",
+    "price": { "$numberInt": "380000" },
+    "discountPrice": { "$numberInt": "329000" },
+    "countInStock": { "$numberInt": "47" },
+    "sku": "POLO-WOMAN-001",
+    "category": "Áo polo",
+    "brand": "Wukudada",
+    "sizes": ["XS", "S", "M", "L", "XL"],
+    "colors": ["White", "Navy", "#FF69B4", "#87CEEB"],
+    "collection": "summer",
+    "material": "Pique Cotton",
+    "gender": "woman",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=500&h=600&fit=crop",
+        "altText": "Áo polo nữ trắng"
+      }
+    ],
+    "isFeatured": false,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.5" },
+    "numReviews": { "$numberInt": "176" },
+    "tags": ["polo", "sporty chic", "pique cotton", "fitted"],
+    "metaTitle": "Áo Thun Polo Nữ - Sporty Chic",
+    "metaDescription": "Áo polo nữ pique cotton thoáng mát, thiết kế fitted sporty chic.",
+    "metaKeywords": ["áo polo nữ", "sporty chic", "pique cotton", "fitted"],
+    "dimensions": {
+      "length": { "$numberInt": "58" },
+      "width": { "$numberInt": "42" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.2" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c7908" },
+    "name": "Quần Shorts Jean Nữ",
+    "description": "Quần shorts jean nữ high waist, chất liệu denim stretch co giãn, thiết kế vintage distressed.",
+    "price": { "$numberInt": "420000" },
+    "discountPrice": { "$numberInt": "369000" },
+    "countInStock": { "$numberInt": "58" },
+    "sku": "SHORT-JEAN-001",
+    "category": "Quần short",
+    "brand": "Wukudada",
+    "sizes": ["XS", "S", "M", "L", "XL"],
+    "colors": ["#4169E1", "#87CEEB", "Black"],
+    "collection": "summer",
+    "material": "Denim Stretch",
+    "gender": "woman",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500&h=600&fit=crop",
+        "altText": "Quần shorts jean nữ xanh"
+      }
+    ],
+    "isFeatured": false,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.4" },
+    "numReviews": { "$numberInt": "203" },
+    "tags": ["shorts", "jean", "high waist", "distressed"],
+    "metaTitle": "Quần Shorts Jean Nữ - High Waist Vintage",
+    "metaDescription": "Quần shorts jean nữ high waist denim stretch, thiết kế vintage distressed.",
+    "metaKeywords": ["quần shorts jean", "high waist", "vintage", "distressed"],
+    "dimensions": {
+      "length": { "$numberInt": "35" },
+      "width": { "$numberInt": "38" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.25" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c7909" },
+    "name": "Áo Blazer Nam Casual",
+    "description": "Áo blazer nam casual unstructured, chất liệu linen cotton, thiết kế relaxed fit thoải mái.",
+    "price": { "$numberInt": "1150000" },
+    "discountPrice": { "$numberInt": "989000" },
+    "countInStock": { "$numberInt": "16" },
+    "sku": "BLAZER-CASUAL-001",
+    "category": "Áo blazer",
+    "brand": "Wukudada",
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["#F5F5DC", "Navy", "#8B4513"],
+    "collection": "spring",
+    "material": "Linen Cotton",
+    "gender": "man",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=600&fit=crop",
+        "altText": "Áo blazer nam casual be"
+      }
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.6" },
+    "numReviews": { "$numberInt": "73" },
+    "tags": ["blazer", "casual", "linen cotton", "relaxed fit"],
+    "metaTitle": "Áo Blazer Nam Casual - Linen Cotton",
+    "metaDescription": "Áo blazer nam casual linen cotton, thiết kế relaxed fit thoải mái.",
+    "metaKeywords": ["áo blazer nam", "casual", "linen cotton", "relaxed fit"],
+    "dimensions": {
+      "length": { "$numberInt": "70" },
+      "width": { "$numberInt": "52" },
+      "height": { "$numberInt": "2" },
+      "weight": { "$numberDouble": "0.45" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c790a" },
+    "name": "Quần Palazzo Nữ",
+    "description": "Quần palazzo nữ wide leg flowing, chất liệu crepe georgette mềm mại, thiết kế high waist elegant.",
+    "price": { "$numberInt": "680000" },
+    "discountPrice": { "$numberInt": "599000" },
+    "countInStock": { "$numberInt": "33" },
+    "sku": "PALAZZO-001",
+    "category": "Quần palazzo",
+    "brand": "Wukudada",
+    "sizes": ["XS", "S", "M", "L"],
+    "colors": ["Black", "#8B0000", "#F5F5DC", "Navy"],
+    "collection": "spring",
+    "material": "Crepe Georgette",
+    "gender": "woman",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=500&h=600&fit=crop",
+        "altText": "Quần palazzo nữ đen"
+      }
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.7" },
+    "numReviews": { "$numberInt": "128" },
+    "tags": ["palazzo", "wide leg", "crepe", "high waist"],
+    "metaTitle": "Quần Palazzo Nữ - Wide Leg Flowing",
+    "metaDescription": "Quần palazzo nữ crepe georgette mềm mại, wide leg high waist elegant.",
+    "metaKeywords": ["quần palazzo", "wide leg", "crepe", "elegant"],
+    "dimensions": {
+      "length": { "$numberInt": "110" },
+      "width": { "$numberInt": "50" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.35" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c790b" },
+    "name": "Áo Thun Henley Nam",
+    "description": "Áo thun henley nam vintage style, chất liệu cotton slub texture, thiết kế button placket classic.",
+    "price": { "$numberInt": "350000" },
+    "discountPrice": { "$numberInt": "299000" },
+    "countInStock": { "$numberInt": "52" },
+    "sku": "HENLEY-MAN-001",
+    "category": "Áo henley",
+    "brand": "Wukudada",
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "colors": ["White", "Gray", "Navy", "#8B4513"],
+    "collection": "autumn",
+    "material": "Cotton Slub",
+    "gender": "man",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&h=600&fit=crop",
+        "altText": "Áo henley nam trắng"
+      }
+    ],
+    "isFeatured": false,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.5" },
+    "numReviews": { "$numberInt": "145" },
+    "tags": ["henley", "vintage", "cotton slub", "button placket"],
+    "metaTitle": "Áo Thun Henley Nam - Vintage Style",
+    "metaDescription": "Áo henley nam cotton slub vintage, thiết kế button placket classic.",
+    "metaKeywords": ["áo henley nam", "vintage", "cotton slub", "classic"],
+    "dimensions": {
+      "length": { "$numberInt": "68" },
+      "width": { "$numberInt": "50" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.22" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c790c" },
+    "name": "Chân Váy Pleated Nữ",
+    "description": "Chân váy pleated nữ schoolgirl style, chất liệu polyester chống nhăn, thiết kế mini length cute.",
+    "price": { "$numberInt": "480000" },
+    "discountPrice": { "$numberInt": "419000" },
+    "countInStock": { "$numberInt": "41" },
+    "sku": "SKIRT-PLEATED-001",
+    "category": "Chân váy",
+    "brand": "Wukudada",
+    "sizes": ["XS", "S", "M", "L"],
+    "colors": ["Black", "Navy", "#DC143C", "#32CD32"],
+    "collection": "spring",
+    "material": "Polyester",
+    "gender": "woman",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1583846112030-1ffe3fc0c22a?w=500&h=600&fit=crop",
+        "altText": "Chân váy pleated nữ đen"
+      }
+    ],
+    "isFeatured": false,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.4" },
+    "numReviews": { "$numberInt": "189" },
+    "tags": ["pleated", "schoolgirl", "mini", "cute"],
+    "metaTitle": "Chân Váy Pleated Nữ - Schoolgirl Style",
+    "metaDescription": "Chân váy pleated nữ polyester chống nhăn, schoolgirl style mini length.",
+    "metaKeywords": ["chân váy pleated", "schoolgirl", "mini", "polyester"],
+    "dimensions": {
+      "length": { "$numberInt": "40" },
+      "width": { "$numberInt": "35" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.2" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c790d" },
+    "name": "Áo Khoác Windbreaker Nam",
+    "description": "Áo khoác windbreaker nam outdoor, chất liệu nylon chống gió nước, thiết kế packable tiện lợi.",
+    "price": { "$numberInt": "750000" },
+    "discountPrice": { "$numberInt": "649000" },
+    "countInStock": { "$numberInt": "28" },
+    "sku": "WINDBREAKER-001",
+    "category": "Áo khoác",
+    "brand": "Wukudada Outdoor",
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "colors": ["Black", "#228B22", "Navy", "#FF4500"],
+    "collection": "spring",
+    "material": "Nylon",
+    "gender": "man",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500&h=600&fit=crop",
+        "altText": "Áo khoác windbreaker nam đen"
+      }
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.6" },
+    "numReviews": { "$numberInt": "96" },
+    "tags": ["windbreaker", "outdoor", "nylon", "packable"],
+    "metaTitle": "Áo Khoác Windbreaker Nam - Outdoor Packable",
+    "metaDescription": "Áo windbreaker nam nylon chống gió nước, thiết kế packable outdoor.",
+    "metaKeywords": ["windbreaker", "outdoor", "nylon", "chống gió"],
+    "dimensions": {
+      "length": { "$numberInt": "70" },
+      "width": { "$numberInt": "58" },
+      "height": { "$numberInt": "2" },
+      "weight": { "$numberDouble": "0.3" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c790e" },
+    "name": "Quần Jeans Boyfriend Nữ",
+    "description": "Quần jeans boyfriend nữ relaxed fit, chất liệu denim vintage wash, thiết kế slouchy comfortable.",
+    "price": { "$numberInt": "650000" },
+    "discountPrice": { "$numberInt": "569000" },
+    "countInStock": { "$numberInt": "36" },
+    "sku": "JEAN-BOYFRIEND-001",
+    "category": "Quần jean",
+    "brand": "Wukudada",
+    "sizes": ["XS", "S", "M", "L", "XL"],
+    "colors": ["#4169E1", "#87CEEB", "Black"],
+    "collection": "autumn",
+    "material": "Denim",
+    "gender": "woman",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500&h=600&fit=crop",
+        "altText": "Quần jeans boyfriend nữ xanh"
+      }
+    ],
+    "isFeatured": false,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.5" },
+    "numReviews": { "$numberInt": "167" },
+    "tags": ["jeans", "boyfriend", "relaxed fit", "vintage wash"],
+    "metaTitle": "Quần Jeans Boyfriend Nữ - Relaxed Vintage",
+    "metaDescription": "Quần jeans boyfriend nữ denim vintage wash, relaxed fit slouchy.",
+    "metaKeywords": [
+      "jeans boyfriend",
+      "relaxed fit",
+      "vintage wash",
+      "slouchy"
+    ],
+    "dimensions": {
+      "length": { "$numberInt": "105" },
+      "width": { "$numberInt": "42" },
+      "height": { "$numberInt": "2" },
+      "weight": { "$numberDouble": "0.65" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c790f" },
+    "name": "Áo Kimono Nữ",
+    "description": "Áo kimono nữ oriental style, chất liệu silk blend flowing, thiết kế long sleeve elegant cover-up.",
+    "price": { "$numberInt": "820000" },
+    "discountPrice": { "$numberInt": "719000" },
+    "countInStock": { "$numberInt": "23" },
+    "sku": "KIMONO-001",
+    "category": "Áo kimono",
+    "brand": "Wukudada",
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["#FF69B4", "#DDA0DD", "Black", "#F0E68C"],
+    "collection": "spring",
+    "material": "Silk Blend",
+    "gender": "woman",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=500&h=600&fit=crop",
+        "altText": "Áo kimono nữ hồng"
+      }
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.7" },
+    "numReviews": { "$numberInt": "84" },
+    "tags": ["kimono", "oriental", "silk blend", "cover-up"],
+    "metaTitle": "Áo Kimono Nữ - Oriental Elegant",
+    "metaDescription": "Áo kimono nữ silk blend oriental style, thiết kế elegant cover-up.",
+    "metaKeywords": ["áo kimono", "oriental", "silk blend", "elegant"],
+    "dimensions": {
+      "length": { "$numberInt": "85" },
+      "width": { "$numberInt": "65" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.3" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c7910" },
+    "name": "Quần Sweatpants Nam",
+    "description": "Quần sweatpants nam athletic fit, chất liệu french terry cotton, thiết kế jogger style với cuff bottom.",
+    "price": { "$numberInt": "450000" },
+    "discountPrice": { "$numberInt": "389000" },
+    "countInStock": { "$numberInt": "44" },
+    "sku": "SWEATPANTS-001",
+    "category": "Quần sweatpants",
+    "brand": "Wukudada",
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "colors": ["Gray", "Black", "Navy", "#8B4513"],
+    "collection": "winter",
+    "material": "French Terry",
+    "gender": "man",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500&h=600&fit=crop",
+        "altText": "Quần sweatpants nam xám"
+      }
+    ],
+    "isFeatured": false,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.5" },
+    "numReviews": { "$numberInt": "198" },
+    "tags": ["sweatpants", "athletic", "french terry", "jogger"],
+    "metaTitle": "Quần Sweatpants Nam - Athletic French Terry",
+    "metaDescription": "Quần sweatpants nam french terry cotton, athletic fit jogger style.",
+    "metaKeywords": ["sweatpants", "athletic", "french terry", "jogger"],
+    "dimensions": {
+      "length": { "$numberInt": "102" },
+      "width": { "$numberInt": "38" },
+      "height": { "$numberInt": "2" },
+      "weight": { "$numberDouble": "0.5" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c7911" },
+    "name": "Áo Peplum Nữ",
+    "description": "Áo peplum nữ feminine style, chất liệu crepe structured, thiết kế fitted bodice với flared hem.",
+    "price": { "$numberInt": "580000" },
+    "discountPrice": { "$numberInt": "509000" },
+    "countInStock": { "$numberInt": "27" },
+    "sku": "PEPLUM-001",
+    "category": "Áo peplum",
+    "brand": "Wukudada",
+    "sizes": ["XS", "S", "M", "L"],
+    "colors": ["Black", "#8B0000", "Navy", "White"],
+    "collection": "autumn",
+    "material": "Crepe",
+    "gender": "woman",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=500&h=600&fit=crop",
+        "altText": "Áo peplum nữ đen"
+      }
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.6" },
+    "numReviews": { "$numberInt": "103" },
+    "tags": ["peplum", "feminine", "crepe", "fitted"],
+    "metaTitle": "Áo Peplum Nữ - Feminine Structured",
+    "metaDescription": "Áo peplum nữ crepe structured, fitted bodice với flared hem feminine.",
+    "metaKeywords": ["áo peplum", "feminine", "crepe", "structured"],
+    "dimensions": {
+      "length": { "$numberInt": "58" },
+      "width": { "$numberInt": "44" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.25" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c7912" },
+    "name": "Quần Chinos Nam",
+    "description": "Quần chinos nam versatile style, chất liệu cotton twill cao cấp, thiết kế straight fit classic.",
+    "price": { "$numberInt": "520000" },
+    "discountPrice": { "$numberInt": "459000" },
+    "countInStock": { "$numberInt": "49" },
+    "sku": "CHINOS-MAN-001",
+    "category": "Quần chinos",
+    "brand": "Wukudada",
+    "sizes": ["30", "32", "34", "36", "38"],
+    "colors": ["#F5DEB3", "Navy", "#8B4513", "Black"],
+    "collection": "spring",
+    "material": "Cotton Twill",
+    "gender": "man",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=500&h=600&fit=crop",
+        "altText": "Quần chinos nam be"
+      }
+    ],
+    "isFeatured": false,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.5" },
+    "numReviews": { "$numberInt": "156" },
+    "tags": ["chinos", "versatile", "cotton twill", "straight fit"],
+    "metaTitle": "Quần Chinos Nam - Versatile Cotton Twill",
+    "metaDescription": "Quần chinos nam cotton twill cao cấp, straight fit versatile classic.",
+    "metaKeywords": ["quần chinos", "versatile", "cotton twill", "classic"],
+    "dimensions": {
+      "length": { "$numberInt": "108" },
+      "width": { "$numberInt": "40" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.45" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c7913" },
+    "name": "Đầm Wrap Nữ",
+    "description": "Đầm wrap nữ flattering cut, chất liệu jersey stretch comfortable, thiết kế tie waist adjustable.",
+    "price": { "$numberInt": "720000" },
+    "discountPrice": { "$numberInt": "629000" },
+    "countInStock": { "$numberInt": "32" },
+    "sku": "DRESS-WRAP-001",
+    "category": "Đầm wrap",
+    "brand": "Wukudada",
+    "sizes": ["XS", "S", "M", "L", "XL"],
+    "colors": ["Black", "#8B0000", "Navy", "#9370DB"],
+    "collection": "summer",
+    "material": "Jersey",
+    "gender": "woman",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1566479179817-7c3c8c86e2e1?w=500&h=600&fit=crop",
+        "altText": "Đầm wrap nữ đen"
+      }
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.7" },
+    "numReviews": { "$numberInt": "142" },
+    "tags": ["wrap dress", "flattering", "jersey", "adjustable"],
+    "metaTitle": "Đầm Wrap Nữ - Flattering Jersey",
+    "metaDescription": "Đầm wrap nữ jersey stretch, flattering cut với tie waist adjustable.",
+    "metaKeywords": ["đầm wrap", "flattering", "jersey", "tie waist"],
+    "dimensions": {
+      "length": { "$numberInt": "95" },
+      "width": { "$numberInt": "45" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.3" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c7914" },
+    "name": "Áo Flannel Nam",
+    "description": "Áo flannel nam lumberjack style, chất liệu cotton flannel ấm áp, thiết kế check pattern classic.",
+    "price": { "$numberInt": "480000" },
+    "discountPrice": { "$numberInt": "419000" },
+    "countInStock": { "$numberInt": "38" },
+    "sku": "FLANNEL-MAN-001",
+    "category": "Áo flannel",
+    "brand": "Wukudada",
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "colors": ["#DC143C", "#228B22", "Navy", "#8B4513"],
+    "collection": "winter",
+    "material": "Cotton Flannel",
+    "gender": "man",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=500&h=600&fit=crop",
+        "altText": "Áo flannel nam đỏ"
+      }
+    ],
+    "isFeatured": false,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.6" },
+    "numReviews": { "$numberInt": "124" },
+    "tags": ["flannel", "lumberjack", "cotton", "check pattern"],
+    "metaTitle": "Áo Flannel Nam - Lumberjack Check",
+    "metaDescription": "Áo flannel nam cotton ấm áp, lumberjack style check pattern classic.",
+    "metaKeywords": ["áo flannel", "lumberjack", "cotton", "check"],
+    "dimensions": {
+      "length": { "$numberInt": "72" },
+      "width": { "$numberInt": "54" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.35" }
+    }
+  },
+  {
+    "_id": { "$oid": "68496cdd1e0ee3a0af8c7915" },
+    "name": "Quần Pencil Skirt Nữ",
+    "description": "Quần pencil skirt nữ business style, chất liệu ponte stretch fitted, thiết kế knee length professional.",
+    "price": { "$numberInt": "450000" },
+    "discountPrice": { "$numberInt": "389000" },
+    "countInStock": { "$numberInt": "35" },
+    "sku": "PENCIL-SKIRT-001",
+    "category": "Chân váy",
+    "brand": "Wukudada",
+    "sizes": ["XS", "S", "M", "L"],
+    "colors": ["Black", "Navy", "Gray", "#8B0000"],
+    "collection": "autumn",
+    "material": "Ponte",
+    "gender": "woman",
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1583846112030-1ffe3fc0c22a?w=500&h=600&fit=crop",
+        "altText": "Chân váy pencil nữ đen"
+      }
+    ],
+    "isFeatured": false,
+    "isPublished": true,
+    "rating": { "$numberDouble": "4.5" },
+    "numReviews": { "$numberInt": "167" },
+    "tags": ["pencil skirt", "business", "ponte", "professional"],
+    "metaTitle": "Quần Pencil Skirt Nữ - Business Professional",
+    "metaDescription": "Chân váy pencil nữ ponte stretch, business style knee length professional.",
+    "metaKeywords": ["pencil skirt", "business", "ponte", "knee length"],
+    "dimensions": {
+      "length": { "$numberInt": "60" },
+      "width": { "$numberInt": "38" },
+      "height": { "$numberInt": "1" },
+      "weight": { "$numberDouble": "0.25" }
+    }
+  }
+]

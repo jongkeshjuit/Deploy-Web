@@ -6,7 +6,7 @@ const FeaturedCollection = ({ collections }) => {
     <div className="flex flex-col items-center">
       <div className="grid grid-cols-1 gap-8">
         {collections.map((col) => {
-          const featured = col.products.filter((p) => p.featured);
+          const featured = col.products.filter((p) => p.isFeatured);
           if (featured.length === 0) return null;
           return (
             <div key={col.id} className=" featured-collection overflow-hidden">
