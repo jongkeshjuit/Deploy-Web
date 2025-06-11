@@ -16,9 +16,9 @@ router.post('/', authMiddleware, isAdmin, async (req, res) => {
             countInStock, 
             sku, 
             category, 
-            brand, 
+            // brand, 
             sizes, 
-            color, 
+            colors, 
             collection,
             material,
             gender, 
@@ -34,7 +34,8 @@ router.post('/', authMiddleware, isAdmin, async (req, res) => {
 
         // Validate required fields
         if (!name || !description || !price || !sku || !category || 
-            !brand || !sizes || !sizes.length || !color || !collection || !material || !gender ||
+            // !brand || !sizes || !sizes.length || !color || !collection || !material || !gender ||
+            !sizes || !sizes.length || !colors || !colors.length || !collection || !material || !gender ||
             !images || !dimensions || !dimensions.weight) {
             return res.status(400).json({ message: 'Missing required fields' });
         }
@@ -47,9 +48,9 @@ router.post('/', authMiddleware, isAdmin, async (req, res) => {
             countInStock, 
             sku, 
             category, 
-            brand, 
+            // brand, 
             sizes, 
-            color, 
+            colors, 
             collection,
             material,
             gender, 
@@ -64,8 +65,9 @@ router.post('/', authMiddleware, isAdmin, async (req, res) => {
             user: req.user._id // Set the user who created the product
         });
         
-        await product.save();
-        res.status(201).json(product);
+        const newProduct = await product.save();
+        // await product.save();
+        res.status(201).json(newProduct);
     } catch (error) {
         console.error(error);
         if (error.code === 11000) {

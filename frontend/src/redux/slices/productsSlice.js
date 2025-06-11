@@ -1,48 +1,34 @@
-import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
-import axios from 'axios';
-// Async thunk to fetch products by collection and optional filter
-export const fetchProductsByFilter = createAsyncThunk("products/fetchByFilter", async ({collection, size, color, gender, minPrice, maxPrice, sortBy, search, category, material, brand, limit}) => {
-    const query = new URLSearchParams();
-    if (collection) query.append('collection', collection);
-    if (size) query.append('size', size);
-    if (color) query.append('color', color);
-    if(gender) query.append('gender', gender);
-    if (minPrice) query.append('minPrice', minPrice);
-    if (maxPrice) query.append('maxPrice', maxPrice);
-    if (sortBy) query.append('sortBy', sortBy);
-    if (search) query.append('search', search);
-    if (category) query.append('category', category);
-    if (material) query.append('material', material);
-    if (brand) query.append('brand', brand);
-    if (limit) query.append('limit', limit);
-    const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/products?${query.toString()}`);
-    return response.data;
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import * as productService from '../../services/productService';
+
+// Async thunk to fetch products by filter
+export const fetchProductsByFilter = createAsyncThunk("products/fetchByFilter", async (filters) => {
+    const response = await productService.getProducts(filters);
+    return response;
 });
 
-// Async thunk to fetch a singer product by ID
+// Async thunk to fetch a single product by ID
 export const fetchProductById = createAsyncThunk("products/fetchProductDetails", async (id) => {
-    const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/products/${id}`);
-    return response.data;
-});
-
-// Async thunk to update a product
-export const updateProducts = createAsyncThunk("products/updateProduc", async ({id, productData}) => {
-    const response = await axios.put(
-        `${import.meta.env.VITE_API_URL}/api/products/${id}`,
-        productData,
-        {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('userToken')}`
-            }
-        }
-    );
-    return response.data;
+    const response = await productService.getProductById(id);
+    return response;
 });
 
 // Async thunk to fetch similar products
 export const fetchSimilarProducts = createAsyncThunk("products/fetchSimilarProducts", async (id) => {
-    const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/products/similar/${id}`);
-    return response.data;
+    const response = await productService.getSimilarProducts(id);
+    return response;
+});
+
+// Async thunk to fetch best sellers
+export const fetchBestSellers = createAsyncThunk("products/fetchBestSellers", async () => {
+    const response = await productService.getBestSellers();
+    return response;
+});
+
+// Async thunk to fetch new arrivals
+export const fetchNewArrivals = createAsyncThunk("products/fetchNewArrivals", async () => {
+    const response = await productService.getNewArrivals();
+    return response;
 });
 
 const productsSlice = createSlice({
@@ -51,6 +37,8 @@ const productsSlice = createSlice({
         products: [],
         selectedProduct: null,
         similarProducts: [],
+        bestSellers: [],
+        newArrivals: [],
         loading: false,
         error: null,
         filter: {
@@ -70,38 +58,40 @@ const productsSlice = createSlice({
     },
     reducers: {
         setFilter: (state, action) => {
-            state.filter = {...state.filter, ...action.payload};
+            state.filter = { ...state.filter, ...action.payload };
         },
         clearFilter: (state) => {
             state.filter = {
-            size: null,
-            color: null,
-            gender: null,
-            brand: null,
-            minPrice: null,
-            maxPrice: null,
-            sortBy: null,
-            search: null,
-            material: null,
-            limit: null,
-            collection: null,
+                size: null,
+                color: null,
+                gender: null,
+                brand: null,
+                minPrice: null,
+                maxPrice: null,
+                sortBy: null,
+                search: null,
+                material: null,
+                limit: null,
+                collection: null,
             };
         }
     },
     extraReducers: (builder) => {
         builder
+            // Handle fetchProductsByFilter
             .addCase(fetchProductsByFilter.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
             .addCase(fetchProductsByFilter.fulfilled, (state, action) => {
                 state.loading = false;
-                state.products = Array.isArray(action.payload) ? action.payload : [];
+                state.products = action.payload.products || [];
             })
             .addCase(fetchProductsByFilter.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })
+            // Handle fetchProductById
             .addCase(fetchProductById.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -114,21 +104,7 @@ const productsSlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message;
             })
-            .addCase(updateProducts.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(updateProducts.fulfilled, (state, action) => {
-                state.loading = false;
-                const index = state.products.findIndex(product => product._id === action.payload._id);
-                if (index !== -1) {
-                    state.products[index] = action.payload;
-                }
-            })
-            .addCase(updateProducts.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.error.message;
-            })
+            // Handle fetchSimilarProducts
             .addCase(fetchSimilarProducts.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -138,6 +114,32 @@ const productsSlice = createSlice({
                 state.similarProducts = action.payload;
             })
             .addCase(fetchSimilarProducts.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // Handle fetchBestSellers
+            .addCase(fetchBestSellers.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchBestSellers.fulfilled, (state, action) => {
+                state.loading = false;
+                state.bestSellers = action.payload;
+            })
+            .addCase(fetchBestSellers.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // Handle fetchNewArrivals
+            .addCase(fetchNewArrivals.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchNewArrivals.fulfilled, (state, action) => {
+                state.loading = false;
+                state.newArrivals = action.payload;
+            })
+            .addCase(fetchNewArrivals.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             });

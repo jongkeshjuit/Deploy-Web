@@ -1,15 +1,17 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 import ProductGrid from "./ProductGrid";
-import { collections } from "../../assets/dummyData";
 import { useCart } from "../Cart/CartContext";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProductById, fetchSimilarProducts } from "../../redux/slices/productsSlice";
 
 const ProductDetails = () => {
   const { id } = useParams();
+  const dispatch = useDispatch();
   const { addToCart } = useCart();
 
-  const [product, setProduct] = useState(null);
+  const { selectedProduct: product, similarProducts, loading, error } = useSelector((state) => state.products);
   const [mainImage, setMainImage] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
@@ -25,30 +27,33 @@ const ProductDetails = () => {
   });
 
   useEffect(() => {
-    let allProducts = [];
-    collections.forEach((c) => {
-      allProducts = allProducts.concat(c.products);
-    });
+    if (id) {
+      dispatch(fetchProductById(id));
+      dispatch(fetchSimilarProducts(id));
+    }
+  }, [id, dispatch]);
 
-    const found = allProducts.find((p) => p._id === id);
-    setProduct(found ? {
-      ...found,
-      reviews: found.reviews || []
-    } : null);
-    if (found?.images?.length) setMainImage(found.images[0].url);
-  }, [id]);
+  useEffect(() => {
+    if (product?.images?.length) {
+      setMainImage(product.images[0].url);
+    }
+  }, [product]);
 
-  const similarProducts = useMemo(() => {
-    const foundCollection = collections.find((c) =>
-      c.products.some((p) => p._id === id)
+  if (loading) {
+    return <div className="text-center p-10">Đang tải...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center text-red-500 p-10">{error}</div>;
+  }
+
+  if (!product) {
+    return (
+      <div className="text-center text-xl p-10 text-red-500">
+        Không tìm thấy sản phẩm với id: {id}
+      </div>
     );
-    if (!foundCollection) return [];
-
-    const filtered = foundCollection.products.filter((p) => p._id !== id);
-    return filtered
-      .sort(() => Math.random() - 0.5)
-      .slice(0, Math.ceil(filtered.length / 2));
-  }, [id]);
+  }
 
   const handleQuantityChange = (action) => {
     setQuantity((prev) =>
@@ -92,14 +97,6 @@ const ProductDetails = () => {
 
     toast.success("Cảm ơn bạn đã đánh giá sản phẩm!");
   };
-
-  if (!product) {
-    return (
-      <div className="text-center text-xl p-10 text-red-500">
-        Product not found for id: {id}
-      </div>
-    );
-  }
 
   return (
     <div className="pt-6">
@@ -178,9 +175,6 @@ const ProductDetails = () => {
                   }`}>
                   <div className="space-y-2 text-gray-600">
                     <p className="text-sm">{product.material || "Đang cập nhật"}</p>
-                    {product.materialDetails && product.materialDetails.map((detail, idx) => (
-                      <p key={idx} className="text-sm">{detail}</p>
-                    ))}
                   </div>
                 </div>
               </div>
@@ -198,9 +192,6 @@ const ProductDetails = () => {
                   }`}>
                   <div className="space-y-2 text-gray-600">
                     <p className="text-sm">{product.care || "Đang cập nhật"}</p>
-                    {product.careNote && (
-                      <p className="text-sm text-gray-500 italic mt-2">{product.careNote}</p>
-                    )}
                   </div>
                 </div>
               </div>
@@ -245,7 +236,6 @@ const ProductDetails = () => {
                   product.reviews.map((review, index) => (
                     <div key={index} className="border-b border-gray-300 pb-4">
                       <div className="flex items-center gap-2 mb-2">
-
                         <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
                           <span className="text-sm font-medium">
                             {review.userName.charAt(0).toUpperCase()}

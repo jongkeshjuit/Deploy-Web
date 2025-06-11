@@ -9,7 +9,7 @@ const productSchema = new mongoose.Schema({
     description: {
         type: String,
         required: true,
-        trim: true
+        // trim: true
     },
     price: {
         type: Number,
@@ -37,18 +37,18 @@ const productSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    brand: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    sizes: [{
-        type: String,
+    // brand: {
+    //     type: String,
+    //     required: true,
+    //     trim: true
+    // },
+    sizes: {
+        type: [String],
         required: true,
         trim: true,
-    }],
-    color: {
-        type: String,
+    },
+    colors: {
+        type: [String],
         required: true,
         trim: true
     },
@@ -85,7 +85,7 @@ const productSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
-    rating : {
+    rating: {
         type: Number,
         default: 0,
         min: 0,
@@ -140,9 +140,9 @@ const productSchema = new mongoose.Schema({
         }
     },
 },
-    { 
+    {
         timestamps: true,
-        suppressReservedKeysWarning: true 
+        suppressReservedKeysWarning: true
     }
 );
 module.exports = mongoose.model('Product', productSchema);
