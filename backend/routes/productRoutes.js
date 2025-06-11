@@ -282,6 +282,10 @@ router.get("/", async (req, res) => {
       ];
     }
 
+    // Thêm log để debug
+    console.log("[PRODUCT SEARCH] search:", search);
+    console.log("[PRODUCT SEARCH] final query:", JSON.stringify(query));
+
     // Sorting
     let sortOptions = {};
     if (sortBy) {

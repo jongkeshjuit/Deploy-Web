@@ -75,7 +75,7 @@ router.post("/login", async (req, res) => {
       process.env.JWT_SECRET || "your_jwt_secret_key",
       { expiresIn: "7d" }
     );
-    // Trả về thông tin cơ bản và token
+    // Trả về đầy đủ thông tin user và token
     res.status(200).json({
       message: "Login successful",
       user: {
@@ -83,6 +83,16 @@ router.post("/login", async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        gender: user.gender,
+        birth: user.birth,
+        address: user.address,
+        city: user.city,
+        district: user.district,
+        ward: user.ward,
+        phone: user.phone,
+        profileImage: user.profileImage,
+        accountType: user.accountType,
+        createdAt: user.createdAt,
       },
       token,
     });

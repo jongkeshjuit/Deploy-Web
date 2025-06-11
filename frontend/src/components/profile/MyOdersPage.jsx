@@ -145,12 +145,18 @@ const MyOdersPage = () => {
                     <td className="py-2 px-4">
                       <span
                         className={`flex items-center gap-1 w-max px-2 py-1 rounded-full text-xs sm:text-sm font-medium whitespace-nowrap ${
-                          order.isPaid
+                          order.paymentStatus === "Paid"
                             ? "bg-green-100 text-green-700"
+                            : order.paymentStatus === "Refunded"
+                            ? "bg-yellow-100 text-yellow-700"
                             : "bg-red-100 text-red-700"
                         }`}
                       >
-                        {order.isPaid ? "Đã thanh toán" : "Chưa thanh toán"}
+                        {order.paymentStatus === "Paid"
+                          ? "Đã thanh toán"
+                          : order.paymentStatus === "Refunded"
+                          ? "Đã hoàn tiền"
+                          : "Chưa thanh toán"}
                       </span>
                     </td>
                   </tr>

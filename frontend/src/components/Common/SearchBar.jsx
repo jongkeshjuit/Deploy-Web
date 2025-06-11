@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import ProductGrid from "../Products/ProductGrid";
 import axios from "axios";
 
-const SearchBar = () => {
+const SearchBar = ({ hideTextOnMobile }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
@@ -28,6 +28,7 @@ const SearchBar = () => {
           const response = await axios.get(`${API_URL}/api/products/search`, {
             params: { query: searchTerm }
           });
+
 
           setSearchResults(response.data.products || []);
         } catch (error) {
@@ -65,7 +66,13 @@ const SearchBar = () => {
           aria-label="Mở tìm kiếm"
         >
           <GrSearch className="text-[20px]" />
-          <span className="text-sm hidden md:inline">Tìm kiếm</span>
+          <span
+            className={
+              hideTextOnMobile ? "hidden md:inline text-sm" : "text-sm"
+            }
+          >
+            Tìm kiếm
+          </span>
         </button>
       )}
 
@@ -124,8 +131,10 @@ const SearchBar = () => {
 
             {/* No results message */}
             {searchTerm && !loading && searchResults.length === 0 && (
-              <div className="text-center my-4 px-4 md:mx-[50px]">
-                <p className="text-gray-500 text-sm md:text-base">Không tìm thấy sản phẩm nào cho "{searchTerm}"</p>
+              <div className="text-center my-4 mx-[50px]">
+                <p className="text-gray-500">
+                  Không tìm thấy sản phẩm nào cho "{searchTerm}"
+                </p>
               </div>
             )}
           </div>
@@ -143,19 +152,23 @@ const SearchBar = () => {
           {/* Popular searches or suggestions when no search term */}
           {!searchTerm && !loading && (
             <div className="w-full px-4 md:px-[50px] mb-10">
-              <h3 className="text-base md:text-lg font-normal my-2">Gợi ý tìm kiếm:</h3>
+              <h3 className="text-base md:text-lg font-normal my-2">
+                Gợi ý tìm kiếm:
+              </h3>
               <div className="flex flex-wrap gap-2 mt-4">
-                {['Áo phông', 'Quần jean', 'Áo khoác', 'Váy', 'Giày'].map((suggestion) => (
-                  <button
-                    key={suggestion}
-                    onClick={() => {
-                      setSearchTerm(suggestion);
-                    }}
-                    className="px-3 py-1.5 md:px-4 md:py-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors text-xs md:text-sm"
-                  >
-                    {suggestion}
-                  </button>
-                ))}
+                {["Áo phông", "Quần jean", "Áo khoác", "Váy", "Giày"].map(
+                  (suggestion) => (
+                    <button
+                      key={suggestion}
+                      onClick={() => {
+                        setSearchTerm(suggestion);
+                      }}
+                      className="px-4 py-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors text-sm"
+                    >
+                      {suggestion}
+                    </button>
+                  )
+                )}
               </div>
             </div>
           )}

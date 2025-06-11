@@ -5,14 +5,19 @@ import ProductGrid from "./ProductGrid";
 // import { useCart } from "../Cart/CartContext";
 import { addToCart } from "../../redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProductById, fetchSimilarProducts } from "../../redux/slices/productsSlice";
+import {
+  fetchProductById,
+  fetchSimilarProducts,
+} from "../../redux/slices/productsSlice";
 
 const ProductDetails = ({ productId }) => {
   const { id } = useParams();
   const dispatch = useDispatch();
   // const { addToCart } = useCart();
 
-  const { selectedProduct, similarProducts, loading, error } = useSelector((state) => state.products);
+  const { selectedProduct, similarProducts, loading, error } = useSelector(
+    (state) => state.products
+  );
   const { user, guestId } = useSelector((state) => state.auth);
 
   const [mainImage, setMainImage] = useState("");
@@ -35,9 +40,8 @@ const ProductDetails = ({ productId }) => {
   const [expandedSections, setExpandedSections] = useState({
     details: false,
     material: false,
-    care: false
+    care: false,
   });
-
 
   useEffect(() => {
     if (selectedProduct?.images?.length) {
@@ -82,7 +86,7 @@ const ProductDetails = ({ productId }) => {
         size: selectedSize,
         color: selectedColor,
         userId: user?._id,
-        guestId
+        guestId,
       })
     )
       .unwrap()
@@ -97,30 +101,6 @@ const ProductDetails = ({ productId }) => {
       .finally(() => {
         setIsButtonDisabled(false);
       });
-  };
-
-  const handleSubmitReview = () => {
-    if (!newReviewRating || !newReviewComment.trim()) {
-      toast.error("Vui lòng chọn số sao và nhập nội dung đánh giá");
-      return;
-    }
-
-    const newReview = {
-      userName: "Khách hàng",
-      rating: newReviewRating,
-      comment: newReviewComment,
-      date: new Date().toISOString(),
-    };
-
-    setProduct(prev => ({
-      ...prev,
-      reviews: [newReview, ...(prev.reviews || [])]
-    }));
-
-    setNewReviewRating(0);
-    setNewReviewComment("");
-
-    toast.success("Cảm ơn bạn đã đánh giá sản phẩm!");
   };
 
   return (
@@ -161,29 +141,46 @@ const ProductDetails = ({ productId }) => {
               <div className="mt-8 pt-6">
                 <div className="flex flex-col gap-2 border-b-2 border-gray-300 pb-4">
                   <h2 className="text-4xl font-normal">Mô tả</h2>
-                  <p className="text-gray-500 text-base">Mã sản phẩm: {selectedProduct._id || "Đang cập nhật"}</p>
+                  <p className="text-gray-500 text-base">
+                    Mã sản phẩm: {selectedProduct._id || "Đang cập nhật"}
+                  </p>
                 </div>
 
                 {/* Details Section */}
                 <div className="border-b border-gray-300">
                   <button
-                    onClick={() => setExpandedSections(prev => ({ ...prev, details: !prev.details }))}
+                    onClick={() =>
+                      setExpandedSections((prev) => ({
+                        ...prev,
+                        details: !prev.details,
+                      }))
+                    }
                     className="w-full py-3 flex justify-between items-center text-left"
                   >
                     <span className="font-normal text-lg">Chi tiết</span>
-                    <span className="text-xl">{expandedSections.details ? '−' : '+'}</span>
+                    <span className="text-xl">
+                      {expandedSections.details ? "−" : "+"}
+                    </span>
                   </button>
-                  <div className={`overflow-hidden transition-all duration-300 ${expandedSections.details ? 'max-h-[500px] pb-4' : 'max-h-0'
-                    }`}>
+                  <div
+                    className={`overflow-hidden transition-all duration-300 ${
+                      expandedSections.details
+                        ? "max-h-[500px] pb-4"
+                        : "max-h-0"
+                    }`}
+                  >
                     <div className="space-y-2 text-gray-600">
                       <p className="text-base">{selectedProduct.description}</p>
-                      {selectedProduct.details && selectedProduct.details.length > 0 && (
-                        <ul className="list-disc pl-5 mt-2">
-                          {selectedProduct.details.map((detail, idx) => (
-                            <li key={idx} className="text-sm">{detail}</li>
-                          ))}
-                        </ul>
-                      )}
+                      {selectedProduct.details &&
+                        selectedProduct.details.length > 0 && (
+                          <ul className="list-disc pl-5 mt-2">
+                            {selectedProduct.details.map((detail, idx) => (
+                              <li key={idx} className="text-sm">
+                                {detail}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -191,16 +188,30 @@ const ProductDetails = ({ productId }) => {
                 {/* Material Section */}
                 <div className="border-b border-gray-300">
                   <button
-                    onClick={() => setExpandedSections(prev => ({ ...prev, material: !prev.material }))}
+                    onClick={() =>
+                      setExpandedSections((prev) => ({
+                        ...prev,
+                        material: !prev.material,
+                      }))
+                    }
                     className="w-full py-3 flex justify-between items-center text-left"
                   >
                     <span className="font-normal text-lg">Chất liệu</span>
-                    <span className="text-xl">{expandedSections.material ? '−' : '+'}</span>
+                    <span className="text-xl">
+                      {expandedSections.material ? "−" : "+"}
+                    </span>
                   </button>
-                  <div className={`overflow-hidden transition-all duration-300 ${expandedSections.material ? 'max-h-[500px] pb-4' : 'max-h-0'
-                    }`}>
+                  <div
+                    className={`overflow-hidden transition-all duration-300 ${
+                      expandedSections.material
+                        ? "max-h-[500px] pb-4"
+                        : "max-h-0"
+                    }`}
+                  >
                     <div className="space-y-2 text-gray-600">
-                      <p className="text-sm">{selectedProduct.material || "Đang cập nhật"}</p>
+                      <p className="text-sm">
+                        {selectedProduct.material || "Đang cập nhật"}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -208,105 +219,32 @@ const ProductDetails = ({ productId }) => {
                 {/* Care Instructions Section */}
                 <div className="border-b border-gray-300">
                   <button
-                    onClick={() => setExpandedSections(prev => ({ ...prev, care: !prev.care }))}
+                    onClick={() =>
+                      setExpandedSections((prev) => ({
+                        ...prev,
+                        care: !prev.care,
+                      }))
+                    }
                     className="w-full py-3 flex justify-between items-center text-left"
                   >
-                    <span className="font-normal text-lg">Hướng dẫn bảo quản</span>
-                    <span className="text-xl">{expandedSections.care ? '−' : '+'}</span>
+                    <span className="font-normal text-lg">
+                      Hướng dẫn bảo quản
+                    </span>
+                    <span className="text-xl">
+                      {expandedSections.care ? "−" : "+"}
+                    </span>
                   </button>
-                  <div className={`overflow-hidden transition-all duration-300 ${expandedSections.care ? 'max-h-[500px] pb-4' : 'max-h-0'
-                    }`}>
+                  <div
+                    className={`overflow-hidden transition-all duration-300 ${
+                      expandedSections.care ? "max-h-[500px] pb-4" : "max-h-0"
+                    }`}
+                  >
                     <div className="space-y-2 text-gray-600">
-                      <p className="text-sm">{selectedProduct.care || "Đang cập nhật"}</p>
+                      <p className="text-sm">
+                        {selectedProduct.care || "Đang cập nhật"}
+                      </p>
                     </div>
                   </div>
-                </div>
-              </div>
-              {/* Product Reviews */}
-              <div className="mt-8 pt-6">
-                <h2 className="text-4xl font-normal mb-4">Đánh giá sản phẩm</h2>
-
-                {/* Review Form */}
-                <div className="mb-6 p-4">
-                  <h3 className="font-normal text-lg mb-3">Viết đánh giá</h3>
-                  <div className="flex items-center gap-2 mb-3">
-                    {[...Array(5)].map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setNewReviewRating(i + 1)}
-                        className={`text-xl ${i < newReviewRating ? "text-yellow-400" : "text-gray-300"
-                          }`}
-                      >
-                        ★
-                      </button>
-                    ))}
-                  </div>
-                  <textarea
-                    value={newReviewComment}
-                    onChange={(e) => setNewReviewComment(e.target.value)}
-                    placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm..."
-                    className="w-full p-2 border border-gray-300 mb-3 h-[100px] resize-none outline-none"
-                  />
-                  <button
-                    onClick={handleSubmitReview}
-                    disabled={!newReviewRating || !newReviewComment.trim()}
-                    className="px-4 py-2 bg-black text-white rounded-md disabled:bg-gray-300"
-                  >
-                    Gửi đánh giá
-                  </button>
-                </div>
-
-                {/* Reviews List */}
-                <div className="space-y-4">
-                  {selectedProduct.reviews && selectedProduct.reviews.length > 0 ? (
-                    selectedProduct.reviews.map((review, index) => (
-                      <div key={index} className="border-b border-gray-300 pb-4">
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                            <span className="text-sm font-medium">
-                              {review.userName.charAt(0).toUpperCase()}
-                            </span>
-                          </div>
-                          <div>
-                            <p className="font-medium">{review.userName}</p>
-                            <div className="flex items-center gap-1">
-                              {[...Array(5)].map((_, i) => (
-                                <span
-                                  key={i}
-                                  className={`text-lg ${i < review.rating ? "text-yellow-400" : "text-gray-300"
-                                    }`}
-                                >
-                                  ★
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                        <p className="text-gray-600 text-sm">{review.comment}</p>
-                        <p className="text-gray-400 text-xs mt-1">
-                          {new Date(review.date).toLocaleDateString("vi-VN")}
-                        </p>
-
-                        {/* Staff Response */}
-                        {review.response && (
-                          <div className="ml-8 mt-3 p-3 bg-gray-50 rounded-md">
-                            <div className="flex items-center gap-2 mb-2">
-                              <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
-                                <span className="text-xs font-medium text-blue-600">S</span>
-                              </div>
-                              <p className="font-medium text-sm">Phản hồi từ cửa hàng</p>
-                            </div>
-                            <p className="text-gray-600 text-sm">{review.response}</p>
-                            <p className="text-gray-400 text-xs mt-1">
-                              {new Date(review.responseDate).toLocaleDateString("vi-VN")}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-gray-500">Chưa có đánh giá nào cho sản phẩm này.</p>
-                  )}
                 </div>
               </div>
             </div>
@@ -335,10 +273,11 @@ const ProductDetails = ({ productId }) => {
                     <button
                       key={color}
                       onClick={() => setSelectedColor(color)}
-                      className={`w-10 h-10 rounded-full border cursor-pointer ${selectedColor === color
-                        ? "border-2 border-black"
-                        : "border-gray-300"
-                        }`}
+                      className={`w-10 h-10 rounded-full border cursor-pointer ${
+                        selectedColor === color
+                          ? "border-2 border-black"
+                          : "border-gray-300"
+                      }`}
                       style={{
                         backgroundColor: color.toLowerCase(),
                         filter: "brightness(0.9)",
@@ -356,10 +295,11 @@ const ProductDetails = ({ productId }) => {
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
-                      className={`w-10 h-10 flex items-center justify-center border cursor-pointer text-sm font-medium ${selectedSize === size
-                        ? "border-black text-black"
-                        : "border-gray-400 text-gray-400"
-                        }`}
+                      className={`w-10 h-10 flex items-center justify-center border cursor-pointer text-sm font-medium ${
+                        selectedSize === size
+                          ? "border-black text-black"
+                          : "border-gray-400 text-gray-400"
+                      }`}
                     >
                       {size}
                     </button>
@@ -402,10 +342,11 @@ const ProductDetails = ({ productId }) => {
               <button
                 onClick={handleAddToCart}
                 disabled={isButtonDisabled}
-                className={`bg-black text-lg text-white py-2 rounded-full w-full cursor-pointer ${isButtonDisabled
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-gray-800"
-                  }`}
+                className={`bg-black text-lg text-white py-2 rounded-full w-full cursor-pointer ${
+                  isButtonDisabled
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-gray-800"
+                }`}
               >
                 {isButtonDisabled ? "Đang thêm..." : "Thêm vào giỏ hàng"}
               </button>
@@ -415,7 +356,34 @@ const ProductDetails = ({ productId }) => {
             <h2 className="text-2xl text-center font-medium mb-4">
               Sản phẩm tương tự
             </h2>
-            <ProductGrid product={similarProducts} loading={loading} error={error} />
+            {similarProducts &&
+              selectedProduct &&
+              (() => {
+                // Gộp tất cả sản phẩm liên quan thành 1 mảng
+                const allRelated = [
+                  ...(similarProducts.sameCategory || []),
+                  ...(similarProducts.sameBrand || []),
+                  ...(similarProducts.recommended || []),
+                ];
+                // Loại trùng và loại sản phẩm hiện tại
+                const uniqueRelated = allRelated
+                  .filter((p) => p._id !== selectedProduct._id)
+                  .filter(
+                    (p, idx, arr) =>
+                      arr.findIndex((x) => x._id === p._id) === idx
+                  );
+
+                if (uniqueRelated.length === 0) return null;
+
+                return (
+                  <div className="mt-12">
+                    <h2 className="text-2xl font-semibold mb-4 text-left">
+                      Sản phẩm tương tự
+                    </h2>
+                    <ProductGrid products={uniqueRelated} />
+                  </div>
+                );
+              })()}
           </div>
         </div>
       )}
