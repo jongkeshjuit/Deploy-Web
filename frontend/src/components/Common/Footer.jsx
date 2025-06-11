@@ -5,10 +5,10 @@ import Newsletter from "./Newsletter";
 
 const Footer = () => {
   return (
-    <div className="flex flex-col gap-[53px] bg-[#F4F4F4]">
-      <div className="flex items-top px-[50px] pt-[30px]">
+    <div className="flex flex-col gap-6 md:gap-[53px] bg-[#F4F4F4]">
+      <div className="grid grid-cols-2 md:flex md:flex-row items-start px-4 md:px-[50px] pt-4 md:pt-[30px] gap-6 md:gap-0">
         {/* bên trái */}
-        <div className="flex flex-col gap-[15px] flex-1">
+        <div className="flex flex-col gap-[15px] flex-1 items-start text-left">
           <h3 className="font-semibold">Về Wukudada.</h3>
           <Link to="information" className="text-[14px] font-light">
             Thông tin
@@ -18,9 +18,9 @@ const Footer = () => {
           </Link>
         </div>
         {/* ở giữa */}
-        <div className="flex flex-col gap-[15px] flex-1">
+        <div className="flex flex-col gap-[15px] flex-1 items-start text-left">
           <h3 className="font-semibold">Liên hệ Wukudada.</h3>
-          <div className="pr-[50px]">
+          <div className="pr-0 md:pr-[50px]">
             <p className="text-[14px] font-light">
               Hotline:{" "}
               <a href="tel:+84567890111" className="font-normal">
@@ -39,9 +39,9 @@ const Footer = () => {
           </p>
         </div>
         {/* bên phải */}
-        <div className="flex flex-col gap-[15px] flex-1">
+        <div className="flex flex-col gap-[15px] flex-1 items-start text-left">
           <h3 className="font-semibold">Theo dõi Wukudada.</h3>
-          <div className="flex items-center gap-[15px]">
+          <div className="flex items-center justify-start gap-[15px]">
             <a
               href="https://www.facebook.com/"
               target="_blank"
@@ -65,10 +65,12 @@ const Footer = () => {
             </a>
           </div>
         </div>
-        <Newsletter />
+        <div className="hidden md:block">
+          <Newsletter />
+        </div>
       </div>
       <div className="flex items-center justify-center border-t-[1px] border-t-[#DCDCDC] py-[10px]">
-        <p className="text-[14px] font-semibold">
+        <p className="text-[14px] font-semibold text-center">
           Bản quyền thuộc Công ty TNHH Wukudada. Bảo lưu mọi quyền.
         </p>
       </div>

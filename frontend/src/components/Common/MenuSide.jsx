@@ -61,10 +61,10 @@ const MenuSide = () => {
               className={`flex flex-col transition-transform duration-300 ease-in-out ${isMenuOpen ? "-translate-y-[20px]" : "translate-y-0"
                 }`}
             >
-              <span className="text-[14px] font-normal h-[20px] flex items-center justify-center">
+              <span className="text-[14px] font-normal h-[20px] hidden md:flex items-center justify-center">
                 Menu
               </span>
-              <span className="text-[14px] font-normal h-[20px] flex items-center justify-center">
+              <span className="text-[14px] font-normal h-[20px] hidden md:flex items-center justify-center">
                 Đóng
               </span>
             </div>
@@ -176,21 +176,6 @@ const MenuSide = () => {
               </div>
             </div>
           </div>
-
-          <Link
-            to="/tre-em"
-            className="text-[20px] font-normal hover:underline underline-offset-4 pl-[50px]"
-            onClick={closeMenu}
-          >
-            Đồ Trẻ em
-          </Link>
-          <Link
-            to="/tre-so-sinh"
-            className="text-[20px] font-normal hover:underline underline-offset-4 pl-[50px]"
-            onClick={closeMenu}
-          >
-            Đồ Trẻ sơ sinh
-          </Link>
         </div>
       </div>
     </>
