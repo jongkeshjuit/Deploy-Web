@@ -230,71 +230,7 @@ const Login = () => {
                                     <FcGoogle className="h-5 w-5 mr-2" />
                                     Google
                                 </button>
-                                <FacebookLogin
-                                    appId={import.meta.env.VITE_FACEBOOK_APP_ID}
-                                    onSuccess={async (response) => {
-                                        console.log('Facebook raw response:', response);
-                                        try {
-                                            // Get user profile data from Facebook
-                                            const profileResponse = await fetch(
-                                                `https://graph.facebook.com/v19.0/me?fields=id,name,email,picture&access_token=${response.accessToken}`
-                                            );
-                                            const profileData = await profileResponse.json();
-                                            console.log('Facebook profile data:', profileData);
-
-                                            // Create a user object with Facebook data
-                                            const user = {
-                                                id: profileData.id,
-                                                name: profileData.name,
-                                                email: profileData.email,
-                                                profileImage: profileData.picture?.data?.url,
-                                                accountType: 'facebook',
-                                                role: 'customer' // Default role
-                                            };
-
-                                            // Save to localStorage
-                                            localStorage.setItem('userInfo', JSON.stringify(user));
-                                            localStorage.setItem('userToken', response.accessToken);
-
-                                            // Update Redux state
-                                            dispatch({
-                                                type: 'auth/loginSuccess',
-                                                payload: {
-                                                    userInfo: {
-                                                        ...user,
-                                                        skipToast: true
-                                                    },
-                                                    userToken: response.accessToken
-                                                }
-                                            });
-
-                                            toast.success('Đăng nhập Facebook thành công!');
-                                            navigate('/');
-                                        } catch (error) {
-                                            console.error('Error fetching Facebook profile:', error);
-                                            toast.error('Không thể lấy thông tin từ Facebook. Vui lòng thử lại.');
-                                        }
-                                    }}
-                                    onFail={(error) => {
-                                        console.error('Facebook login error details:', error);
-                                        toast.error(`Đăng nhập Facebook thất bại: ${error.message || 'Vui lòng thử lại'}`);
-                                    }}
-                                    onProfileSuccess={(response) => {
-                                        console.log('Facebook profile data:', response);
-                                    }}
-                                    scope="public_profile,email"
-                                    fields="id,name,email,picture"
-                                    render={({ onClick, disabled }) => (
-                                        <button
-                                            onClick={onClick}
-                                            disabled={disabled || loading}
-                                            className="flex items-center justify-center px-4 py-[10px] border border-gray-300 text-[20px] font-medium text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                                        >
-                                            <FaFacebook className="h-5 w-5 mr-2 text-blue-600" />
-                                            Facebook
-                                        </button>
-                                    )}
-                                />
+                            
                             </div>
                         </div>
                     </form>

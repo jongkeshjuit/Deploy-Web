@@ -72,26 +72,26 @@ function GenderCollection() {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className="w-full px-[50px]">
-        <h2 className="text-2xl text-left font-medium mb-6 mt-10">
+      <div className="w-full px-4 md:px-[50px]">
+        <h2 className="text-xl md:text-2xl text-left font-medium mb-4 md:mb-6 mt-6 md:mt-10">
           {collection.name}
         </h2>
         {collection.bannerUrl && (
           <img
             src={collection.bannerUrl}
             alt={collection.name}
-            className="w-full max-h-[300px] object-cover rounded mb-4"
+            className="w-full object-cover rounded mb-4"
           />
         )}
         {collection.description && (
-          <p className="text-lg text-gray-700 mb-4">{collection.description}</p>
+          <p className="text-base md:text-lg text-gray-700 mb-4">{collection.description}</p>
         )}
       </div>
       {/* filter sidebar */}
-      <div className="w-full px-[50px] flex justify-between">
+      <div className="w-full px-4 md:px-[50px] flex justify-between items-center">
         <button
           onClick={toggleSidebar}
-          className="filter-button flex items-center gap-2 rounded-full border border-gray-300 px-4 py-1.5 hover:bg-gray-50 transition-colors"
+          className="filter-button flex items-center gap-2 rounded-full border border-gray-300 px-3 md:px-4 py-1 md:py-1.5 hover:bg-gray-50 transition-colors"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -99,7 +99,7 @@ function GenderCollection() {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-5 h-5"
+            className="w-4 h-4 md:w-5 md:h-5"
           >
             <path
               strokeLinecap="round"
@@ -107,7 +107,7 @@ function GenderCollection() {
               d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
             />
           </svg>
-          Filters
+          <span className="text-sm md:text-base">Filters</span>
         </button>
         {/* overlay */}
         <div
@@ -123,28 +123,28 @@ function GenderCollection() {
           ref={sidebarRef}
           className={`${
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } fixed inset-y-0 z-50 left-0 w-80 overflow-y-auto transition-transform duration-300 ease-in-out bg-white`}
+          } fixed inset-y-0 z-50 left-0 w-[280px] md:w-80 overflow-y-auto transition-transform duration-300 ease-in-out bg-white`}
         >
           <FilterSidebar />
         </div>
         {/* sort options */}
         <div>
-          <SortOptions />{" "}
+          <SortOptions />
         </div>
       </div>
       {/* Hiển thị số lượng sản phẩm */}
-      <p className="text-black text-[20px] font-medium my-2 px-[50px]">
+      <p className="text-black text-base md:text-[20px] font-medium my-2 px-4 md:px-[50px]">
         {products.length} sản phẩm
       </p>
       {/* Hiển thị "Không tìm thấy sản phẩm" nếu không có kết quả */}
       {products.length === 0 ? (
-        <div className="w-full px-[50px] text-center py-10">
-          <p className="text-gray-500">
+        <div className="w-full px-4 md:px-[50px] text-center py-6 md:py-10">
+          <p className="text-gray-500 text-sm md:text-base">
             Không tìm thấy sản phẩm phù hợp với bộ lọc đã chọn
           </p>
         </div>
       ) : (
-        <div className="w-full px-[50px]">
+        <div className="w-full px-4 md:px-[50px]">
           <ProductGrid products={products} />
         </div>
       )}

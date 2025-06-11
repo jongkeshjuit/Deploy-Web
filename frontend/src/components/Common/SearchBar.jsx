@@ -10,7 +10,7 @@ const SearchBar = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  
+
   const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:9000';
 
   const toggleSearch = () => setIsOpen((prev) => !prev);
@@ -25,13 +25,10 @@ const SearchBar = () => {
       if (searchTerm.trim()) {
         try {
           setLoading(true);
-          const response = await axios.get(`${API_URL}/api/products`, {
-            params: {
-              search: searchTerm,
-              limit: 12
-            }
+          const response = await axios.get(`${API_URL}/api/products/search`, {
+            params: { query: searchTerm }
           });
-          
+
           setSearchResults(response.data.products || []);
         } catch (error) {
           console.error("Error searching products:", error);
@@ -73,9 +70,8 @@ const SearchBar = () => {
       )}
 
       <div
-        className={`fixed top-0 left-0 w-full h-screen bg-white z-50 transition-transform duration-200 ease-in-out ${
-          isOpen ? "translate-y-0" : "-translate-y-full"
-        }`}
+        className={`fixed top-0 left-0 w-full h-screen bg-white z-50 transition-transform duration-200 ease-in-out ${isOpen ? "translate-y-0" : "-translate-y-full"
+          }`}
       >
         <div className="flex flex-col w-full h-full overflow-y-auto">
           {/* Header tìm kiếm */}
@@ -138,7 +134,7 @@ const SearchBar = () => {
           {searchResults.length > 0 && !loading && (
             <div className="w-full px-4 md:px-[50px] mb-10">
               <ProductGrid
-                product={searchResults}
+                products={searchResults}
                 onClick={() => setIsOpen(false)}
               />
             </div>

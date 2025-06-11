@@ -204,6 +204,7 @@ const Checkout = () => {
         },
         paymentMethod: formData.paymentMethod,
         totalPrice: getTotalPrice() + 50000,
+        guestId: guestId || null,
       };
       // Log dữ liệu gửi lên để kiểm tra
       console.log("orderData gửi lên:", orderData);

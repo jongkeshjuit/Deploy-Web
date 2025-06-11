@@ -6,6 +6,19 @@ const router = express.Router();
 // @route   POST /api/products
 // @desc    Create a new product
 // @access  Private/Admin
+router.get('/search', async (req, res) => {
+  const { query } = req.query;
+  try {
+    // Tìm kiếm không phân biệt hoa thường, có thể dùng regex
+    const products = await Product.find({
+      name: { $regex: query, $options: 'i' }
+    });
+    res.json({ products }); // Đảm bảo trả về object có key "products"
+  } catch (error) {
+    res.status(500).json({ message: 'Error searching products', error: error.message });
+  }
+});
+
 router.post("/", authMiddleware, isAdmin, async (req, res) => {
   try {
     const {
