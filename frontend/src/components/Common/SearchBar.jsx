@@ -146,8 +146,8 @@ const SearchBar = ({ hideTextOnMobile }) => {
           {searchResults.length > 0 && !loading && (
             <div className="w-full px-4 md:px-[50px] mb-10">
               <ProductGrid
-                product={searchResults}
-                onClickProduct={(product) => {
+                products={searchResults}
+                onClick={(product) => {
                   setIsOpen(false);
                   navigate(`/products/${product._id}`);
                 }}
