@@ -91,8 +91,6 @@ const Navbar = () => {
                 {userInfo.profileImage ? (
                   <img
                     src={userInfo.profileImage}
-                  <img
-                    src={userInfo.profileImage}
                     alt={userInfo.name}
                     className="w-[24px] h-[24px] md:w-[30px] md:h-[30px] rounded-full object-cover"
                   />
@@ -113,8 +111,6 @@ const Navbar = () => {
                   >
                     <CgProfile className="mr-2" /> Hồ sơ của tôi
                   </Link>
-                  <Link
-                    to="/profile/orders"
                   <Link
                     to="/profile/orders"
                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -140,16 +136,12 @@ const Navbar = () => {
                   {isAdmin && (
                     <Link
                       to="/admin"
-                    <Link
-                      to="/admin"
                       className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       onClick={() => setShowDropdown(false)}
                     >
                       <RiAdminLine className="mr-2" /> Quản trị
                     </Link>
                   )}
-                  <button
-                    onClick={handleLogout}
                   <button
                     onClick={handleLogout}
                     className="w-full text-left flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100"

@@ -21,7 +21,6 @@ const Footer = () => {
         <div className="flex flex-col gap-[15px] flex-1 items-center md:items-start text-center md:text-left">
           <h3 className="font-semibold">Liên hệ Wukudada.</h3>
           <div className="pr-0 md:pr-[50px]">
-          <div className="pr-0 md:pr-[50px]">
             <p className="text-[14px] font-light">
               Hotline:{" "}
               <a href="tel:+84567890111" className="font-normal">
@@ -71,7 +70,6 @@ const Footer = () => {
         </div>
       </div>
       <div className="flex items-center justify-center border-t-[1px] border-t-[#DCDCDC] py-[10px]">
-        <p className="text-[14px] font-semibold text-center">
         <p className="text-[14px] font-semibold text-center">
           Bản quyền thuộc Công ty TNHH Wukudada. Bảo lưu mọi quyền.
         </p>
