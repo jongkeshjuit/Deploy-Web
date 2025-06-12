@@ -87,7 +87,7 @@ function Collection() {
           <img
             src={collection.bannerUrl}
             alt={collection.name}
-            className="w-1/2 h-full w-full items-center object-cover overflow-hidden"
+            className="w-full md:w-1/2 h-[300px] md:h-[500px] items-center object-cover overflow-hidden"
           />
         </div>
       </div>

@@ -21,7 +21,6 @@ const adminRoutes = require("./routes/adminRoutes");
 const productAdminRoutes = require("./routes/productAdminRoutes");
 const adminOrderRoutes = require("./routes/adminOrderRoutes");
 const collectionRoutes = require("./routes/collectionRoutes");
-
 const app = express();
 
 // Connect to MongoDB

@@ -89,4 +89,12 @@ cartSchema.pre('save', function(next) {
     next();
 });
 
-module.exports = mongoose.model('Cart', cartSchema);
+// Để tránh lỗi OverwriteModelError khi require model nhiều lần,
+// hãy kiểm tra model đã được khai báo chưa trước khi khai báo mới.
+let Cart;
+try {
+  Cart = mongoose.model('Cart');
+} catch (e) {
+  Cart = mongoose.model('Cart', cartSchema);
+}
+module.exports = Cart;
