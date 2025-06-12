@@ -62,10 +62,10 @@ const MenuSide = () => {
                 isMenuOpen ? "-translate-y-[20px]" : "translate-y-0"
               }`}
             >
-              <span className="text-[14px] font-normal h-[20px] flex items-center justify-center">
+              <span className="text-[14px] font-normal h-[20px] hidden md:flex items-center justify-center">
                 Menu
               </span>
-              <span className="text-[14px] font-normal h-[20px] flex items-center justify-center">
+              <span className="text-[14px] font-normal h-[20px] hidden md:flex items-center justify-center">
                 Đóng
               </span>
             </div>

@@ -91,11 +91,13 @@ const Navbar = () => {
                 {userInfo.profileImage ? (
                   <img
                     src={userInfo.profileImage}
+                  <img
+                    src={userInfo.profileImage}
                     alt={userInfo.name}
-                    className="w-[30px] h-[30px] rounded-full object-cover"
+                    className="w-[24px] h-[24px] md:w-[30px] md:h-[30px] rounded-full object-cover"
                   />
                 ) : (
-                  <AiOutlineUser className="text-[20px]" />
+                  <AiOutlineUser className="text-[18px] md:text-[20px]" />
                 )}
                 <span className="hidden md:inline text-sm truncate max-w-[120px]">
                   {userInfo.name || "Tài khoản"}
@@ -111,6 +113,8 @@ const Navbar = () => {
                   >
                     <CgProfile className="mr-2" /> Hồ sơ của tôi
                   </Link>
+                  <Link
+                    to="/profile/orders"
                   <Link
                     to="/profile/orders"
                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -136,12 +140,16 @@ const Navbar = () => {
                   {isAdmin && (
                     <Link
                       to="/admin"
+                    <Link
+                      to="/admin"
                       className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       onClick={() => setShowDropdown(false)}
                     >
                       <RiAdminLine className="mr-2" /> Quản trị
                     </Link>
                   )}
+                  <button
+                    onClick={handleLogout}
                   <button
                     onClick={handleLogout}
                     className="w-full text-left flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
@@ -161,9 +169,9 @@ const Navbar = () => {
           <Link to="/cart" className="flex items-center gap-[10px] relative">
             {/* Icon giỏ hàng */}
             <div className="relative">
-              <PiShoppingCartSimple className="text-[24px]" />
+              <PiShoppingCartSimple className="text-[20px] md:text-[24px]" />
               {cartProducts > 0 && (
-                <span className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 w-4 h-4 md:w-5 md:h-5 bg-red-500 text-white text-[10px] md:text-xs rounded-full flex items-center justify-center">
                   {cartProducts}
                 </span>
               )}
