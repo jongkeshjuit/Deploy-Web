@@ -4,14 +4,14 @@ import { useNavigate } from "react-router-dom";
 import ProductGrid from "../Products/ProductGrid";
 import axios from "axios";
 
-const SearchBar = () => {
+const SearchBar = ({ hideTextOnMobile }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  
-  const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:9000';
+
+  const API_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000";
 
   const toggleSearch = () => setIsOpen((prev) => !prev);
   const clearSearch = () => {
@@ -28,10 +28,10 @@ const SearchBar = () => {
           const response = await axios.get(`${API_URL}/api/products`, {
             params: {
               search: searchTerm,
-              limit: 12
-            }
+              limit: 12,
+            },
           });
-          
+
           setSearchResults(response.data.products || []);
         } catch (error) {
           console.error("Error searching products:", error);
@@ -68,7 +68,13 @@ const SearchBar = () => {
           aria-label="Mở tìm kiếm"
         >
           <GrSearch className="text-[20px]" />
-          <span className="text-sm">Tìm kiếm</span>
+          <span
+            className={
+              hideTextOnMobile ? "hidden md:inline text-sm" : "text-sm"
+            }
+          >
+            Tìm kiếm
+          </span>
         </button>
       )}
 
@@ -129,7 +135,9 @@ const SearchBar = () => {
             {/* No results message */}
             {searchTerm && !loading && searchResults.length === 0 && (
               <div className="text-center my-4 mx-[50px]">
-                <p className="text-gray-500">Không tìm thấy sản phẩm nào cho "{searchTerm}"</p>
+                <p className="text-gray-500">
+                  Không tìm thấy sản phẩm nào cho "{searchTerm}"
+                </p>
               </div>
             )}
           </div>
@@ -139,7 +147,10 @@ const SearchBar = () => {
             <div className="w-full px-[50px] mb-10">
               <ProductGrid
                 product={searchResults}
-                onClick={() => setIsOpen(false)}
+                onClickProduct={(product) => {
+                  setIsOpen(false);
+                  navigate(`/products/${product._id}`);
+                }}
               />
             </div>
           )}
@@ -149,17 +160,19 @@ const SearchBar = () => {
             <div className="w-full px-[50px] mb-10">
               <h3 className="text-lg font-normal my-2">Gợi ý tìm kiếm:</h3>
               <div className="flex flex-wrap gap-2 mt-4">
-                {['Áo phông', 'Quần jean', 'Áo khoác', 'Váy', 'Giày'].map((suggestion) => (
-                  <button
-                    key={suggestion}
-                    onClick={() => {
-                      setSearchTerm(suggestion);
-                    }}
-                    className="px-4 py-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors text-sm"
-                  >
-                    {suggestion}
-                  </button>
-                ))}
+                {["Áo phông", "Quần jean", "Áo khoác", "Váy", "Giày"].map(
+                  (suggestion) => (
+                    <button
+                      key={suggestion}
+                      onClick={() => {
+                        setSearchTerm(suggestion);
+                      }}
+                      className="px-4 py-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors text-sm"
+                    >
+                      {suggestion}
+                    </button>
+                  )
+                )}
               </div>
             </div>
           )}

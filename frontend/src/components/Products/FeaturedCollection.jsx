@@ -9,23 +9,23 @@ const FeaturedCollection = ({ collections }) => {
           const featured = col.products.filter((p) => p.isFeatured);
           if (featured.length === 0) return null;
           return (
-            <div key={col.id} className=" featured-collection overflow-hidden">
+            <div key={col.id} className="featured-collection overflow-hidden">
               <Link to={`/collections/${col.id}`}>
                 <div className="relative">
                   <img
                     src={col.bannerUrl}
                     alt={col.name}
-                    className="w-full h-[750px] object-cover"
+                    className="w-full h-48 sm:h-72 md:h-[400px] lg:h-[600px] xl:h-[750px] object-cover"
                   />
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
-                    <h2 className="text-2xl font-bold text-white">
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 sm:p-6">
+                    <h2 className="text-lg sm:text-2xl font-bold text-white">
                       {col.name}
                     </h2>
                   </div>
                 </div>
               </Link>
-              <div className="px-[150px] pt-5">
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 ">
+              <div className="px-2 sm:px-8 md:px-20 lg:px-[150px] pt-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 ">
                   {featured.map((p) => (
                     <Link
                       key={p._id}
@@ -47,7 +47,15 @@ const FeaturedCollection = ({ collections }) => {
                             {p.name}
                           </h3>
                           <p className="text-black font-medium text-lg">
-                            ${p.price}
+                            {p.discountPrice
+                              ? p.discountPrice.toLocaleString("vi-VN", {
+                                  style: "currency",
+                                  currency: "VND",
+                                })
+                              : p.price.toLocaleString("vi-VN", {
+                                  style: "currency",
+                                  currency: "VND",
+                                })}
                           </p>
                         </div>
                       </div>

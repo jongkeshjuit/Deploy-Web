@@ -22,16 +22,33 @@ const ProductManagement = () => {
     fetchProducts();
   }, []);
 
-  const handelDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
-      // Gọi API xóa sản phẩm ở đây nếu muốn
-      console.log("Deleted product with id:", id);
+      try {
+        const userToken =
+          localStorage.getItem("userToken") || localStorage.getItem("token");
+        await axios.delete(`${API_URL}/api/products/${id}`, {
+          headers: { Authorization: `Bearer ${userToken}` },
+        });
+        setProducts(products.filter((p) => p._id !== id));
+        alert("Xóa sản phẩm thành công!");
+      } catch (err) {
+        alert("Xóa sản phẩm thất bại!");
+      }
     }
   };
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-6">Product Management</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold">Product Management</h2>
+        <Link
+          to="/admin/products/new"
+          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+        >
+          Thêm sản phẩm
+        </Link>
+      </div>
       <div className="overflow-x-auto">
         <table className="min-w-full text-left text-gray-500 border border-gray-100 border-collapse">
           <thead className="text-xs text-gray-700 uppercase bg-gray-100">
@@ -68,7 +85,7 @@ const ProductManagement = () => {
                       Edit
                     </Link>
                     <button
-                      onClick={() => handelDelete(product._id)}
+                      onClick={() => handleDelete(product._id)}
                       className="inline-flex items-center bg-red-500 text-white px-3 py-1 rounded-full hover:bg-red-600 cursor-pointer"
                     >
                       Delete

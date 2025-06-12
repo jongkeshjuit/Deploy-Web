@@ -58,8 +58,9 @@ const MenuSide = () => {
           )}
           <div className="overflow-hidden h-[20px] relative">
             <div
-              className={`flex flex-col transition-transform duration-300 ease-in-out ${isMenuOpen ? "-translate-y-[20px]" : "translate-y-0"
-                }`}
+              className={`flex flex-col transition-transform duration-300 ease-in-out ${
+                isMenuOpen ? "-translate-y-[20px]" : "translate-y-0"
+              }`}
             >
               <span className="text-[14px] font-normal h-[20px] flex items-center justify-center">
                 Menu
@@ -73,16 +74,18 @@ const MenuSide = () => {
       </div>
       {/* Nền tối */}
       <div
-        className={`fixed inset-0 w-screen h-full bg-black/75 z-30 transition-[opacity,visibility] duration-200 ease-in-out ${isMenuOpen
-          ? "opacity-100 visible"
-          : "opacity-0 invisible pointer-events-none"
-          }`}
+        className={`fixed inset-0 w-screen h-full bg-black/75 z-30 transition-[opacity,visibility] duration-200 ease-in-out ${
+          isMenuOpen
+            ? "opacity-100 visible"
+            : "opacity-0 invisible pointer-events-none"
+        }`}
         onClick={closeMenu}
       />{" "}
       {/* Menu chính */}
       <div
-        className={`fixed top-0 left-0 w-[300px] h-full bg-white shadow-lg z-40 transition-all duration-300 ease-in-out transform ${isMenuOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+        className={`fixed top-0 left-0 w-[300px] h-full bg-white shadow-lg z-40 transition-all duration-300 ease-in-out transform ${
+          isMenuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
         <div className="flex flex-col gap-4 mt-[88px]">
           {/* Đồ Nam với submenu */}
@@ -107,10 +110,11 @@ const MenuSide = () => {
             </div>
             {/* Submenu danh mục */}
             <div
-              className={`overflow-hidden transition-all duration-300 ease-in-out ${isSubMenuOpen
-                ? "max-h-[300px] opacity-100"
-                : "max-h-0 opacity-0"
-                }`}
+              className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                isSubMenuOpen
+                  ? "max-h-[300px] opacity-100"
+                  : "max-h-0 opacity-0"
+              }`}
             >
               <div className="flex flex-col gap-2 mt-2 pl-[70px] pr-[20px]">
                 {categories.map((category, index) => (
@@ -154,10 +158,11 @@ const MenuSide = () => {
 
             {/* Submenu danh mục */}
             <div
-              className={`overflow-hidden transition-all duration-300 ease-in-out ${isWomanSubMenuOpen
-                ? "max-h-[300px] opacity-100"
-                : "max-h-0 opacity-0"
-                }`}
+              className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                isWomanSubMenuOpen
+                  ? "max-h-[300px] opacity-100"
+                  : "max-h-0 opacity-0"
+              }`}
             >
               <div className="flex flex-col gap-2 mt-2 pl-[70px] pr-[20px]">
                 {" "}
@@ -176,21 +181,6 @@ const MenuSide = () => {
               </div>
             </div>
           </div>
-
-          <Link
-            to="/tre-em"
-            className="text-[20px] font-normal hover:underline underline-offset-4 pl-[50px]"
-            onClick={closeMenu}
-          >
-            Đồ Trẻ em
-          </Link>
-          <Link
-            to="/tre-so-sinh"
-            className="text-[20px] font-normal hover:underline underline-offset-4 pl-[50px]"
-            onClick={closeMenu}
-          >
-            Đồ Trẻ sơ sinh
-          </Link>
         </div>
       </div>
     </>
