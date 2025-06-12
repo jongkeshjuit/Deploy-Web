@@ -46,8 +46,8 @@ const ProfileInfo = () => {
           userInfo.gender === "male"
             ? "Nam"
             : userInfo.gender === "female"
-              ? "Nữ"
-              : "Khác",
+            ? "Nữ"
+            : "Khác",
         address: userInfo.address || "",
         city: userInfo.city || "",
         district: userInfo.district || "",
@@ -178,8 +178,9 @@ const ProfileInfo = () => {
               name="email"
               value={form.email}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${errors.email ? "border-red-500" : ""
-                }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${
+                errors.email ? "border-red-500" : ""
+              }`}
               disabled={true} // Email không thể thay đổi
               required
             />
@@ -192,8 +193,9 @@ const ProfileInfo = () => {
               name="name"
               value={form.name}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${errors.name ? "border-red-500" : ""
-                }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${
+                errors.name ? "border-red-500" : ""
+              }`}
               required
             />
             {errors.name && (
@@ -205,8 +207,9 @@ const ProfileInfo = () => {
               name="address"
               value={form.address}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${errors.address ? "border-red-500" : ""
-                }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${
+                errors.address ? "border-red-500" : ""
+              }`}
               required
             />
             {errors.address && (
@@ -218,8 +221,9 @@ const ProfileInfo = () => {
               name="city"
               value={form.city}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${errors.city ? "border-red-500" : ""
-                }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${
+                errors.city ? "border-red-500" : ""
+              }`}
               required
             />
             {errors.city && (
@@ -231,8 +235,9 @@ const ProfileInfo = () => {
               name="district"
               value={form.district}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${errors.district ? "border-red-500" : ""
-                }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${
+                errors.district ? "border-red-500" : ""
+              }`}
               required
             />
             {errors.district && (
@@ -244,8 +249,9 @@ const ProfileInfo = () => {
               name="ward"
               value={form.ward}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${errors.ward ? "border-red-500" : ""
-                }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${
+                errors.ward ? "border-red-500" : ""
+              }`}
               required
             />
             {errors.ward && (
@@ -261,8 +267,9 @@ const ProfileInfo = () => {
               name="phone"
               value={form.phone}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${errors.phone ? "border-red-500" : ""
-                }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${
+                errors.phone ? "border-red-500" : ""
+              }`}
               required
             />
             {errors.phone && (
@@ -280,8 +287,9 @@ const ProfileInfo = () => {
                   birthday: val.split("-").reverse().join("/"),
                 }));
               }}
-              className={`mb-1 w-full border rounded px-3 py-2 ${errors.birthday ? "border-red-500" : ""
-                }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${
+                errors.birthday ? "border-red-500" : ""
+              }`}
               required
             />
             {errors.birthday && (
@@ -292,8 +300,9 @@ const ProfileInfo = () => {
               name="gender"
               value={form.gender}
               onChange={handleChange}
-              className={`mb-1 w-full border rounded px-3 py-2 ${errors.gender ? "border-red-500" : ""
-                }`}
+              className={`mb-1 w-full border rounded px-3 py-2 ${
+                errors.gender ? "border-red-500" : ""
+              }`}
               required
             >
               <option value="">Chọn giới tính</option>
