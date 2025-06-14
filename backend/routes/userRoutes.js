@@ -4,6 +4,7 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const { authMiddleware } = require("../middleware/authMiddleware");
 
+
 // @route   POST /api/users/register
 // @desc    Register a new user
 // @access  Public
@@ -35,17 +36,34 @@ router.post("/register", async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    // Trả về thông tin cơ bản và token
-    res.status(201).json({
+    // CẢI THIỆN: Set secure cookie với các options bảo mật
+    const cookieOptions = {
+      httpOnly: true,                    // Không thể access từ JavaScript
+      secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+      sameSite: 'lax',                   // CSRF protection
+      maxAge: 7 * 24 * 60 * 60 * 1000,  // 7 ngày
+      path: '/'                          // Available for all paths
+    };
+
+    res.cookie('authToken', token, cookieOptions);
+
+    // Chuẩn bị response data
+    const responseData = {
       message: "User registered successfully",
       user: {
         id: newUser._id,
         name: newUser.name,
         email: newUser.email,
         role: newUser.role,
-      },
-      token,
-    });
+      }
+    };
+
+    // Chỉ gửi token trong response khi development (để frontend có thể sử dụng)
+    if (process.env.NODE_ENV === 'development') {
+      responseData.token = token;
+    }
+
+    res.status(201).json(responseData);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
@@ -75,8 +93,18 @@ router.post("/login", async (req, res) => {
       process.env.JWT_SECRET || "your_jwt_secret_key",
       { expiresIn: "7d" }
     );
-    // Trả về đầy đủ thông tin user và token
-    res.status(200).json({
+    const cookieOptions = {
+      httpOnly: true,                    // Không thể access từ JavaScript
+      secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+      sameSite: 'lax',                   // CSRF protection
+      maxAge: 7 * 24 * 60 * 60 * 1000,  // 7 ngày
+      path: '/'                          // Available for all paths
+    };
+
+    res.cookie('authToken', token, cookieOptions);
+
+    // Chuẩn bị response data
+    const responseData = {
       message: "Login successful",
       user: {
         id: user._id,
@@ -94,13 +122,36 @@ router.post("/login", async (req, res) => {
         accountType: user.accountType,
         createdAt: user.createdAt,
       },
-      token,
-    });
+    };
+
+    // Chỉ gửi token trong response khi development (để frontend có thể sử dụng)
+    if (process.env.NODE_ENV === 'development') {
+      responseData.token = token;
+    }
+
+    res.status(200).json(responseData);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 });
+
+router.post("/logout", authMiddleware, async (req, res) => {
+  try {
+    // Clear cookie
+    res.clearCookie('authToken', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax'
+    });
+
+    res.json({ message: "Đăng xuất thành công" });
+  } catch (error) {
+    console.error("Logout error:", error);
+    res.status(500).json({ message: "Lỗi khi đăng xuất" });
+  }
+});
+
 
 // @route   GET /api/users/profile
 // @desc    Get user profile
