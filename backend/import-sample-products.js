@@ -47,15 +47,24 @@ const importSampleProducts = async () => {
     console.log("✅ Đã xóa sản phẩm cũ");
 
     // ✅ HÀM CHUYỂN ĐỔI GENDER
+    // const convertGender = (gender) => {
+    //   const genderMap = {
+    //     'man': 'Men',
+    //     'woman': 'Women', 
+    //     'unisex': 'Unisex'
+    //   };
+    //   return genderMap[gender.toLowerCase()] || 'Unisex';
+    // };
     const convertGender = (gender) => {
-      const genderMap = {
-        'man': 'Men',
-        'woman': 'Women', 
-        'unisex': 'Unisex'
-      };
-      return genderMap[gender.toLowerCase()] || 'Unisex';
+      // Chuyển hết về chữ thường, số ít đúng với enum của schema
+      if (!gender) return "man"; // hoặc giá trị mặc định bạn muốn
+      const g = gender.toLowerCase();
+      if (g === "men") return "man";
+      if (g === "women") return "woman";
+      if (g === "unisex") return "unisex";
+      if (g === "man" || g === "woman") return g;
+      return "man"; // fallback
     };
-
     // Chuyển đổi dữ liệu từ MongoDB JSON format sang JavaScript object
     const processedProducts = sampleProducts.map((product) => {
       const processedProduct = { ...product };

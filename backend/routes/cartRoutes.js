@@ -84,7 +84,8 @@ router.post("/", async (req, res) => {
         (p) =>
           p.productId._id.toString() === productId &&
           p.size === size &&
-          p.color === color
+          p.color.name === color.name &&
+          p.color.code === color.code
       );
 
       if (productIndex > -1) {
@@ -105,7 +106,10 @@ router.post("/", async (req, res) => {
           price: product.discountPrice || product.price,
           quantity,
           size,
-          color,
+          color: {
+            name: color.name,
+            code: color.code
+          },
         });
       }
 
@@ -128,7 +132,10 @@ router.post("/", async (req, res) => {
             price: product.discountPrice || product.price,
             quantity,
             size,
-            color,
+            color: {
+              name: color.name,
+              code: color.code
+            },
           },
         ],
       });
@@ -187,7 +194,8 @@ router.put("/", async (req, res) => {
       (p) =>
         p.productId._id.toString() === productId &&
         p.size === size &&
-        p.color === color
+        p.color.name === color.name &&
+        p.color.code === color.code
     );
 
     if (productIndex > -1) {
@@ -241,7 +249,8 @@ router.delete("/", async (req, res) => {
       (p) =>
         p.productId._id.toString() === productId &&
         p.size === size &&
-        p.color === color
+        p.color.name === color.name &&
+        p.color.code === color.code
     );
 
     if (productIndex > -1) {
@@ -382,7 +391,8 @@ router.post("/merge", authMiddleware, async (req, res) => {
           (userItem) =>
             userItem.productId.toString() === productIdStr &&
             userItem.size === guestItem.size &&
-            userItem.color === guestItem.color
+            userItem.color.name === guestItem.color.name &&
+            userItem.color.code === guestItem.color.code
         );
 
         if (existingIndex > -1) {
@@ -413,12 +423,15 @@ router.post("/merge", authMiddleware, async (req, res) => {
           );
           userCart.products.push({
             productId: guestItem.productId,
-            name: currentProduct.name, // Use current name
+            name: currentProduct.name,
             image: currentProduct.images[0]?.url || guestItem.image,
             price: currentPrice,
             quantity: quantity,
             size: guestItem.size,
-            color: guestItem.color,
+            color: {
+              name: guestItem.color.name,
+              code: guestItem.color.code
+            },
           });
           mergeCount++;
         }
@@ -436,9 +449,8 @@ router.post("/merge", authMiddleware, async (req, res) => {
         skippedCount,
       });
       return res.status(200).json({
-        message: `Cart merged successfully. Added ${mergeCount} new items, updated ${updateCount} existing items${
-          skippedCount > 0 ? `, skipped ${skippedCount} unavailable items` : ""
-        }.`,
+        message: `Cart merged successfully. Added ${mergeCount} new items, updated ${updateCount} existing items${skippedCount > 0 ? `, skipped ${skippedCount} unavailable items` : ""
+          }.`,
         cart: userCart,
         stats: {
           merged: mergeCount,
@@ -466,7 +478,10 @@ router.post("/merge", authMiddleware, async (req, res) => {
             price: currentProduct.discountPrice || currentProduct.price,
             quantity: Math.min(item.quantity, currentProduct.countInStock),
             size: item.size,
-            color: item.color,
+            color: {
+              name: item.color.name,
+              code: item.color.code
+            },
           });
         } else {
           skippedCount++;
@@ -482,11 +497,10 @@ router.post("/merge", authMiddleware, async (req, res) => {
 
       console.log("✅ Guest cart converted to user cart");
       return res.status(200).json({
-        message: `Guest cart converted to user cart successfully${
-          skippedCount > 0
+        message: `Guest cart converted to user cart successfully${skippedCount > 0
             ? `. ${skippedCount} unavailable items were removed.`
             : ""
-        }.`,
+          }.`,
         cart: guestCart,
       });
     }

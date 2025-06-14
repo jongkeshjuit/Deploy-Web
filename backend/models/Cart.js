@@ -24,8 +24,14 @@ const cartItemSchema = new mongoose.Schema({
         required: true
     },
     color: {
-        type: String,
-        required: true
+        name: {
+            type: String,
+            required: true
+        },
+        code: {
+            type: String,
+            required: true
+        }
     },
     quantity: {
         type: Number,
@@ -33,7 +39,7 @@ const cartItemSchema = new mongoose.Schema({
         min: 1,
         required: true
     },
-}, {_id: false});
+}, { _id: false });
 
 const cartSchema = new mongoose.Schema({
     user: {
@@ -49,7 +55,7 @@ const cartSchema = new mongoose.Schema({
         type: [cartItemSchema],
         default: [],
         validate: {
-            validator: function(products) {
+            validator: function (products) {
                 return products.length >= 0;
             },
             message: 'Products array cannot be negative length'
@@ -61,11 +67,11 @@ const cartSchema = new mongoose.Schema({
         min: 0,
         required: true
     },
-}, { 
+}, {
     timestamps: true,
     // Đảm bảo ít nhất có user hoặc guestId
     validate: {
-        validator: function() {
+        validator: function () {
             return this.user || this.guestId;
         },
         message: 'Either user or guestId must be provided'
@@ -78,7 +84,7 @@ cartSchema.index({ guestId: 1 });
 cartSchema.index({ user: 1, guestId: 1 });
 
 // Pre-save middleware để tính toán totalPrice
-cartSchema.pre('save', function(next) {
+cartSchema.pre('save', function (next) {
     if (this.products && this.products.length > 0) {
         this.totalPrice = this.products.reduce((total, item) => {
             return total + (item.price * item.quantity);
@@ -93,8 +99,8 @@ cartSchema.pre('save', function(next) {
 // hãy kiểm tra model đã được khai báo chưa trước khi khai báo mới.
 let Cart;
 try {
-  Cart = mongoose.model('Cart');
+    Cart = mongoose.model('Cart');
 } catch (e) {
-  Cart = mongoose.model('Cart', cartSchema);
+    Cart = mongoose.model('Cart', cartSchema);
 }
 module.exports = Cart;

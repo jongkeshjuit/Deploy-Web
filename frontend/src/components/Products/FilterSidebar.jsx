@@ -32,21 +32,30 @@ const FilterSidebar = () => {
       try {
         const res = await axios.get(`${API_URL}/api/products`);
         const products = res.data.products || [];
-        // Lấy tất cả màu
+
+        // Lấy tất cả màu sắc
         const colorSet = new Set();
         const materialSet = new Set();
         const categorySet = new Set();
+
         products.forEach((p) => {
-          (p.colors || []).forEach((c) => colorSet.add(c));
+          // Xử lý màu sắc mới với cấu trúc {name, code}
+          (p.colors || []).forEach((c) => {
+            if (typeof c === 'object' && c.name && c.code) {
+              colorSet.add(JSON.stringify({ name: c.name, code: c.code }));
+            }
+          });
           if (p.material) materialSet.add(p.material);
           if (p.category) categorySet.add(p.category);
         });
-        // Loại bỏ trùng lặp bằng Set và sort cho đẹp
-        setColorOptions(Array.from(colorSet));
+
+        // Chuyển đổi colorSet thành mảng các object
+        const colors = Array.from(colorSet).map(c => JSON.parse(c));
+        setColorOptions(colors);
         setMaterialOptions(Array.from(materialSet));
         setCategoryOptions(Array.from(categorySet));
       } catch (err) {
-        // fallback nếu lỗi
+        console.error("Error fetching filter options:", err);
         setColorOptions([]);
         setMaterialOptions([]);
         setCategoryOptions([]);
@@ -58,19 +67,26 @@ const FilterSidebar = () => {
   useEffect(() => {
     const params = Object.fromEntries(searchParams);
     setFilters({
-      color: params.color ? params.color.split(",") : [],
+      color: params.color ? JSON.parse(decodeURIComponent(params.color)) : [],
       size: params.size ? params.size.split(",") : [],
       price: params.price ? params.price.split(",") : [],
       material: params.material ? params.material.split(",") : [],
       category: params.category ? params.category.split(",") : [],
     });
   }, [searchParams]);
+
   const handleFilterChange = (type, value) => {
-    console.log("Filter change:", type, value);
     const newFilters = { ...filters };
 
     if (type === "price") {
       newFilters.price = [value];
+    } else if (type === "color") {
+      const colorStr = JSON.stringify(value);
+      if (newFilters.color.some(c => JSON.stringify(c) === colorStr)) {
+        newFilters.color = newFilters.color.filter(c => JSON.stringify(c) !== colorStr);
+      } else {
+        newFilters.color = [...newFilters.color, value];
+      }
     } else {
       if (newFilters[type].includes(value)) {
         newFilters[type] = newFilters[type].filter((v) => v !== value);
@@ -85,12 +101,16 @@ const FilterSidebar = () => {
     const newParams = {};
     Object.entries(newFilters).forEach(([key, values]) => {
       if (values.length > 0) {
-        newParams[key] = values.join(",");
+        if (key === "color") {
+          newParams[key] = encodeURIComponent(JSON.stringify(values));
+        } else {
+          newParams[key] = values.join(",");
+        }
       }
     });
-    console.log("New params:", newParams);
     setSearchParams(newParams);
   };
+
   const clearFilters = () => {
     setFilters({
       color: [],
@@ -114,24 +134,25 @@ const FilterSidebar = () => {
             Xóa tất cả
           </button>
         )}
-      </div>{" "}
+      </div>
+
       {/* Màu sắc */}
       <div className="mb-6">
         <label className="block font-medium text-gray-700 mb-3">Màu sắc</label>
         <div className="flex flex-wrap gap-2">
-          {colorOptions.map((c) => (
+          {colorOptions.map((color) => (
             <button
-              key={c}
-              onClick={() => handleFilterChange("color", c)}
-              className={`w-8 h-8 rounded-full border-2 cursor-pointer transition hover:scale-105 ${
-                filters.color.includes(c) ? "border-black" : "border-gray-300"
-              }`}
-              style={{ backgroundColor: c.toLowerCase() }}
-              title={c}
+              key={color.name}
+              onClick={() => handleFilterChange("color", color)}
+              className={`w-8 h-8 rounded-full border-2 cursor-pointer transition hover:scale-105 ${filters.color.some(c => c.name === color.name) ? "border-black" : "border-gray-300"
+                }`}
+              style={{ backgroundColor: color.code }}
+              title={color.name}
             ></button>
           ))}
         </div>
       </div>
+
       {/* Kích thước */}
       <div className="mb-6">
         <label className="block font-medium text-gray-700 mb-3">
@@ -142,17 +163,17 @@ const FilterSidebar = () => {
             <button
               key={s}
               onClick={() => handleFilterChange("size", s)}
-              className={`w-10 h-10 flex items-center justify-center border ${
-                filters.size.includes(s)
-                  ? " border-black"
-                  : "border-gray-300 hover:border-black"
-              }`}
+              className={`w-10 h-10 flex items-center justify-center border ${filters.size.includes(s)
+                ? "border-black"
+                : "border-gray-300 hover:border-black"
+                }`}
             >
               {s}
             </button>
           ))}
         </div>
       </div>
+
       {/* Giá */}
       <div className="mb-6">
         <label className="block font-medium text-gray-700 mb-3">Giá</label>
@@ -176,6 +197,7 @@ const FilterSidebar = () => {
           ))}
         </div>
       </div>
+
       {/* Chất liệu */}
       <div className="mb-6">
         <label className="block font-medium text-gray-700 mb-3">
@@ -198,8 +220,9 @@ const FilterSidebar = () => {
               </span>
             </label>
           ))}
-        </div>{" "}
+        </div>
       </div>
+
       {/* Danh mục */}
       <div className="mb-6">
         <label className="block font-medium text-gray-700 mb-3">Danh mục</label>
@@ -222,6 +245,7 @@ const FilterSidebar = () => {
           ))}
         </div>
       </div>
+
       {/* Active Filters Summary */}
       {Object.values(filters).some((arr) => arr.length > 0) && (
         <div className="mt-8 pt-6 border-t">
@@ -233,7 +257,7 @@ const FilterSidebar = () => {
                 if (type === "price") {
                   label = price.find((p) => p.value === value)?.name || value;
                 } else if (type === "color") {
-                  label = value;
+                  label = value.name;
                 } else if (type === "material") {
                   label = value;
                 } else if (type === "category") {
@@ -242,7 +266,7 @@ const FilterSidebar = () => {
 
                 return (
                   <button
-                    key={`${type}-${value}`}
+                    key={`${type}-${JSON.stringify(value)}`}
                     onClick={() => handleFilterChange(type, value)}
                     className="px-2 py-1 rounded-full bg-amber-100 text-amber-800 text-sm flex items-center gap-1 hover:bg-amber-200"
                   >
