@@ -52,6 +52,21 @@ export function checkPaymentSuccess(transactions, orderCode, amount, phone) {
     const amountMatch = Math.abs(Number(tx.giaTri) - Number(amount)) <= 1000;
     const timeDiff = now - new Date(tx.ngayDienRa);
     const isRecent = timeDiff >= 0 && timeDiff <= 24 * 60 * 60 * 1000;
+    // DEBUG LOG
+    console.log("[checkPaymentSuccess]", {
+      moTa,
+      orderCodeNorm,
+      phoneNorm,
+      hasOrderCode,
+      hasPhone,
+      amount: Number(amount),
+      txAmount: Number(tx.giaTri),
+      amountMatch,
+      txTime: tx.ngayDienRa,
+      now: now.toISOString(),
+      timeDiff,
+      isRecent,
+    });
     if (hasOrderCode && hasPhone && amountMatch && isRecent) {
       return tx;
     }
@@ -71,13 +86,31 @@ export async function fetchRecentTransactionsAndCheckPayment(
   amount,
   phone
 ) {
+  // Gọi API backend thay vì Google Apps Script trực tiếp để tránh CORS
   const API_URL =
-    "https://script.google.com/macros/s/AKfycbxmLkboDQIZXQAB8ARGMbFrDD9Zzls_5QnCnBTMiL8R6y_xG-gk8oQjNouj6rIECh7f/exec";
+    "/api/payment/check?orderCode=" +
+    encodeURIComponent(orderCode) +
+    "&amount=" +
+    encodeURIComponent(amount) +
+    "&phone=" +
+    encodeURIComponent(phone);
   try {
     const res = await fetch(API_URL);
-    if (!res.ok) throw new Error("Không thể lấy dữ liệu giao dịch từ API");
-    const transactions = await res.json();
-    return checkPaymentSuccess(transactions, orderCode, amount, phone);
+    if (!res.ok)
+      throw new Error("Không thể lấy dữ liệu giao dịch từ API backend");
+    const data = await res.json();
+    // DEBUG LOG: In ra danh sách giao dịch lấy được từ backend
+    console.log(
+      "[fetchRecentTransactionsAndCheckPayment] transactions:",
+      data.transactions
+    );
+    // DEBUG LOG: In ra nội dung đối chiếu
+    console.log("[fetchRecentTransactionsAndCheckPayment] Đối chiếu với:", {
+      orderCode,
+      amount,
+      phone,
+    });
+    return checkPaymentSuccess(data.transactions, orderCode, amount, phone);
   } catch (err) {
     console.error("Lỗi khi kiểm tra thanh toán:", err);
     return {

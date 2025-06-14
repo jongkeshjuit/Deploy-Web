@@ -334,7 +334,7 @@ const EditProductPage = () => {
               <input
                 type="checkbox"
                 name="gender"
-                value="man"
+                value="men"
                 checked={productData.gender === "man"}
                 onChange={(e) =>
                   setProductData((prevData) => ({

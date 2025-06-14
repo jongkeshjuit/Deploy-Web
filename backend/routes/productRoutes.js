@@ -6,16 +6,18 @@ const router = express.Router();
 // @route   POST /api/products
 // @desc    Create a new product
 // @access  Private/Admin
-router.get('/search', async (req, res) => {
+router.get("/search", async (req, res) => {
   const { query } = req.query;
   try {
     // Tìm kiếm không phân biệt hoa thường, có thể dùng regex
     const products = await Product.find({
-      name: { $regex: query, $options: 'i' }
+      name: { $regex: query, $options: "i" },
     });
     res.json({ products }); // Đảm bảo trả về object có key "products"
   } catch (error) {
-    res.status(500).json({ message: 'Error searching products', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error searching products", error: error.message });
   }
 });
 
@@ -525,6 +527,26 @@ router.get("/:id", async (req, res) => {
       return res.status(400).json({ message: "Invalid product ID format" });
     }
     res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+// Gợi ý tìm kiếm sản phẩm theo tên
+router.get("/suggest", async (req, res) => {
+  try {
+    const { query } = req.query;
+    if (!query || query.trim() === "") {
+      return res.json([]);
+    }
+    // Tìm các sản phẩm có tên chứa query (không phân biệt hoa thường)
+    const suggestions = await Product.find({
+      name: { $regex: query, $options: "i" },
+    })
+      .limit(8)
+      .select("name"); // chỉ lấy tên
+
+    res.json(suggestions.map((p) => p.name));
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
   }
 });
 

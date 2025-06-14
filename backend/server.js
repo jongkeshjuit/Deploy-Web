@@ -21,6 +21,7 @@ const adminRoutes = require("./routes/adminRoutes");
 const productAdminRoutes = require("./routes/productAdminRoutes");
 const adminOrderRoutes = require("./routes/adminOrderRoutes");
 const collectionRoutes = require("./routes/collectionRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 const app = express();
 
 // Connect to MongoDB
@@ -82,6 +83,7 @@ app.use("/api/checkout", checkoutRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/payment", paymentRoutes);
 
 // Admin routes
 app.use("/api/admin", adminRoutes);
