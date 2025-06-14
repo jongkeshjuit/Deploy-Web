@@ -1,3 +1,6 @@
+// import products from '../../data/sample-products.json';
+
+
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -12,8 +15,20 @@ import {
 
 const ProductDetails = ({ productId }) => {
   const { id } = useParams();
+  const productFetchId = productId || id;
+
   const dispatch = useDispatch();
+
   // const { addToCart } = useCart();
+  // đây để test, khi đã có backend thì xóa dòng này
+  // const selectedProduct = products.find(
+  //   (p) => p._id.$oid === productFetchId
+  // );
+  // // Lấy các sản phẩm cùng category, loại trùng chính nó
+  // const similarProducts = products.filter(
+  //   (p) => p.category === selectedProduct.category && p._id.$oid !== selectedProduct._id.$oid
+  // );
+
 
   const { selectedProduct, similarProducts, loading, error } = useSelector(
     (state) => state.products
@@ -28,7 +43,6 @@ const ProductDetails = ({ productId }) => {
   const [newReviewRating, setNewReviewRating] = useState(0);
   const [newReviewComment, setNewReviewComment] = useState("");
 
-  const productFetchId = productId || id;
 
   useEffect(() => {
     if (productFetchId) {
@@ -49,13 +63,13 @@ const ProductDetails = ({ productId }) => {
     }
   }, [selectedProduct]);
 
-  if (loading) {
-    return <div className="text-center p-10">Đang tải...</div>;
-  }
+  // if (loading) {
+  //   return <div className="text-center p-10">Đang tải...</div>;
+  // }
 
-  if (error) {
-    return <div className="text-center text-red-500 p-10">{error}</div>;
-  }
+  // if (error) {
+  //   return <div className="text-center text-red-500 p-10">{error}</div>;
+  // }
 
   if (!selectedProduct) {
     return (
@@ -142,7 +156,8 @@ const ProductDetails = ({ productId }) => {
                 <div className="flex flex-col gap-2 border-b-2 border-gray-300 pb-4">
                   <h2 className="text-4xl font-normal">Mô tả</h2>
                   <p className="text-gray-500 text-base">
-                    Mã sản phẩm: {selectedProduct._id || "Đang cập nhật"}
+                    {/* Mã sản phẩm: {selectedProduct._id|| "Đang cập nhật"} */}
+                    Mã sản phẩm: {selectedProduct._id.$oid || "Đang cập nhật"}
                   </p>
                 </div>
 
@@ -163,11 +178,10 @@ const ProductDetails = ({ productId }) => {
                     </span>
                   </button>
                   <div
-                    className={`overflow-hidden transition-all duration-300 ${
-                      expandedSections.details
-                        ? "max-h-[500px] pb-4"
-                        : "max-h-0"
-                    }`}
+                    className={`overflow-hidden transition-all duration-300 ${expandedSections.details
+                      ? "max-h-[500px] pb-4"
+                      : "max-h-0"
+                      }`}
                   >
                     <div className="space-y-2 text-gray-600">
                       <p className="text-base">{selectedProduct.description}</p>
@@ -202,11 +216,10 @@ const ProductDetails = ({ productId }) => {
                     </span>
                   </button>
                   <div
-                    className={`overflow-hidden transition-all duration-300 ${
-                      expandedSections.material
-                        ? "max-h-[500px] pb-4"
-                        : "max-h-0"
-                    }`}
+                    className={`overflow-hidden transition-all duration-300 ${expandedSections.material
+                      ? "max-h-[500px] pb-4"
+                      : "max-h-0"
+                      }`}
                   >
                     <div className="space-y-2 text-gray-600">
                       <p className="text-sm">
@@ -235,9 +248,8 @@ const ProductDetails = ({ productId }) => {
                     </span>
                   </button>
                   <div
-                    className={`overflow-hidden transition-all duration-300 ${
-                      expandedSections.care ? "max-h-[500px] pb-4" : "max-h-0"
-                    }`}
+                    className={`overflow-hidden transition-all duration-300 ${expandedSections.care ? "max-h-[500px] pb-4" : "max-h-0"
+                      }`}
                   >
                     <div className="space-y-2 text-gray-600">
                       <p className="text-sm">
@@ -273,11 +285,10 @@ const ProductDetails = ({ productId }) => {
                     <button
                       key={color}
                       onClick={() => setSelectedColor(color)}
-                      className={`w-10 h-10 rounded-full border cursor-pointer ${
-                        selectedColor === color
-                          ? "border-2 border-black"
-                          : "border-gray-300"
-                      }`}
+                      className={`aspect-square rounded-full border cursor-pointer ${selectedColor === color
+                        ? "border-2 border-black"
+                        : "border-gray-300"
+                        }`}
                       style={{
                         backgroundColor: color.toLowerCase(),
                         filter: "brightness(0.9)",
@@ -295,11 +306,10 @@ const ProductDetails = ({ productId }) => {
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
-                      className={`w-10 h-10 flex items-center justify-center border cursor-pointer text-sm font-medium ${
-                        selectedSize === size
-                          ? "border-black text-black"
-                          : "border-gray-400 text-gray-400"
-                      }`}
+                      className={`aspect-square flex items-center justify-center border cursor-pointer text-sm font-medium ${selectedSize === size
+                        ? "border-black text-black"
+                        : "border-gray-400 text-gray-400"
+                        }`}
                     >
                       {size}
                     </button>
@@ -342,11 +352,10 @@ const ProductDetails = ({ productId }) => {
               <button
                 onClick={handleAddToCart}
                 disabled={isButtonDisabled}
-                className={`bg-black text-lg text-white py-2 rounded-full w-full cursor-pointer ${
-                  isButtonDisabled
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-gray-800"
-                }`}
+                className={`bg-black text-lg text-white py-2 rounded-full w-full cursor-pointer ${isButtonDisabled
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-gray-800"
+                  }`}
               >
                 {isButtonDisabled ? "Đang thêm..." : "Thêm vào giỏ hàng"}
               </button>
@@ -356,7 +365,7 @@ const ProductDetails = ({ productId }) => {
             <h2 className="text-2xl text-center font-medium mb-4">
               Sản phẩm tương tự
             </h2>
-            {similarProducts &&
+            {/* {similarProducts &&
               selectedProduct &&
               (() => {
                 // Gộp tất cả sản phẩm liên quan thành 1 mảng
@@ -383,7 +392,15 @@ const ProductDetails = ({ productId }) => {
                     <ProductGrid products={uniqueRelated} />
                   </div>
                 );
-              })()}
+              })()} */}
+            {similarProducts.length > 0 && (
+              <div className="mt-20 mb-10 mx-[50px]">
+                <h2 className="text-2xl text-center font-medium mb-4">
+                  Sản phẩm tương tự
+                </h2>
+                <ProductGrid products={similarProducts} />
+              </div>
+            )}
           </div>
         </div>
       )}

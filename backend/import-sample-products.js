@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-const Product = require("./models/Product");
-const fs = require("fs");
+const mongoose = require("mongoose"); //Connect and work with MongoDB
+const dotenv = require("dotenv"); // Read environment variables from .env
+const Product = require("./models/Product"); // Product model (mongoose schema)
+const fs = require("fs"); // Read system files
 
 // Load env vars
 dotenv.config();
@@ -40,14 +40,10 @@ const importSampleProducts = async () => {
         processedProduct.price = parseInt(product.price.$numberInt);
       }
       if (product.discountPrice && product.discountPrice.$numberInt) {
-        processedProduct.discountPrice = parseInt(
-          product.discountPrice.$numberInt
-        );
+        processedProduct.discountPrice = parseInt(product.discountPrice.$numberInt);
       }
       if (product.countInStock && product.countInStock.$numberInt) {
-        processedProduct.countInStock = parseInt(
-          product.countInStock.$numberInt
-        );
+        processedProduct.countInStock = parseInt(product.countInStock.$numberInt);
       }
       if (product.rating && product.rating.$numberDouble) {
         processedProduct.rating = parseFloat(product.rating.$numberDouble);
