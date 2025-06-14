@@ -64,9 +64,19 @@ const Navbar = () => {
 
         {/* Logo */}
         <div className="absolute left-1/2 -translate-x-1/2">
-          <Link to="/" className="text-xl md:text-[30px] font-medium font-Jost">
+          <button
+            type="button"
+            className="text-xl md:text-[30px] font-medium font-Jost focus:outline-none cursor-pointer"
+            onClick={() => {
+              if (window.location.pathname === "/") {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              } else {
+                navigate("/");
+              }
+            }}
+          >
             Wukudada.
-          </Link>
+          </button>
         </div>
 
         {/* tài khoản + giỏ hàng */}

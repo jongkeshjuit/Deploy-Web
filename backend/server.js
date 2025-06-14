@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const cookieParser = require('cookie-parser');
 
 // Load env vars first
 dotenv.config();
@@ -38,6 +39,8 @@ app.use(
   })
 );
 
+app.use(cookieParser());
+
 // Security middleware
 app.use(helmet());
 
@@ -45,6 +48,11 @@ app.use(helmet());
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
+  message: {
+    error: "Too many authentication attempts, please try again later."
+  },
+  standardHeaders: true, 
+  legacyHeaders: false,
 });
 
 // Apply rate limiting to all API requests

@@ -34,6 +34,8 @@ import ProductManagement from "./components/Admin/ProductManagement";
 import EditProductPage from "./components/Admin/EditProductPage";
 import OrderManagement from "./components/Admin/OrderManagement";
 // ==================================================
+import axios from 'axios';
+axios.defaults.withCredentials = true;
 const App = () => {
   return (
     <Provider store={store}>

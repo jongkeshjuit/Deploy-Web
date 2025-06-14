@@ -3,19 +3,18 @@ const User = require("../models/User");
 
 //Middleware to check if user is authenticated 
 const authMiddleware = async (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1]; // Lấy token từ header
-
-  if (!token) {
-    return res.status(401).json({ message: "No token provided" });
-  }
-
   try {
+    // Ưu tiên lấy từ cookie, fallback về header
+    let token = req.cookies?.authToken || req.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+      return res.status(401).json({ message: "No token provided" });
+    }
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "your_jwt_secret_key");
     
-    // Tìm user trong database
     const user = await User.findById(decoded.id).select("-password");
     
-    // Kiểm tra nếu user không tồn tại
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -24,9 +23,10 @@ const authMiddleware = async (req, res, next) => {
     next();
   } catch (error) {
     console.error(error);
-    // Phân biệt lỗi token hết hạn và token không hợp lệ
     if (error.name === "TokenExpiredError") {
-      return res.status(401).json({ message: "Token expired, please login again" });
+      // Clear expired cookie
+      res.clearCookie('authToken');
+      return res.status(401).json({ message: "Token expired" });
     }
     return res.status(401).json({ message: "Invalid token" });
   }
