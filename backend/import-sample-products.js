@@ -1,7 +1,8 @@
-const mongoose = require("mongoose"); //Connect and work with MongoDB
-const dotenv = require("dotenv"); // Read environment variables from .env
-const Product = require("./models/Product"); // Product model (mongoose schema)
-const fs = require("fs"); // Read system files
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const Product = require("./models/Product");
+const User = require("./models/User");
+const fs = require("fs");
 
 // Load env vars
 dotenv.config();
@@ -26,10 +27,34 @@ const importSampleProducts = async () => {
 
     console.log(`📦 Tìm thấy ${sampleProducts.length} sản phẩm mẫu`);
 
+    // ✅ TẠO HOẶC TÌM ADMIN USER
+    let adminUser = await User.findOne({ email: "admin@example.com" });
+    if (!adminUser) {
+      adminUser = await User.create({
+        name: "Admin User",
+        email: "admin@example.com",
+        password: "123456",
+        role: "admin",
+      });
+      console.log("👤 Đã tạo admin user");
+    } else {
+      console.log("👤 Sử dụng admin user có sẵn");
+    }
+
     // Xóa tất cả sản phẩm hiện có
     console.log("🗑️  Xóa tất cả sản phẩm hiện có...");
     await Product.deleteMany({});
     console.log("✅ Đã xóa sản phẩm cũ");
+
+    // ✅ HÀM CHUYỂN ĐỔI GENDER
+    const convertGender = (gender) => {
+      const genderMap = {
+        'man': 'Men',
+        'woman': 'Women', 
+        'unisex': 'Unisex'
+      };
+      return genderMap[gender.toLowerCase()] || 'Unisex';
+    };
 
     // Chuyển đổi dữ liệu từ MongoDB JSON format sang JavaScript object
     const processedProducts = sampleProducts.map((product) => {
@@ -66,6 +91,20 @@ const importSampleProducts = async () => {
           }
         });
         processedProduct.dimensions = dims;
+      }
+
+      // ✅ THÊM USER ID
+      processedProduct.user = adminUser._id;
+
+      // ✅ CHUYỂN ĐỔI GENDER
+      if (product.gender) {
+        processedProduct.gender = convertGender(product.gender);
+      }
+
+      // ✅ SỬA LỖI COLORS (từ color thành colors nếu cần)
+      if (product.color && !product.colors) {
+        processedProduct.colors = [product.color];
+        delete processedProduct.color;
       }
 
       // Xóa _id để MongoDB tự tạo
@@ -113,6 +152,22 @@ const importSampleProducts = async () => {
 
     console.log("\n📊 Thống kê sản phẩm theo danh mục:");
     categoryStats.forEach((stat) => {
+      console.log(`- ${stat._id}: ${stat.count} sản phẩm`);
+    });
+
+    // ✅ THỐNG KÊ GENDER
+    const genderStats = await Product.aggregate([
+      {
+        $group: {
+          _id: "$gender",
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { count: -1 } },
+    ]);
+
+    console.log("\n📊 Thống kê sản phẩm theo giới tính:");
+    genderStats.forEach((stat) => {
       console.log(`- ${stat._id}: ${stat.count} sản phẩm`);
     });
 

@@ -36,15 +36,6 @@ const Checkout = () => {
   const userId = userInfo ? userInfo.id || userInfo._id : null;
   const { clearCart: clearCartContext } = useCart();
 
-  // Hardcoded user data from ProfileInfo
-  const hardcodedUserInfo = {
-    email: "nguyen.vana@example.com",
-    name: "Nguyễn Văn A",
-    phone: "0987654321",
-    address: "123 Đường Lê Lợi, Phường Bến Nghé, Quận 1, TP.HCM",
-    birth: "1990-05-15",
-    gender: "male",
-  };
   // Helper function to parse address from user profile
   const parseAddress = (addressString) => {
     if (!addressString)
@@ -332,7 +323,8 @@ const Checkout = () => {
         .querySelector(".font-mono.text-xs.bg-white.p-2.border.rounded.mt-1")
         ?.textContent?.split(" ")[0] || generateOrderCode();
     const amount = getTotalPrice() + 50000;
-    const phone = hardcodedUserInfo.phone;
+    // Lấy phone từ userInfo nếu có, fallback rỗng
+    const phone = userInfo?.phone || formData.phone || "";
     const result = await fetchRecentTransactionsAndCheckPayment(
       orderCode,
       amount,
@@ -430,7 +422,8 @@ const Checkout = () => {
                       Nội dung chuyển khoản:
                     </span>{" "}
                     <div className="font-mono text-xs bg-white p-2 border rounded mt-1">
-                      {generateOrderCode()} {hardcodedUserInfo.phone}
+                      {generateOrderCode()}{" "}
+                      {userInfo?.phone || formData.phone || ""}
                     </div>
                   </div>
                 </div>{" "}
@@ -445,7 +438,7 @@ const Checkout = () => {
                       src={generateVietQRUrl(
                         getTotalPrice() + 50000,
                         generateOrderCode(),
-                        hardcodedUserInfo.phone
+                        userInfo?.phone || formData.phone || ""
                       )}
                       alt="VietQR Code"
                       className="w-56 h-56 object-contain"
