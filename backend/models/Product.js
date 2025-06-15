@@ -37,20 +37,20 @@ const productSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    // brand: {
-    //     type: String,
-    //     required: true,
-    //     trim: true
-    // },
+    brand: {
+        type: String,
+        required: true,
+        trim: true
+    },
     sizes: {
         type: [String],
         required: true,
-        trim: true,
+        //trim: true,
     },
     colors: {
         type: [String],
         required: true,
-        trim: true
+        //trim: true
     },
     collection: {
         type: String,
