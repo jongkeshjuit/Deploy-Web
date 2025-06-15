@@ -163,7 +163,7 @@ const Checkout = () => {
       toast.error("Vui lòng kiểm tra lại thông tin đơn hàng!");
       return;
     }
-    // Kiểm tra các trường bắt buộc trong formData
+
     const requiredFields = [
       "address",
       "city",
@@ -178,9 +178,9 @@ const Checkout = () => {
         return;
       }
     }
+
     setIsProcessing(true);
     try {
-      // Prepare order data
       const orderData = {
         checkoutItems: cartItems.map((item) => ({
           ...item,
@@ -202,94 +202,55 @@ const Checkout = () => {
         totalPrice: getTotalPrice() + 50000,
         guestId: guestId || null,
       };
-      // Log dữ liệu gửi lên để kiểm tra
-      console.log("orderData gửi lên:", orderData);
-      // Create order
-      const response = await dispatch(
-        createCheckoutSession(orderData)
-      ).unwrap();
+
+      const response = await dispatch(createCheckoutSession(orderData)).unwrap();
+
       if (response) {
-        // Xóa giỏ hàng sau khi đặt hàng thành công
+        // ✅ Gọi /finalize để trừ tồn kho
         try {
-          console.log("=== BẮT ĐẦU XÓA GIỎ HÀNG ===");
-          console.log("Trạng thái trước khi xóa:", {
-            cart: cart,
-            cartItems: cartItems,
-            userId,
-            guestId,
-          });
-
-          // Xóa giỏ hàng trong Context trước (để UI cập nhật ngay)
-          console.log("1. Xóa giỏ hàng trong Context...");
-          clearCartContext();
-          console.log("Context cart sau khi xóa:", cartItems);
-
-          // Xóa giỏ hàng trong localStorage
-          console.log("2. Xóa giỏ hàng trong localStorage...");
-          localStorage.removeItem("cart");
-          console.log(
-            "localStorage cart sau khi xóa:",
-            localStorage.getItem("cart")
-          );
-
-          // Xóa giỏ hàng trong Redux
-          console.log("3. Xóa giỏ hàng trong Redux...");
-          dispatch(clearCart());
-          console.log("Redux cart sau khi xóa:", cart);
-
-          // Nếu có userId hoặc guestId, xóa giỏ hàng trên server
-          if (userId || guestId) {
-            try {
-              console.log("4. Xóa giỏ hàng trên server...", {
-                userId,
-                guestId,
-              });
-              // Thêm token vào header
-              const token =
-                localStorage.getItem("userToken") ||
-                localStorage.getItem("token");
-              const response = await axios.delete(
-                `${import.meta.env.VITE_API_URL}/api/cart/clear`,
-                {
-                  data: { userId, guestId },
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                }
-              );
-              console.log("Server response:", response.data);
-
-              console.log("5. Fetch lại giỏ hàng từ server...");
-              await dispatch(fetchCart({ userId, guestId }));
-              console.log("Server cart sau khi fetch:", cart);
-            } catch (serverError) {
-              console.error("Lỗi khi xóa giỏ hàng trên server:", serverError);
-              console.error("Chi tiết lỗi:", {
-                message: serverError.message,
-                response: serverError.response?.data,
-                status: serverError.response?.status,
-              });
-              // Không throw lỗi ở đây để tiếp tục xử lý
+          const token =
+            localStorage.getItem("userToken") || localStorage.getItem("token");
+          const finalizeRes = await axios.post(
+            `${import.meta.env.VITE_API_URL}/api/checkout/${response._id}/finalize`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
             }
+          );
+          console.log("✅ Finalized checkout:", finalizeRes.data);
+        } catch (finalizeError) {
+          console.error("❌ Lỗi khi finalize checkout:", finalizeError);
+          toast.error("Đặt hàng thành công nhưng có lỗi khi xử lý tồn kho!");
+        }
+
+        // ✅ Xoá giỏ hàng
+        try {
+          clearCartContext();
+          localStorage.removeItem("cart");
+          dispatch(clearCart());
+
+          if (userId || guestId) {
+            const token =
+              localStorage.getItem("userToken") || localStorage.getItem("token");
+            await axios.delete(`${import.meta.env.VITE_API_URL}/api/cart/clear`, {
+              data: { userId, guestId },
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            await dispatch(fetchCart({ userId, guestId }));
           }
 
-          // Force update Redux store
-          console.log("6. Force update Redux store...");
           dispatch({ type: "cart/clearCart" });
-          console.log("Redux cart sau khi force update:", cart);
-
-          console.log("=== KẾT THÚC XÓA GIỎ HÀNG ===");
           toast.success("Đặt hàng thành công! Giỏ hàng đã được xóa.");
         } catch (error) {
           console.error("Lỗi khi xóa giỏ hàng:", error);
-          console.error("Chi tiết lỗi:", {
-            message: error.message,
-            response: error.response?.data,
-            status: error.response?.status,
-          });
           toast.error("Đặt hàng thành công nhưng có lỗi khi xóa giỏ hàng.");
         }
 
+        // ✅ Điều hướng tuỳ theo phương thức thanh toán
         if (formData.paymentMethod === "bank_transfer") {
           toast.success(
             "Đặt hàng thành công! Đơn hàng đã được ghi nhận là ĐÃ THANH TOÁN."
@@ -302,16 +263,13 @@ const Checkout = () => {
         }
       }
     } catch (error) {
-      // Thêm log chi tiết lỗi trả về từ backend
-      console.log("[DEBUG] error object:", error);
-      console.log("[DEBUG] error.response:", error.response);
-      console.log("[DEBUG] error.response.data:", error.response?.data);
-      console.log("[DEBUG] error.response.status:", error.response?.status);
+      console.log("[DEBUG] error:", error);
       toast.error(error.message || "Có lỗi xảy ra khi đặt hàng!");
     } finally {
       setIsProcessing(false);
     }
   };
+
 
   // Check payment status
   const handleCheckPayment = async () => {
@@ -500,11 +458,10 @@ const Checkout = () => {
                 </button>
                 {paymentCheckResult && (
                   <div
-                    className={`mt-2 text-sm ${
-                      paymentCheckResult.success
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }`}
+                    className={`mt-2 text-sm ${paymentCheckResult.success
+                      ? "text-green-600"
+                      : "text-red-600"
+                      }`}
                   >
                     {paymentCheckResult.message}
                   </div>

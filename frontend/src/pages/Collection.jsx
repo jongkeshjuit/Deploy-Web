@@ -21,14 +21,22 @@ function Collection() {
   useEffect(() => {
     const fetchCollectionAndProducts = async () => {
       try {
-        // Lấy thông tin bộ sưu tập (luôn dùng API_URL backend)
-        const collectionRes = await axios.get(
-          `${API_URL}/api/collections/${id}`
-        );
-        setCollection(collectionRes.data);
+        // Tìm collection theo id (string)
+        const collections = await axios.get(`${API_URL}/api/collections`);
+        const collection = collections.data.find(c => c.id === id);
+
+        if (!collection) {
+          setError("Không tìm thấy bộ sưu tập");
+          setLoading(false);
+          return;
+        }
+
+        setCollection(collection);
+
         // Lấy params filter từ URL
         const params = Object.fromEntries(searchParams.entries());
-        // Gọi API lấy sản phẩm theo collection và filter
+
+        // Gọi API lấy sản phẩm theo collection id
         const productsRes = await axios.get(
           `${API_URL}/api/collections/${id}/products`,
           { params }
@@ -115,19 +123,17 @@ function Collection() {
         </button>
         {/* overlay */}
         <div
-          className={`fixed inset-0 w-screen h-full bg-black/75 z-50 transition-[opacity,visibility] duration-200 ease-in-out ${
-            isSidebarOpen
-              ? "opacity-100 visible"
-              : "opacity-0 invisible pointer-events-none"
-          }`}
+          className={`fixed inset-0 w-screen h-full bg-black/75 z-50 transition-[opacity,visibility] duration-200 ease-in-out ${isSidebarOpen
+            ? "opacity-100 visible"
+            : "opacity-0 invisible pointer-events-none"
+            }`}
           onClick={() => setIsSidebarOpen(false)}
         />
         {/* filter sidebar */}
         <div
           ref={sidebarRef}
-          className={`${
-            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } fixed inset-y-0 z-50 left-0 w-80 overflow-y-auto transition-transform duration-300 ease-in-out bg-white`}
+          className={`${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+            } fixed inset-y-0 z-50 left-0 w-80 overflow-y-auto transition-transform duration-300 ease-in-out bg-white`}
         >
           <FilterSidebar />
         </div>

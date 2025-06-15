@@ -112,7 +112,7 @@ router.post('/:id/finalize', authMiddleware, async (req, res) => {
             return res.status(403).json({ message: 'Not authorized' });
         }
 
-        if (checkout.isPaid && !checkout.isFinalized) {
+        if (!checkout.isFinalized) {
             // Final validation before creating order
             const productIds = checkout.checkoutItems.map(item => item.productId);
             const products = await Product.find({
@@ -136,7 +136,7 @@ router.post('/:id/finalize', authMiddleware, async (req, res) => {
 
                 if (product.countInStock < item.quantity) {
                     return res.status(400).json({
-                        message: `Not enough stock for ${item.name}`
+                        message: `Not enough stock for ${item.name}. Available: ${product.countInStock}`
                     });
                 }
 
@@ -145,16 +145,19 @@ router.post('/:id/finalize', authMiddleware, async (req, res) => {
                 await product.save();
             }
 
+            // Tạo order với trạng thái phù hợp với phương thức thanh toán
+            const isPaidOrder = checkout.paymentMethod === 'bank_transfer';
+
             const finalOrder = await Order.create({
                 user: checkout.user,
                 orderItems: checkout.checkoutItems,
                 shippingAddress: checkout.shippingAddress,
                 paymentMethod: checkout.paymentMethod,
                 totalPrice: checkout.totalPrice,
-                isPaid: true,
-                paidAt: checkout.paidAt,
+                isPaid: isPaidOrder, // true nếu là bank_transfer, false nếu là COD
+                paidAt: isPaidOrder ? new Date() : null,
                 isDelivered: false,
-                paymentStatus: "Paid",
+                paymentStatus: isPaidOrder ? "Paid" : "Pending",
                 status: 'Processing'
             });
 
@@ -163,7 +166,7 @@ router.post('/:id/finalize', authMiddleware, async (req, res) => {
             checkout.finalizedAt = Date.now();
             await checkout.save();
 
-            // Delete the cart associated with the user or guest
+            // Delete the cart
             if (checkout.user) {
                 await Cart.findOneAndDelete({ user: checkout.user });
             } else if (checkout.guestId) {
@@ -171,10 +174,8 @@ router.post('/:id/finalize', authMiddleware, async (req, res) => {
             }
 
             res.status(201).json(finalOrder);
-        } else if (checkout.isFinalized) {
-            return res.status(400).json({ message: 'Checkout already finalized' });
         } else {
-            return res.status(400).json({ message: 'Checkout not paid' });
+            return res.status(400).json({ message: 'Checkout already finalized' });
         }
     } catch (error) {
         console.error("Error finalizing checkout", error);
