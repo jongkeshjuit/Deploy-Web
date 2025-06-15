@@ -49,13 +49,13 @@ const FeaturedCollection = ({ collections }) => {
                           <p className="text-black font-medium text-lg">
                             {p.discountPrice
                               ? p.discountPrice.toLocaleString("vi-VN", {
-                                  style: "currency",
-                                  currency: "VND",
-                                })
+                                style: "currency",
+                                currency: "VND",
+                              })
                               : p.price.toLocaleString("vi-VN", {
-                                  style: "currency",
-                                  currency: "VND",
-                                })}
+                                style: "currency",
+                                currency: "VND",
+                              })}
                           </p>
                         </div>
                       </div>
