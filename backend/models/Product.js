@@ -1,295 +1,235 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const productSchema = new mongoose.Schema({
-
-
-
+const productSchema = new mongoose.Schema(
+  {
     name: {
+      type: String,
 
-        type: String,
+      required: true,
 
-        required: true,
-
-        trim: true
-
+      trim: true,
     },
 
     description: {
+      type: String,
 
-        type: String,
+      required: true,
 
-        required: true,
-
-        // trim: true
-
+      // trim: true
     },
 
     price: {
+      type: Number,
 
-        type: Number,
+      required: true,
 
-        required: true,
-
-        min: 0
-
+      min: 0,
     },
 
     discountPrice: {
+      type: Number,
 
-        type: Number,
-
-        min: 0
-
+      min: 0,
     },
 
     countInStock: {
+      type: Number,
 
-        type: Number,
+      required: true,
 
-        required: true,
+      min: 0,
 
-        min: 0,
-
-        default: 0
-
+      default: 0,
     },
 
     sku: {
+      type: String,
 
-        type: String,
+      required: true,
 
-        required: true,
+      unique: true,
 
-        unique: true,
-
-        trim: true
-
+      trim: true,
     },
 
     category: {
+      type: String,
 
-        type: String,
+      required: true,
 
-        required: true,
-
-        trim: true
-
+      trim: true,
     },
 
     brand: {
+      type: String,
 
-        type: String,
+      required: true,
 
-        required: true,
-
-        trim: true
-
+      trim: true,
     },
 
     sizes: {
+      type: [String],
 
-        type: [String],
+      required: true,
 
-        required: true,
-
-        trim: true,
-
+      trim: true,
     },
 
     colors: {
+      type: [String],
 
-        type: [String],
+      required: true,
 
-        required: true,
-
-        trim: true
-
+      trim: true,
     },
 
     collection: {
+      type: String,
 
-        type: String,
+      required: true,
 
-        required: true,
-
-        trim: true
-
+      trim: true,
     },
 
     material: {
+      type: String,
 
-        type: String,
+      required: true,
 
-        required: true,
-
-        trim: true
-
+      trim: true,
     },
 
     gender: {
+      type: String,
 
-        type: String,
+      required: true,
 
-        required: true,
-
-        enum: ["Men", "Women", "Unisex"],
-
+      enum: ["man", "woman"],
     },
 
-    images: [{
-
+    images: [
+      {
         url: {
+          type: String,
 
-            type: String,
-
-            required: true,
-
+          required: true,
         },
 
         altText: {
+          type: String,
 
-            type: String,
-
-            required: true,
-
-        }
-
-    }],
+          required: true,
+        },
+      },
+    ],
 
     isFeatured: {
+      type: Boolean,
 
-        type: Boolean,
-
-        default: false
-
+      default: false,
     },
 
     isPublished: {
+      type: Boolean,
 
-        type: Boolean,
-
-        default: true
-
+      default: true,
     },
 
     rating: {
+      type: Number,
 
-        type: Number,
+      default: 0,
 
-        default: 0,
+      min: 0,
 
-        min: 0,
-
-        max: 5
-
+      max: 5,
     },
 
     numReviews: {
+      type: Number,
 
-        type: Number,
+      default: 0,
 
-        default: 0,
-
-        min: 0
-
+      min: 0,
     },
 
-    tags: [{
-
+    tags: [
+      {
         type: String,
 
-        trim: true
-
-    }],
+        trim: true,
+      },
+    ],
 
     user: {
+      type: mongoose.Schema.Types.ObjectId,
 
-        type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
 
-        ref: 'User',
-
-        required: true
-
+      required: true,
     },
 
     metaTitle: {
+      type: String,
 
-        type: String,
-
-        trim: true
-
+      trim: true,
     },
 
     metaDescription: {
+      type: String,
 
-        type: String,
-
-        trim: true
-
+      trim: true,
     },
 
-    metaKeywords: [{
-
+    metaKeywords: [
+      {
         type: String,
 
-        trim: true
-
-    }],
+        trim: true,
+      },
+    ],
 
     dimensions: {
+      length: {
+        type: Number,
 
-        length: {
+        required: true,
 
-            type: Number,
+        min: 0,
+      },
 
-            required: true,
+      width: {
+        type: Number,
 
-            min: 0
+        required: true,
 
-        },
+        min: 0,
+      },
 
-        width: {
+      height: {
+        type: Number,
 
-            type: Number,
+        required: true,
 
-            required: true,
+        min: 0,
+      },
 
-            min: 0
+      weight: {
+        type: Number,
 
-        },
+        required: true,
 
-        height: {
-
-            type: Number,
-
-            required: true,
-
-            min: 0
-
-        },
-
-        weight: {
-
-            type: Number,
-
-            required: true,
-
-            min: 0
-
-        }
-
+        min: 0,
+      },
     },
+  },
 
-},
+  {
+    timestamps: true,
 
-    {
-
-        timestamps: true,
-
-        suppressReservedKeysWarning: true
-
-    }
-
+    suppressReservedKeysWarning: true,
+  }
 );
 
-module.exports = mongoose.model('Product', productSchema);
+module.exports = mongoose.model("Product", productSchema);
