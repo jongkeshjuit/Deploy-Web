@@ -643,7 +643,7 @@ const products = [
     color: "Vàng",
     collection: "Kids Collection",
     material: "100% Organic Cotton",
-    gender: "Unisex",
+    gender: "unisex",
     images: [
       {
         url: "https://images.unsplash.com/photo-1503944583220-79d8926ad1ef?w=500&h=600&fit=crop",
@@ -680,7 +680,7 @@ const products = [
     color: "Xanh nhạt",
     collection: "Kids Casual",
     material: "98% Cotton, 2% Elastane",
-    gender: "Unisex",
+    gender: "unisex",
     images: [
       {
         url: "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=500&h=600&fit=crop",

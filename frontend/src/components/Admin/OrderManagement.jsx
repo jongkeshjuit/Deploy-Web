@@ -69,21 +69,21 @@ const OrderManagement = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <h2 className="text-3xl font-bold mb-6">Order Management</h2>
+      <h2 className="text-3xl font-bold mb-6">Quản lý đơn hàng</h2>
       <div className="overflow-x-auto">
         <table className="min-w-full text-left text-gray-600 border border-gray-100 border-collapse">
           <thead className="text-xs text-black uppercase bg-gray-100">
             <tr>
-              <th className="px-4 py-3">Order ID</th>
-              <th className="px-4 py-3">User</th>
-              <th className="px-4 py-3">Phone</th>
-              <th className="px-4 py-3">Address</th>
-              <th className="px-4 py-3">Payment Method</th>
-              <th className="px-4 py-3">Products</th>
-              <th className="px-4 py-3">Total</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Payment Status</th>
-              <th className="px-4 py-3">Actions</th>
+              <th className="px-4 py-3">Mã đơn hàng</th>
+              <th className="px-4 py-3">Người dùng</th>
+              <th className="px-4 py-3">Số điện thoại</th>
+              <th className="px-4 py-3">Địa chỉ</th>
+              <th className="px-4 py-3">Phương thức thanh toán</th>
+              <th className="px-4 py-3">Sản phẩm</th>
+              <th className="px-4 py-3">Tổng tiền</th>
+              <th className="px-4 py-3">Trạng thái</th>
+              <th className="px-4 py-3">Trạng thái thanh toán</th>
+              <th className="px-4 py-3">Thao tác</th>
             </tr>
           </thead>
           <tbody>
@@ -127,7 +127,7 @@ const OrderManagement = () => {
                       onChange={(e) =>
                         handleStatusChange(order._id, e.target.value)
                       }
-                      className="p-1 border border-gray-300 rounded-md"
+                      className="p-1 border border-gray-300"
                     >
                       <option value="Pending">Pending</option>
                       <option value="Processing">Processing</option>
@@ -142,7 +142,7 @@ const OrderManagement = () => {
                       onChange={(e) =>
                         handlePaymentStatusChange(order._id, e.target.value)
                       }
-                      className="p-1 border border-gray-300 rounded-md"
+                      className="p-1 border border-gray-300"
                     >
                       <option value="Unpaid">Unpaid</option>
                       <option value="Paid">Paid</option>
@@ -152,9 +152,9 @@ const OrderManagement = () => {
                   <td className="p-4">
                     <button
                       onClick={() => handleStatusChange(order._id, "Delivered")}
-                      className="bg-blue-500 text-white px-4 py-1 border border-gray-300 rounded-md hover:bg-blue-600"
+                      className="bg-blue-500 text-white px-3 py-1 border border-gray-300 hover:bg-blue-600 cursor-pointer w-20"
                     >
-                      Mark as Delivered
+                     Đã giao
                     </button>
                   </td>
                 </tr>
@@ -162,7 +162,7 @@ const OrderManagement = () => {
             ) : (
               <tr>
                 <td colSpan={10} className="px-4 text-center">
-                  No orders found
+                  Không có đơn hàng
                 </td>
               </tr>
             )}

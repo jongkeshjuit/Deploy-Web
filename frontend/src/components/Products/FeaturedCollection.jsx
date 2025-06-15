@@ -7,7 +7,7 @@ const FeaturedCollection = ({ collections }) => {
       <div className="w-full grid grid-cols-1 gap-8">
         {collections.map((col) => {
           const featured = col.products.filter((p) => p.isFeatured);
-          if (featured.length === 0) return null;
+          // if (featured.length === 0) return null;
           return (
             <div key={col.id} className="featured-collection overflow-hidden">
               <Link to={`/collections/${col.id}`}>

@@ -44,11 +44,11 @@ const productSchema = new mongoose.Schema(
             trim: true,
         },
 
-        brand: {
-            type: String,
-            required: true,
-            trim: true,
-        },
+        // brand: {
+        //     type: String,
+        //     required: true,
+        //     trim: true,
+        // },
 
         sizes: {
             type: [String],

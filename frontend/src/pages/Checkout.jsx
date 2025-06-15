@@ -358,7 +358,7 @@ const Checkout = () => {
   }
   return (
     <div className="bg-white min-h-screen flex flex-col items-center justify-center py-6 mx-20 sm:px-4">
-      <div className="flex flex-col md:flex-row gap-6 md:gap-8 w-full ">
+      <div className="flex flex-col items-start md:flex-row gap-6 md:gap-8 w-full ">
         {/* Payment Method & Form */}
         <div className="flex-1 border p-4 sm:p-6 md:p-8 bg-white min-w-0">
           <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 uppercase tracking-wide">
@@ -520,7 +520,7 @@ const Checkout = () => {
               loading ||
               (formData.paymentMethod === "bank_transfer" && !isPaymentVerified)
             }
-            className="w-full sm:w-48 h-12 bg-red-600 hover:bg-red-700 text-white font-bold text-base sm:text-lg uppercase rounded transition-colors duration-150 mt-2"
+            className="w-full sm:w-48 h-12 bg-red-600 hover:bg-red-700 text-white font-bold text-base sm:text-lg uppercase transition-colors duration-150 mt-2"
             style={{ letterSpacing: 1 }}
           >
             ĐẶT HÀNG

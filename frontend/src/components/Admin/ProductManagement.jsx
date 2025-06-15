@@ -41,10 +41,10 @@ const ProductManagement = () => {
   return (
     <div className="max-w-7xl mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Product Management</h2>
+        <h2 className="text-2xl font-bold">Quản lý sản phẩm</h2>
         <Link
           to="/admin/products/new"
-          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+          className="bg-black text-white px-4 py-2 hover:bg-gray-700 cursor-pointer"
         >
           Thêm sản phẩm
         </Link>
@@ -53,10 +53,10 @@ const ProductManagement = () => {
         <table className="min-w-full text-left text-gray-500 border border-gray-100 border-collapse">
           <thead className="text-xs text-gray-700 uppercase bg-gray-100">
             <tr>
-              <th className="px-3 py-3">Name</th>
-              <th className="px-3 py-3">Price</th>
+              <th className="px-3 py-3">Tên sản phẩm</th>
+              <th className="px-3 py-3">Giá</th>
               <th className="px-3 py-3">SKU</th>
-              <th className="px-3 py-3">Action</th>
+              <th className="px-3 py-3">Thao tác</th>
             </tr>
           </thead>
           <tbody>
@@ -80,15 +80,15 @@ const ProductManagement = () => {
                   <td className="p-4">
                     <Link
                       to={`/admin/products/${product._id}`}
-                      className="inline-flex items-center bg-blue-500 text-white px-3 py-1 rounded-full mr-2 hover:bg-blue-600 cursor-pointer"
+                      className="inline-flex items-center bg-black text-white px-3 py-1 mr-2 hover:bg-gray-700 cursor-pointer"
                     >
-                      Edit
+                      Sửa sản phẩm
                     </Link>
                     <button
                       onClick={() => handleDelete(product._id)}
-                      className="inline-flex items-center bg-red-500 text-white px-3 py-1 rounded-full hover:bg-red-600 cursor-pointer"
+                      className="inline-flex items-center text-black px-3 py-1 border border-black hover:border-gray-700 hover:text-gray-700 cursor-pointer"
                     >
-                      Delete
+                      Xóa sản phẩm
                     </button>
                   </td>
                 </tr>

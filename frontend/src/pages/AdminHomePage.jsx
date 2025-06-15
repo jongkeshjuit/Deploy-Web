@@ -22,44 +22,44 @@ const AdminHomePage = () => {
   ];
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
+      <h1 className="text-2xl font-bold mb-6">Bảng điều khiển</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-semibold mb-4">Revenue</h2>
+          <h2 className="text-lg font-semibold mb-4">Doanh thu</h2>
           <p className="text-2xl">$1000</p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-semibold mb-4">Total Orders</h2>
+          <h2 className="text-lg font-semibold mb-4">Tổng đơn hàng</h2>
           <p className="text-2xl">{orders.length}</p>
           <Link to="/admin/orders" className="text-blue-500 hover:underline">
-            Manage Orders
+            Quản lý đơn hàng
           </Link>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-semibold mb-4">Total Products</h2>
+          <h2 className="text-lg font-semibold mb-4">Tổng sản phẩm</h2>
           <p className="text-2xl">200</p>
           <Link to="/admin/products" className="text-blue-500 hover:underline">
-            Manage Products
+            Quản lý sản phẩm
           </Link>
         </div>
       </div>
       <div className="mt-6">
-        <h2 className="text-lg font-bold mb-4">Recent Orders</h2>
+        <h2 className="text-lg font-bold mb-4">Đơn hàng gần nhất</h2>
         <div className="overflow-x-auto">
           <table className="min-w-full text-left text-gray-600 border border-gray-100 border-collapse">
             <thead className="text-xs text-black uppercase bg-gray-100">
               <tr>
                 <th scope="col" className="px-3 py-3">
-                  Order ID
+                  Mã đơn hàng
                 </th>
                 <th scope="col" className="px-3 py-3">
-                  User
+                  Người dùng
                 </th>
                 <th scope="col" className="px-3 py-3">
-                  Total Price
+                  Tổng tiền
                 </th>
                 <th scope="col" className="px-3 py-3">
-                  Status
+                  Trạng thái
                 </th>
               </tr>
             </thead>
@@ -76,7 +76,7 @@ const AdminHomePage = () => {
               ) : (
                 <tr>
                   <td colSpan={4} className="px-3 py-3 text-center">
-                    No orders found
+                    Không có đơn hàng
                   </td>
                 </tr>
               )}

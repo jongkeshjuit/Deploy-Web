@@ -49,14 +49,13 @@ const UserManagement = () => {
     }
 
     return (
-            <div className='max-w-7xl mx-auto p-6'>
-            <h2 className='text-2xl font-bold mb-6'>User Management</h2>
+        <div className='w-full mx-auto p-6 flex gap-6'>
             {/* add new user form */}
-            <div className='p-6 mb-6'>
-                <h3 className='text-lg font-bold mb-4'>Add New User</h3>
-                <form onSubmit={handleSubmit} className='space-y-4'>
+            <div className='mb-6 w-1/4'>
+                <h2 className='text-2xl font-bold'>Thêm tài khoản mới</h2>
+                <form onSubmit={handleSubmit} className='space-y-2'>
                     <div>
-                        <label className='block text-gray-700'>Name</label>
+                        <label className='block text-gray-700'>Tên người dùng</label>
                         <input
                             type="text"
                             name="name"
@@ -80,7 +79,7 @@ const UserManagement = () => {
                         />
                     </div>
                     <div>
-                        <label className='block text-gray-700'>Password</label>
+                        <label className='block text-gray-700'>Mật khẩu</label>
                         <input
                             type="password"
                             name="password"
@@ -91,7 +90,7 @@ const UserManagement = () => {
                         />
                     </div>
                     <div>
-                        <label className='block text-gray-700'>Role</label>
+                        <label className='block text-gray-700'>Vai trò</label>
                         <select name="role"
                             value={formData.role}
                             onChange={handleChange}
@@ -104,21 +103,22 @@ const UserManagement = () => {
                     </div>
                     <button
                         type='submit'
-                        className='bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600'>
+                        className='bg-black text-white px-4 py-2 hover:bg-gray-700 cursor-pointer'>
                         Add User
                     </button>
                 </form>
             </div>
 
             {/* user list */}
-            <div className='overflow-x-auto'>
+            <div className='overflow-x-auto w-3/4'>
+                <h2 className='text-2xl font-bold mb-6'>Quản lý tài khoản</h2>
                 <table className='min-w-full text-left text-gray-500 border border-gray-100 border-collapse'>
                     <thead className='text-xs text-gray-700 uppercase bg-gray-100'>
                         <tr>
-                            <th className='px-3 py-3'>Name</th>
+                            <th className='px-3 py-3'>Họ và tên</th>
                             <th className='px-3 py-3'>Email</th>
-                            <th className='px-3 py-3'>Role</th>
-                            <th className='px-3 py-3'>Action</th>
+                            <th className='px-3 py-3'>Vai trò</th>
+                            <th className='px-3 py-3'>Xóa</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -139,7 +139,7 @@ const UserManagement = () => {
                                 <td className='p-4'>
                                     <button
                                         onClick={() => handleDelete(user._id)}
-                                        className='bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600'>Delete</button>
+                                        className='text-black px-2 py-1 border border-black hover:border-gray-700 hover:text-gray-700 cursor-pointer'>Xóa</button>
                                 </td>
                             </tr>
                         ))}

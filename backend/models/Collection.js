@@ -21,12 +21,11 @@ const collectionSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    products: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
-      },
-    ],
+    status: {
+      type: String,
+      enum: ["active", "inactive"],
+      default: "active"
+    }
   },
   {
     timestamps: true,
