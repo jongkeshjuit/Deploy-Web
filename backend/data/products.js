@@ -10,8 +10,8 @@ const products = [
     category: "Áo phông",
     brand: "Wukudada",
     sizes: ["S", "M", "L", "XL", "XXL"],
-    color: "Đen",
-    collection: "Summer Collection",
+    colors: ["Đen"],
+    collection: "summer",
     material: "100% Cotton",
     gender: "Men",
     images: [
@@ -40,7 +40,7 @@ const products = [
     }
   },
 
-  // ========== THÊM SẢN PHẨM SUMMER COLLECTION ==========
+  // ========== THÊM SẢN PHẨM Summer ==========
   {
     name: "Áo Tank Top Nam Summer",
     description: "Áo tank top nam chất liệu cotton thấm hút mồ hôi, thiết kế đơn giản thoải mái cho mùa hè.",
@@ -51,8 +51,8 @@ const products = [
     category: "Áo phông",
     brand: "Wukudada",
     sizes: ["S", "M", "L", "XL", "XXL"],
-    color: "Trắng",
-    collection: "Summer Collection",
+    colors: ["Trắng"],
+    collection: "summer",
     material: "100% Cotton",
     gender: "Men",
     images: [
@@ -87,8 +87,8 @@ const products = [
     category: "Quần short",
     brand: "Wukudada",
     sizes: ["XS", "S", "M", "L", "XL"],
-    color: "Pastel",
-    collection: "Summer Collection",
+    colors: ["Pastel"],
+    collection: "summer",
     material: "100% Linen",
     gender: "Women",
     images: [
@@ -124,8 +124,8 @@ const products = [
     category: "Áo khoác",
     brand: "Wukudada",
     sizes: ["S", "M", "L", "XL", "XXL"],
-    color: "Xám đậm",
-    collection: "Winter Collection",
+    colors: ["Xám đậm"],
+    collection: "winter",
     material: "70% Wool, 30% Acrylic",
     gender: "Men",
     images: [
@@ -150,7 +150,7 @@ const products = [
     }
   },
 
-  // ========== THÊM SẢN PHẨM AUTUMN COLLECTION ==========  
+  // ========== THÊM SẢN PHẨM AUTUMN COLLECTION ==========
   {
     name: "Áo Cardigan Nữ Autumn",
     description: "Áo cardigan nữ mềm mại, màu nâu đất ấm áp, phù hợp layering cho mùa thu se lạnh.",
@@ -161,8 +161,8 @@ const products = [
     category: "Áo khoác",
     brand: "Wukudada",
     sizes: ["XS", "S", "M", "L", "XL"],
-    color: "Nâu đất",
-    collection: "Autumn Collection",
+    colors: ["Nâu đất"],
+    collection: "autumn",
     material: "60% Acrylic, 40% Cotton",
     gender: "Women",
     images: [
@@ -196,8 +196,8 @@ const products = [
     category: "Áo phông",
     brand: "Wukudada",
     sizes: ["S", "M", "L", "XL", "XXL"],
-    color: "Trắng",
-    collection: "Winter Collection",
+    colors: ["Trắng"],
+    collection: "winter",
     material: "Pique Cotton",
     gender: "Men",
     images: [
@@ -233,8 +233,8 @@ const products = [
     category: "Áo phông",
     brand: "Wukudada",
     sizes: ["XS", "S", "M", "L", "XL"],
-    color: "Hồng",
-    collection: "Autumn Collection",
+    colors: ["Hồng"],
+    collection: "autumn",
     material: "95% Cotton, 5% Spandex",
     gender: "Women",
     images: [
@@ -270,8 +270,8 @@ const products = [
     category: "Quần jean",
     brand: "Wukudada",
     sizes: ["28", "29", "30", "31", "32", "33", "34"],
-    color: "Xanh đậm",
-    collection: "Denim Collection",
+    colors: ["Xanh đậm"],
+    collection: "man",
     material: "98% Cotton, 2% Spandex",
     gender: "Men",
     images: [
@@ -307,8 +307,8 @@ const products = [
     category: "Quần jean",
     brand: "Wukudada",
     sizes: ["25", "26", "27", "28", "29", "30", "31"],
-    color: "Xanh nhạt",
-    collection: "Feminine Collection",
+    colors: ["Xanh nhạt"],
+    collection: "feminine",
     material: "92% Cotton, 6% Polyester, 2% Elastane",
     gender: "Women",
     images: [
@@ -344,8 +344,8 @@ const products = [
     category: "Áo khoác",
     brand: "Wukudada",
     sizes: ["S", "M", "L", "XL", "XXL"],
-    color: "Đen",
-    collection: "Street Collection",
+    colors: ["Đen"],
+    collection: "street",
     material: "100% Polyester",
     gender: "Men",
     images: [
@@ -381,8 +381,8 @@ const products = [
     category: "Áo khoác",
     brand: "Wukudada",
     sizes: ["XS", "S", "M", "L", "XL"],
-    color: "Xám",
-    collection: "Office Collection",
+    colors: ["Xám"],
+    collection: "office",
     material: "70% Polyester, 30% Viscose",
     gender: "Women",
     images: [
@@ -418,8 +418,8 @@ const products = [
     category: "Váy",
     brand: "Wukudada",
     sizes: ["XS", "S", "M", "L", "XL"],
-    color: "Navy",
-    collection: "Elegant Collection",
+    colors: ["Navy"],
+    collection: "elegant",
     material: "100% Chiffon",
     gender: "Women",
     images: [
@@ -455,8 +455,8 @@ const products = [
     category: "Quần short",
     brand: "Wukudada",
     sizes: ["S", "M", "L", "XL", "XXL"],
-    color: "Be",
-    collection: "Summer Collection",
+    colors: ["Be"],
+    collection: "summer",
     material: "100% Cotton Kaki",
     gender: "Men",
     images: [
@@ -492,8 +492,8 @@ const products = [
     category: "Quần short",
     brand: "Wukudada",
     sizes: ["25", "26", "27", "28", "29", "30"],
-    color: "Xanh wash",
-    collection: "Casual Collection",
+    colors: ["Xanh wash"],
+    collection: "casual",
     material: "98% Cotton, 2% Elastane",
     gender: "Women",
     images: [
@@ -529,8 +529,8 @@ const products = [
     category: "Áo sơ mi",
     brand: "Wukudada",
     sizes: ["S", "M", "L", "XL", "XXL"],
-    color: "Trắng",
-    collection: "Business Collection",
+    colors: ["Trắng"],
+    collection: "business",
     material: "100% Cotton",
     gender: "Men",
     images: [
@@ -566,8 +566,8 @@ const products = [
     category: "Áo sơ mi",
     brand: "Wukudada",
     sizes: ["XS", "S", "M", "L", "XL"],
-    color: "Xanh pastel",
-    collection: "Trendy Collection",
+    colors: ["Xanh pastel"],
+    collection: "trendy",
     material: "100% Cotton",
     gender: "Women",
     images: [
@@ -599,17 +599,17 @@ const products = [
     price: 899000,
     discountPrice: 749000,
     countInStock: 28,
-    sku: "QT-NAM-SLIM-013",
+    sku: "QT-NAM-SLIM-014",
     category: "Quần tây",
     brand: "Wukudada",
     sizes: ["28", "29", "30", "31", "32", "33", "34"],
-    color: "Đen",
-    collection: "Formal Collection",
+    colors: ["Đen"],
+    collection: "formal",
     material: "65% Wool, 35% Polyester",
     gender: "Men",
     images: [
       {
-        url: "https://images.unsplash.com/photo-1594938328870-28be026b5a06?w=500&h=600&fit=crop",
+        url: "https://th.bing.com/th/id/OIP.rZ6xm0lw1fGWRYH6wFv30QAAAA?r=0&w=364&h=364&rs=1&pid=ImgDetMain&cb=idpwebpc1",
         altText: "Quần tây nam slim fit đen"
       }
     ],
@@ -640,8 +640,8 @@ const products = [
     category: "Áo phông",
     brand: "Wukudada Kids",
     sizes: ["2-3T", "4-5T", "6-7T", "8-9T", "10-11T"],
-    color: "Vàng",
-    collection: "Kids Collection",
+    colors: ["Vàng"],
+    collection: "kids",
     material: "100% Organic Cotton",
     gender: "unisex",
     images: [
@@ -677,8 +677,8 @@ const products = [
     category: "Quần jean",
     brand: "Wukudada Kids",
     sizes: ["2-3T", "4-5T", "6-7T", "8-9T", "10-11T"],
-    color: "Xanh nhạt",
-    collection: "Kids Casual",
+    colors: ["Xanh nhạt"],
+    collection: "kids-casual",
     material: "98% Cotton, 2% Elastane",
     gender: "unisex",
     images: [
