@@ -135,8 +135,8 @@ const EditProductPage = () => {
         productData.gender === "man"
           ? "man"
           : productData.gender === "woman"
-          ? "woman"
-          : "",
+            ? "woman"
+            : "",
     };
     console.log("Dữ liệu gửi lên:", fixedProductData);
     console.log("Các trường bắt buộc:");
@@ -189,12 +189,13 @@ const EditProductPage = () => {
   if (loading)
     return <div className="text-center mt-10">Đang tải sản phẩm...</div>;
   return (
-    <div className=" max-w-5xl mx-auto p-6">
-      <h2 className="text-3xl font-bold mb-6">Edit Product</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="w-full mx-auto p-6">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4">
         {/* name */}
-        <div className="mb-6">
-          <label className="block font-semibold mb-2">Product Name</label>
+        <div className="">
+          <label className="block font-medium text-lg">Tên sản phẩm</label>
           <input
             type="text"
             name="name"
@@ -205,8 +206,8 @@ const EditProductPage = () => {
           />
         </div>
         {/* description */}
-        <div className="mb-6">
-          <label className="block font-semibold mb-2">Description</label>
+        <div className="">
+          <label className="block font-medium text-lg">Mô tả</label>
           <textarea
             name="description"
             value={productData.description}
@@ -217,8 +218,8 @@ const EditProductPage = () => {
           />
         </div>
         {/* price */}
-        <div className="mb-6">
-          <label className="block font-semibold mb-2">Price</label>
+        <div className="">
+          <label className="block font-medium text-lg">Giá</label>
           <input
             type="number"
             name="price"
@@ -228,8 +229,8 @@ const EditProductPage = () => {
           />
         </div>
         {/* count In Stock */}
-        <div className="mb-6">
-          <label className="block font-semibold mb-2">Count In Stock</label>
+        <div className="">
+          <label className="block font-medium text-lg">Số lượng</label>
           <input
             type="number"
             name="countInStock"
@@ -239,8 +240,8 @@ const EditProductPage = () => {
           />
         </div>
         {/* SKU */}
-        <div className="mb-6">
-          <label className="block font-semibold mb-2">SKU</label>
+        <div className="">
+          <label className="block font-medium text-lg">Mã sản phẩm</label>
           <input
             type="text"
             name="sku"
@@ -250,9 +251,9 @@ const EditProductPage = () => {
           />
         </div>
         {/* size */}
-        <div className="mb-6">
-          <label className="block font-semibold mb-2">
-            Size (comma separated)
+        <div className="">
+          <label className="block font-medium text-lg">
+            Kích thước (cách nhau bằng dấu phẩy)
           </label>
           <input
             type="text"
@@ -270,26 +271,67 @@ const EditProductPage = () => {
           />
         </div>
         {/* color */}
-        <div className="mb-6">
-          <label className="block font-semibold mb-2">
-            Color (comma separated)
-          </label>
-          <input
-            type="text"
-            name="colors"
-            value={productData.colors.join(", ")}
-            onChange={(e) =>
+        <div className="">
+          <label className="block font-medium text-lg">Màu sắc</label>
+          {productData.colors.map((color, idx) => (
+            <div key={idx} className="flex gap-2 mb-2">
+              <input
+                type="text"
+                placeholder="Tên màu (VD: Navy)"
+                value={color.name}
+                onChange={(e) =>
+                  setProductData((prevData) => {
+                    const updatedColors = [...prevData.colors];
+                    updatedColors[idx].name = e.target.value;
+                    return { ...prevData, colors: updatedColors };
+                  })
+                }
+                className="border p-1 w-1/2"
+              />
+              <input
+                type="text"
+                placeholder="Mã màu (VD: #000080)"
+                value={color.code}
+                onChange={(e) =>
+                  setProductData((prevData) => {
+                    const updatedColors = [...prevData.colors];
+                    updatedColors[idx].code = e.target.value;
+                    return { ...prevData, colors: updatedColors };
+                  })
+                }
+                className="border p-1 w-1/2"
+              />
+              <button
+                type="button"
+                onClick={() =>
+                  setProductData((prevData) => ({
+                    ...prevData,
+                    colors: prevData.colors.filter((_, i) => i !== idx),
+                  }))
+                }
+                className="text-red-600"
+              >
+                X
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() =>
               setProductData((prevData) => ({
                 ...prevData,
-                colors: e.target.value.split(",").map((color) => color.trim()),
+                colors: [...prevData.colors, { name: "", code: "" }],
               }))
             }
-            className="w-full border border-gray-300 p-2"
-          />
+            className="text-blue-600"
+          >
+            + Thêm màu
+          </button>
+
         </div>
         {/* category */}
-        <div className="mb-6">
-          <label className="block font-semibold mb-2">Category</label>
+        <div className="">
+          <label className="block font-medium text-lg">Danh mục</label>
           <input
             type="text"
             name="category"
@@ -301,8 +343,8 @@ const EditProductPage = () => {
           />
         </div>
         {/* collection */}
-        <div className="mb-6">
-          <label className="block font-semibold mb-2">Collection</label>
+        <div className="">
+          <label className="block font-medium text-lg">Bộ sưu tập</label>
           <input
             type="text"
             name="collection"
@@ -314,8 +356,8 @@ const EditProductPage = () => {
           />
         </div>
         {/* material */}
-        <div className="mb-6">
-          <label className="block font-semibold mb-2">Material</label>
+        <div className="">
+          <label className="block font-medium text-lg">Chất liệu</label>
           <input
             type="text"
             name="material"
@@ -327,8 +369,8 @@ const EditProductPage = () => {
           />
         </div>
         {/* gender */}
-        <div className="mb-6">
-          <label className="block font-semibold mb-2">Gender</label>
+        <div className="">
+          <label className="block font-medium text-lg">Giới tính</label>
           <div className="flex gap-4">
             <label className="flex items-center gap-2">
               <input
@@ -363,8 +405,8 @@ const EditProductPage = () => {
           </div>
         </div>
         {/* images */}
-        <div className="mb-6">
-          <label className="block font-semibold mb-2">Images</label>
+        <div className="">
+          <label className="block font-medium text-lg">Ảnh</label>
           <div className="flex gap-4 mb-2">
             {productData.images.map((img, idx) => (
               <img
@@ -379,7 +421,7 @@ const EditProductPage = () => {
         </div>
         {/* dimensions */}
         <div className="mb-6">
-          <label className="block font-semibold mb-2">Kích thước (cm)</label>
+          <label className="block font-medium text-lg">Kích thước (cm)</label>
           <div className="grid grid-cols-2 gap-4">
             <input
               type="number"

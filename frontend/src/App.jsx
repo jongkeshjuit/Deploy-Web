@@ -33,6 +33,8 @@ import UserManagement from "./components/Admin/UserManagement";
 import ProductManagement from "./components/Admin/ProductManagement";
 import EditProductPage from "./components/Admin/EditProductPage";
 import OrderManagement from "./components/Admin/OrderManagement";
+import CollectionManagement from "./components/Admin/CollectionManagement";
+import EditCollection from "./components/Admin/EditCollection";
 // ==================================================
 import axios from 'axios';
 axios.defaults.withCredentials = true;
@@ -74,6 +76,8 @@ const App = () => {
                 <Route path="products" element={<ProductManagement />} />
                 <Route path="products/:id" element={<EditProductPage />} />
                 <Route path="orders" element={<OrderManagement />} />
+                <Route path="collections" element={<CollectionManagement />} />
+                <Route path="collections/:id" element={<EditCollection />} />
               </Route>
             </Routes>
           </OrderProvider>

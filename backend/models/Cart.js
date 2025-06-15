@@ -24,14 +24,17 @@ const cartItemSchema = new mongoose.Schema({
         required: true
     },
     color: {
-        name: {
-            type: String,
-            required: true
+        type: {
+            name: {
+                type: String,
+                required: true
+            },
+            code: {
+                type: String,
+                required: true
+            }
         },
-        code: {
-            type: String,
-            required: true
-        }
+        required: true
     },
     quantity: {
         type: Number,

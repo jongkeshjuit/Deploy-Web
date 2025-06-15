@@ -16,7 +16,7 @@ const AdminLayout = () => {
                 <button onClick={toggleSidebar}>
                     <GrMenu size={24} />
                 </button>
-                <h1 className='ml-4 text-xl font-medium'>Admin Dashboard</h1>
+                <h1 className='ml-4 text-xl font-medium'>Bảng điều khiển</h1>
             </div>
 
             {/* overlay for mobile sidebar */}

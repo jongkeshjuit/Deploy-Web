@@ -22,14 +22,24 @@ const checkoutItemSchema = new mongoose.Schema({
         type: String
     },
     color: {
-        type: String
+        type: {
+            name: {
+                type: String,
+                required: true
+            },
+            code: {
+                type: String,
+                required: true
+            }
+        },
+        required: true
     },
     quantity: {
         type: Number,
         required: true
     }
 },
-    {_id: false}
+    { _id: false }
 );
 
 const checkoutSchema = new mongoose.Schema({
