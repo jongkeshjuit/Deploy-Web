@@ -211,7 +211,7 @@ const Cart = () => {
                           {product.name || item.name}
                         </Link>
                         <div className="text-lg text-gray-500 mt-1">
-                          <p>Màu: {item.color}</p>
+                          <p>Màu: {item.color?.name || 'N/A'}</p>
                           <p>Size: {item.size}</p>
                         </div>
                       </div>

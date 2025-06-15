@@ -1,10 +1,16 @@
+// import products from '../../data/sample-products.json';
+
+
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import ProductGrid from "./ProductGrid";
 // import { useCart } from "../Cart/CartContext";
 import { addToCart } from "../../redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { PiShoppingCartSimple, PiCoins } from "react-icons/pi";
+
+
 import {
   fetchProductById,
   fetchSimilarProducts,
@@ -12,8 +18,21 @@ import {
 
 const ProductDetails = ({ productId }) => {
   const { id } = useParams();
+  const productFetchId = productId || id;
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   // const { addToCart } = useCart();
+  // đây để test, khi đã có backend thì xóa dòng này
+  // const selectedProduct = products.find(
+  //   (p) => p._id.$oid === productFetchId
+  // );
+  // // Lấy các sản phẩm cùng category, loại trùng chính nó
+  // const similarProducts = products.filter(
+  //   (p) => p.category === selectedProduct.category && p._id.$oid !== selectedProduct._id.$oid
+  // );
+
 
   const { selectedProduct, similarProducts, loading, error } = useSelector(
     (state) => state.products
@@ -22,13 +41,12 @@ const ProductDetails = ({ productId }) => {
 
   const [mainImage, setMainImage] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
-  const [selectedColor, setSelectedColor] = useState("");
+  const [selectedColor, setSelectedColor] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [newReviewRating, setNewReviewRating] = useState(0);
   const [newReviewComment, setNewReviewComment] = useState("");
 
-  const productFetchId = productId || id;
 
   useEffect(() => {
     if (productFetchId) {
@@ -71,6 +89,11 @@ const ProductDetails = ({ productId }) => {
     );
   };
 
+  // const handleAddToCart = () => {
+  //   if (!selectedSize || !selectedColor) {
+  //     toast.error("Vui lòng chọn kích thước và màu sắc");
+  //     return;
+  //   }
   const handleAddToCart = () => {
     if (!selectedSize || !selectedColor) {
       toast.error("Vui lòng chọn kích thước và màu sắc");
@@ -84,7 +107,10 @@ const ProductDetails = ({ productId }) => {
         productId: productFetchId,
         quantity,
         size: selectedSize,
-        color: selectedColor,
+        color: {
+          name: selectedColor.name,
+          code: selectedColor.code,
+        },
         userId: user?._id,
         guestId,
       })
@@ -101,6 +127,39 @@ const ProductDetails = ({ productId }) => {
       .finally(() => {
         setIsButtonDisabled(false);
       });
+  };
+
+  const handleBuyNow = async () => {
+    if (!selectedSize || !selectedColor) {
+      toast.error("Vui lòng chọn kích thước và màu sắc");
+      return;
+    }
+
+    setIsButtonDisabled(true);
+
+    try {
+      // First add to cart
+      await dispatch(
+        addToCart({
+          productId: productFetchId,
+          quantity,
+          size: selectedSize,
+          color: {
+            name: selectedColor.name,
+            code: selectedColor.code,
+          },
+          userId: user?._id,
+          guestId,
+        })
+      ).unwrap();
+
+      // Then navigate to checkout
+      navigate('/checkout');
+    } catch (error) {
+      toast.error(error?.message || "Có lỗi xảy ra khi thêm vào giỏ hàng");
+    } finally {
+      setIsButtonDisabled(false);
+    }
   };
 
   return (
@@ -142,7 +201,8 @@ const ProductDetails = ({ productId }) => {
                 <div className="flex flex-col gap-2 border-b-2 border-gray-300 pb-4">
                   <h2 className="text-4xl font-normal">Mô tả</h2>
                   <p className="text-gray-500 text-base">
-                    Mã sản phẩm: {selectedProduct._id || "Đang cập nhật"}
+                    {/* Mã sản phẩm: {selectedProduct._id|| "Đang cập nhật"} */}
+                    Mã sản phẩm: {selectedProduct._id.$oid || "Đang cập nhật"}
                   </p>
                 </div>
 
@@ -163,11 +223,10 @@ const ProductDetails = ({ productId }) => {
                     </span>
                   </button>
                   <div
-                    className={`overflow-hidden transition-all duration-300 ${
-                      expandedSections.details
-                        ? "max-h-[500px] pb-4"
-                        : "max-h-0"
-                    }`}
+                    className={`overflow-hidden transition-all duration-300 ${expandedSections.details
+                      ? "max-h-[500px] pb-4"
+                      : "max-h-0"
+                      }`}
                   >
                     <div className="space-y-2 text-gray-600">
                       <p className="text-base">{selectedProduct.description}</p>
@@ -202,11 +261,10 @@ const ProductDetails = ({ productId }) => {
                     </span>
                   </button>
                   <div
-                    className={`overflow-hidden transition-all duration-300 ${
-                      expandedSections.material
-                        ? "max-h-[500px] pb-4"
-                        : "max-h-0"
-                    }`}
+                    className={`overflow-hidden transition-all duration-300 ${expandedSections.material
+                      ? "max-h-[500px] pb-4"
+                      : "max-h-0"
+                      }`}
                   >
                     <div className="space-y-2 text-gray-600">
                       <p className="text-sm">
@@ -235,9 +293,8 @@ const ProductDetails = ({ productId }) => {
                     </span>
                   </button>
                   <div
-                    className={`overflow-hidden transition-all duration-300 ${
-                      expandedSections.care ? "max-h-[500px] pb-4" : "max-h-0"
-                    }`}
+                    className={`overflow-hidden transition-all duration-300 ${expandedSections.care ? "max-h-[500px] pb-4" : "max-h-0"
+                      }`}
                   >
                     <div className="space-y-2 text-gray-600">
                       <p className="text-sm">
@@ -267,39 +324,39 @@ const ProductDetails = ({ productId }) => {
               )}
               {/* Color */}
               <div>
-                <p className="text-gray-700 font-medium">Màu sắc:</p>
-                <div className="flex gap-2 mt-2">
-                  {selectedProduct.colors.map((color) => (
+                <p className="text-black font-medium">
+                  Màu sắc: <span className="text-black font-light">{selectedColor ? selectedColor.name : ''}</span>
+                </p>
+                <div className="flex gap-3 mt-2">
+                  {selectedProduct.colors.map((colorObj) => (
                     <button
-                      key={color}
-                      onClick={() => setSelectedColor(color)}
-                      className={`w-10 h-10 rounded-full border cursor-pointer ${
-                        selectedColor === color
-                          ? "border-2 border-black"
-                          : "border-gray-300"
-                      }`}
+                      key={colorObj.name}
+                      onClick={() => setSelectedColor(colorObj)}
+                      className={`w-10 h-10 rounded-full cursor-pointer ${selectedColor?.name === colorObj.name
+                        ? "ring-2 ring-offset-2 ring-black"
+                        : "border-2 border-gray-500"
+                        }`}
                       style={{
-                        backgroundColor: color.toLowerCase(),
-                        filter: "brightness(0.9)",
+                        backgroundColor: colorObj.code,
+                        // filter: "brightness(0.9)",
                       }}
-                    ></button>
+                    />
                   ))}
                 </div>
               </div>
 
               {/* Size */}
               <div>
-                <p className="text-gray-700 font-medium">Kích cỡ:</p>
-                <div className="flex flex-wrap gap-2 mt-2">
+                <p className="text-black font-medium">Kích cỡ:</p>
+                <div className="flex flex-wrap gap-3 mt-2">
                   {selectedProduct.sizes.map((size) => (
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
-                      className={`w-10 h-10 flex items-center justify-center border cursor-pointer text-sm font-medium ${
-                        selectedSize === size
-                          ? "border-black text-black"
-                          : "border-gray-400 text-gray-400"
-                      }`}
+                      className={`w-10 h-10 flex items-center justify-center border cursor-pointer text-sm font-medium ${selectedSize === size
+                        ? "ring-2 ring-offset-2 font-bold"
+                        : "border-gray-400 text-gray-400"
+                        }`}
                     >
                       {size}
                     </button>
@@ -309,7 +366,16 @@ const ProductDetails = ({ productId }) => {
 
               {/* Quantity */}
               <div className="flex flex-col items-start gap-2">
-                <p className="text-gray-700 font-medium">Số lượng:</p>
+                <div className="flex justify-between w-full items-center">
+                  <p className="text-gray-700 font-medium">Số lượng:</p>
+                  <p className="text-sm text-gray-500">
+                    {selectedProduct.countInStock > 10
+                      ? "Còn hàng"
+                      : selectedProduct.countInStock > 0
+                        ? `Còn ${selectedProduct.countInStock} sản phẩm`
+                        : "Hết hàng"}
+                  </p>
+                </div>
                 <div className="flex items-center w-[30%] py-2 bg-gray-100 rounded-full">
                   <button
                     onClick={() => handleQuantityChange("minus")}
@@ -339,17 +405,35 @@ const ProductDetails = ({ productId }) => {
                 </div>
               </div>
 
-              <button
-                onClick={handleAddToCart}
-                disabled={isButtonDisabled}
-                className={`bg-black text-lg text-white py-2 rounded-full w-full cursor-pointer ${
-                  isButtonDisabled
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-gray-800"
-                }`}
-              >
-                {isButtonDisabled ? "Đang thêm..." : "Thêm vào giỏ hàng"}
-              </button>
+              {/* Add to Cart or Buy Now */}
+              <div className="flex gap-2">
+                <button
+                  onClick={handleAddToCart}
+                  disabled={isButtonDisabled}
+                  className={`bg-black text-lg text-white flex items-center justify-center gap-2 py-2 w-full cursor-pointer ${isButtonDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-800"
+                    }`}
+                >
+                  {isButtonDisabled ? "Đang thêm..." : (
+                    <>
+                      <PiShoppingCartSimple className="inline size-5 text-white" />
+                      <p className="text-sm">Thêm vào giỏ hàng </p>
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={handleBuyNow}
+                  disabled={isButtonDisabled}
+                  className={`bg-white text-lg text-black flex items-center justify-center gap-2 py-2 w-full  cursor-pointer border border-black ${isButtonDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-100"
+                    }`}
+                >
+                  {isButtonDisabled ? "Đang xử lý..." : (
+                    <>
+                      <PiCoins className="inline size-5 text-black" />
+                      <p className="text-sm">Mua ngay </p>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
           <div className="mt-20 mb-10 mx-[50px]">

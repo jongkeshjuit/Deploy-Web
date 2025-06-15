@@ -9,9 +9,11 @@ const SearchBar = ({ hideTextOnMobile }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const navigate = useNavigate();
 
-  const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:9000';
+  const API_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000";
 
   const toggleSearch = () => setIsOpen((prev) => !prev);
   const clearSearch = () => {
@@ -25,11 +27,13 @@ const SearchBar = ({ hideTextOnMobile }) => {
       if (searchTerm.trim()) {
         try {
           setLoading(true);
-          const response = await axios.get(`${API_URL}/api/products/search`, {
-            params: { query: searchTerm }
+          // Gọi API tìm kiếm sản phẩm
+          const response = await axios.get(`${API_URL}/api/products`, {
+            params: {
+              search: searchTerm,
+              limit: 12,
+            },
           });
-
-
           setSearchResults(response.data.products || []);
         } catch (error) {
           console.error("Error searching products:", error);
@@ -41,7 +45,28 @@ const SearchBar = ({ hideTextOnMobile }) => {
         setSearchResults([]);
       }
     }, 300);
+    return () => clearTimeout(timer);
+  }, [searchTerm, API_URL]);
 
+  // Debounce suggest
+  useEffect(() => {
+    if (!searchTerm.trim()) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      try {
+        const res = await axios.get(`${API_URL}/api/products/suggest`, {
+          params: { query: searchTerm },
+        });
+        setSuggestions(res.data || []);
+        setShowSuggestions(true);
+      } catch {
+        setSuggestions([]);
+        setShowSuggestions(false);
+      }
+    }, 250);
     return () => clearTimeout(timer);
   }, [searchTerm, API_URL]);
 
@@ -77,8 +102,9 @@ const SearchBar = ({ hideTextOnMobile }) => {
       )}
 
       <div
-        className={`fixed top-0 left-0 w-full h-screen bg-white z-50 transition-transform duration-200 ease-in-out ${isOpen ? "translate-y-0" : "-translate-y-full"
-          }`}
+        className={`fixed top-0 left-0 w-full h-screen bg-white z-50 transition-transform duration-200 ease-in-out ${
+          isOpen ? "translate-y-0" : "-translate-y-full"
+        }`}
       >
         <div className="flex flex-col w-full h-full overflow-y-auto">
           {/* Header tìm kiếm */}
@@ -92,6 +118,8 @@ const SearchBar = ({ hideTextOnMobile }) => {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="bg-gray-100 h-10 px-4 py-2 pl-7 pr-20 rounded-full w-full placeholder:text-gray-700 focus:outline-none text-sm md:text-base"
+                  onFocus={() => setShowSuggestions(true)}
+                  autoComplete="off"
                 />
                 {searchTerm && (
                   <button
@@ -101,6 +129,23 @@ const SearchBar = ({ hideTextOnMobile }) => {
                   >
                     Xóa
                   </button>
+                )}
+                {/* Gợi ý tìm kiếm */}
+                {showSuggestions && suggestions.length > 0 && (
+                  <ul className="absolute left-0 right-0 bg-white border rounded shadow z-50 mt-1 max-h-60 overflow-y-auto">
+                    {suggestions.map((s, idx) => (
+                      <li
+                        key={idx}
+                        className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        onClick={() => {
+                          setSearchTerm(s);
+                          setShowSuggestions(false);
+                        }}
+                      >
+                        {s}
+                      </li>
+                    ))}
+                  </ul>
                 )}
               </div>
 

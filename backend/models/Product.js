@@ -1,6 +1,13 @@
-const mongoose = require('mongoose');
-const productSchema = new mongoose.Schema({
+const mongoose = require("mongoose");
+const productSchema = new mongoose.Schema(
+    {
+        name: {
+            type: String,
+            required: true,
+            trim: true,
+        },
 
+<<<<<<< HEAD
     name: {
         type: String,
         required: true,
@@ -69,80 +76,176 @@ const productSchema = new mongoose.Schema({
     },
     images: [{
         url: {
+=======
+        description: {
+>>>>>>> 50c969431e7cbdfd32cf663d84e193f0e8587188
             type: String,
             required: true,
+            // trim: true
         },
-        altText: {
+
+        price: {
+            type: Number,
+            required: true,
+            min: 0,
+        },
+
+        discountPrice: {
+            type: Number,
+            min: 0,
+        },
+
+        countInStock: {
+            type: Number,
+            required: true,
+            min: 0,
+            default: 0,
+        },
+
+        sku: {
             type: String,
             required: true,
-        }
-    }],
-    isFeatured: {
-        type: Boolean,
-        default: false
-    },
-    isPublished: {
-        type: Boolean,
-        default: true
-    },
-    rating: {
-        type: Number,
-        default: 0,
-        min: 0,
-        max: 5
-    },
-    numReviews: {
-        type: Number,
-        default: 0,
-        min: 0
-    },
-    tags: [{
-        type: String,
-        trim: true
-    }],
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    metaTitle: {
-        type: String,
-        trim: true
-    },
-    metaDescription: {
-        type: String,
-        trim: true
-    },
-    metaKeywords: [{
-        type: String,
-        trim: true
-    }],
-    dimensions: {
-        length: {
-            type: Number,
-            required: true,
-            min: 0
+            unique: true,
+            trim: true,
         },
-        width: {
-            type: Number,
+
+        category: {
+            type: String,
             required: true,
-            min: 0
+            trim: true,
         },
-        height: {
-            type: Number,
+
+        brand: {
+            type: String,
             required: true,
-            min: 0
+            trim: true,
         },
-        weight: {
-            type: Number,
+
+        sizes: {
+            type: [String],
             required: true,
-            min: 0
-        }
+            trim: true,
+        },
+
+        colors: [
+            {
+                name: {
+                    type: String,
+                    required: true,
+                    trim: true,
+                },
+                code: {
+                    type: String,
+                    required: true,
+                    trim: true,
+                },
+            }
+        ],
+
+
+        collection: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+
+        material: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+
+        gender: {
+            type: String,
+            required: true,
+            enum: ["man", "woman", "unisex"],
+        },
+        images: [
+            {
+                url: {
+                    type: String,
+                    required: true,
+                },
+                altText: {
+                    type: String,
+                    required: true,
+                },
+            },
+        ],
+        isFeatured: {
+            type: Boolean,
+            default: false,
+        },
+
+        isPublished: {
+            type: Boolean,
+            default: true,
+        },
+
+        rating: {
+            type: Number,
+            default: 0,
+            min: 0,
+            max: 5,
+        },
+
+        numReviews: {
+            type: Number,
+            default: 0,
+            min: 0,
+        },
+        tags: [
+            {
+                type: String,
+                trim: true,
+            },
+        ],
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
+        metaTitle: {
+            type: String,
+            trim: true,
+        },
+
+        metaDescription: {
+            type: String,
+            trim: true,
+        },
+        metaKeywords: [
+            {
+                type: String,
+                trim: true,
+            },
+        ],
+        dimensions: {
+            length: {
+                type: Number,
+                required: true,
+                min: 0,
+            },
+            width: {
+                type: Number,
+                required: true,
+                min: 0,
+            },
+            height: {
+                type: Number,
+                required: true,
+                min: 0,
+            },
+            weight: {
+                type: Number,
+                required: true,
+                min: 0,
+            },
+        },
     },
-},
     {
         timestamps: true,
-        suppressReservedKeysWarning: true
+        suppressReservedKeysWarning: true,
     }
 );
-module.exports = mongoose.model('Product', productSchema);
+module.exports = mongoose.model("Product", productSchema);
