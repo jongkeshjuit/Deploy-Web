@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook } from 'react-icons/fa';
 import { loginUser, clearError, clearSuccess } from '../redux/slices/authSlice';
@@ -7,8 +7,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
 import FacebookLogin from '@greatsumini/react-facebook-login';
 import axios from 'axios';
-
-
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -20,23 +18,33 @@ const Login = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
+
+    // Get the return URL from query parameters or location state
+    const searchParams = new URLSearchParams(location.search);
+    const returnUrl = searchParams.get('returnUrl') || location.state?.from || '/';
 
     // Get auth state from Redux
     const { loading, error, success, userInfo } = useSelector((state) => state.auth);
 
+    // Redirect to returnUrl if already logged in
+    useEffect(() => {
+        if (userInfo) {
+            navigate(returnUrl, { replace: true });
+        }
+    }, [userInfo, navigate, returnUrl]);
+
     // Handle navigation after successful login
     useEffect(() => {
         if (success && userInfo) {
-            // Chỉ hiển thị toast nếu không có flag skipToast
-            //     console.log('Login.jsx useEffect triggered', userInfo);
-            // console.log('skipToast value:', userInfo.skipToast);
             if (!userInfo.skipToast) {
                 toast.success('Đăng nhập thành công!');
             }
             dispatch(clearSuccess());
-            navigate('/');
+            // Navigate to the returnUrl
+            navigate(returnUrl);
         }
-    }, [success, userInfo, navigate, dispatch]);
+    }, [success, userInfo, navigate, dispatch, returnUrl]);
 
     // Handle error display
     useEffect(() => {
@@ -125,7 +133,7 @@ const Login = () => {
             });
 
             toast.success('Đăng nhập Facebook thành công!');
-            navigate('/');
+            navigate(returnUrl);
         } catch (error) {
             console.error('Facebook login error:', error);
             toast.error('Đăng nhập Facebook thất bại. Vui lòng thử lại.');
@@ -230,7 +238,7 @@ const Login = () => {
                                     <FcGoogle className="h-5 w-5 mr-2" />
                                     Google
                                 </button>
-                            
+
                             </div>
                         </div>
                     </form>

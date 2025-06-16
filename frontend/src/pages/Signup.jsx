@@ -16,11 +16,18 @@ const Signup = () => {
 
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState({});
-    
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    
+
     const { loading, error, success, userInfo } = useSelector((state) => state.auth);
+
+    // Redirect to home if already logged in
+    useEffect(() => {
+        if (userInfo) {
+            navigate('/', { replace: true });
+        }
+    }, [userInfo, navigate]);
 
     // Handle navigation after successful registration
     useEffect(() => {

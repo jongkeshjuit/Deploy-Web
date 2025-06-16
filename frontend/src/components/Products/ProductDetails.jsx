@@ -15,6 +15,7 @@ import {
   fetchProductById,
   fetchSimilarProducts,
 } from "../../redux/slices/productsSlice";
+import { setBuyNowItem } from "../../redux/slices/checkoutSlice";
 
 const ProductDetails = ({ productId }) => {
   const { id } = useParams();
@@ -135,32 +136,20 @@ const ProductDetails = ({ productId }) => {
       return;
     }
 
-    setIsButtonDisabled(true);
+    const item = {
+      productId: productFetchId,
+      name: selectedProduct.name,
+      image: selectedProduct.images?.[0]?.url || "",
+      price: selectedProduct.discountPrice || selectedProduct.price,
+      quantity,
+      size: selectedSize,
+      color: selectedColor,
+    };
 
-    try {
-      // First add to cart
-      await dispatch(
-        addToCart({
-          productId: productFetchId,
-          quantity,
-          size: selectedSize,
-          color: {
-            name: selectedColor.name,
-            code: selectedColor.code,
-          },
-          userId: user?._id,
-          guestId,
-        })
-      ).unwrap();
-
-      // Then navigate to checkout
-      navigate('/checkout');
-    } catch (error) {
-      toast.error(error?.message || "Có lỗi xảy ra khi thêm vào giỏ hàng");
-    } finally {
-      setIsButtonDisabled(false);
-    }
+    dispatch(setBuyNowItem(item));
+    navigate("/checkout-buy-now");
   };
+
 
   return (
     <div className="pt-6">
