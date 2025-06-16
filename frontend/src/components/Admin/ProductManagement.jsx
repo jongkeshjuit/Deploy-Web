@@ -9,6 +9,7 @@ const ProductManagement = () => {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedGender, setSelectedGender] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const categoryGroups = {
     all: "Tất cả",
@@ -78,6 +79,15 @@ const ProductManagement = () => {
   const getFilteredProducts = () => {
     let filtered = [...products];
 
+    // Lọc theo từ khóa tìm kiếm
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(product =>
+        product.name.toLowerCase().includes(query) ||
+        product.sku.toLowerCase().includes(query)
+      );
+    }
+
     // Lọc theo danh mục
     if (selectedCategory !== "all") {
       const group = categoryGroups[selectedCategory];
@@ -115,6 +125,13 @@ const ProductManagement = () => {
         <div className="flex items-center gap-4">
           <h2 className="text-2xl font-bold">Quản lý sản phẩm</h2>
           <div className="flex gap-2">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Tìm theo tên hoặc SKU..."
+              className="border border-gray-300 rounded px-3 py-1 min-w-[250px]"
+            />
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
