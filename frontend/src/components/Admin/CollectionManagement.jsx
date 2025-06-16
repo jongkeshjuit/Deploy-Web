@@ -7,20 +7,41 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:9000";
 const CollectionManagement = () => {
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredCollections, setFilteredCollections] = useState([]);
 
   useEffect(() => {
     const fetchCollections = async () => {
       try {
         const res = await axios.get(`${API_URL}/api/collections`);
         setCollections(res.data || []);
+        setFilteredCollections(res.data || []);
       } catch (err) {
         setCollections([]);
+        setFilteredCollections([]);
       } finally {
         setLoading(false);
       }
     };
     fetchCollections();
   }, []);
+
+  // Hàm xử lý tìm kiếm
+  useEffect(() => {
+    const searchResults = collections.filter((collection) => {
+      const searchLower = searchTerm.toLowerCase();
+      return (
+        collection.id.toLowerCase().includes(searchLower) ||
+        collection.name.toLowerCase().includes(searchLower) ||
+        (collection.description || "").toLowerCase().includes(searchLower) ||
+        (collection.status || "").toLowerCase().includes(searchLower) ||
+        (collection.categories || []).some((cat) =>
+          cat.toLowerCase().includes(searchLower)
+        )
+      );
+    });
+    setFilteredCollections(searchResults);
+  }, [searchTerm, collections]);
 
   const handleDelete = async (id) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa bộ sưu tập này không?")) {
@@ -49,6 +70,28 @@ const CollectionManagement = () => {
           Thêm bộ sưu tập
         </Link>
       </div>
+
+      {/* Thanh tìm kiếm */}
+      <div className="mb-6">
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Tìm kiếm theo tên, ID, mô tả hoặc danh mục..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm("")}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+      </div>
+
       <div className="overflow-x-auto">
         <table className="min-w-full text-left text-gray-500 border border-gray-100 border-collapse table-fixed">
           <thead className="text-xs text-gray-700 uppercase bg-gray-100">
@@ -65,8 +108,8 @@ const CollectionManagement = () => {
                   Đang tải...
                 </td>
               </tr>
-            ) : collections.length > 0 ? (
-              collections.map((collection) => (
+            ) : filteredCollections.length > 0 ? (
+              filteredCollections.map((collection) => (
                 <tr
                   key={collection._id}
                   className="bg-white border-b border-gray-100"
@@ -94,7 +137,9 @@ const CollectionManagement = () => {
             ) : (
               <tr>
                 <td colSpan={3} className="p-4 text-center">
-                  Không có bộ sưu tập nào.
+                  {searchTerm
+                    ? "Không tìm thấy bộ sưu tập phù hợp"
+                    : "Không có bộ sưu tập nào."}
                 </td>
               </tr>
             )}
