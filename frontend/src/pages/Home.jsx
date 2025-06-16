@@ -55,7 +55,9 @@ const Home = () => {
         Khám phá bộ sưu tập độc đáo của Wukudada
       </h1> */}
       <div className="mb-[50px]">
-        <FeaturedCollection collections={collections} />
+        <FeaturedCollection
+          collections={collections.filter((col) => col.status === "active")}
+        />
       </div>
     </>
   );
