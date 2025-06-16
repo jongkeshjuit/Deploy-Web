@@ -207,8 +207,10 @@ router.get("/", async (req, res) => {
 
     // Filtering by color (support comma-separated values)
     if (color) {
-      const colors = color.split(",");
-      query.colors = { $in: colors };
+      const colors = color.split(",").map(c => c.toUpperCase());
+      query["colors.code"] = {
+        $in: colors.map(c => new RegExp(c.startsWith("#") ? c : `#${c}`, "i"))
+      };
     }
 
     // Filtering by gender (support comma-separated values)

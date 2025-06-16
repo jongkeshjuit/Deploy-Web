@@ -27,31 +27,29 @@ const FilterSidebar = () => {
   ];
 
   useEffect(() => {
-    // Lấy tất cả sản phẩm để sinh filter động
     const fetchOptions = async () => {
       try {
         const res = await axios.get(`${API_URL}/api/products`);
         const products = res.data.products || [];
 
-        // Lấy tất cả màu sắc
-        const colorSet = new Set();
+        const uniqueColors = new Map();
         const materialSet = new Set();
         const categorySet = new Set();
 
-        products.forEach((p) => {
-          // Xử lý màu sắc mới với cấu trúc {name, code}
-          (p.colors || []).forEach((c) => {
-            if (typeof c === 'object' && c.name && c.code) {
-              colorSet.add(JSON.stringify({ name: c.name, code: c.code }));
+        products.forEach((product) => {
+          (product.colors || []).forEach((color) => {
+            if (color.name && color.code) {
+              uniqueColors.set(color.code, {
+                name: color.name,
+                code: color.code
+              });
             }
           });
-          if (p.material) materialSet.add(p.material);
-          if (p.category) categorySet.add(p.category);
+          if (product.material) materialSet.add(product.material);
+          if (product.category) categorySet.add(product.category);
         });
 
-        // Chuyển đổi colorSet thành mảng các object
-        const colors = Array.from(colorSet).map(c => JSON.parse(c));
-        setColorOptions(colors);
+        setColorOptions(Array.from(uniqueColors.values()));
         setMaterialOptions(Array.from(materialSet));
         setCategoryOptions(Array.from(categorySet));
       } catch (err) {
@@ -67,24 +65,27 @@ const FilterSidebar = () => {
   useEffect(() => {
     const params = Object.fromEntries(searchParams);
 
-    // Xử lý đặc biệt cho color
     let colors = [];
     if (params.color) {
-      const colorNames = params.color.split(",");
-      colors = colorNames.map(name => {
-        const colorOption = colorOptions.find(c => c.name === name);
-        return colorOption || { name, code: "#000000" }; // fallback nếu không tìm thấy
-      });
+      const colorCodes = params.color.split(",");
+      colors = colorCodes
+        .map(code => {
+          // Chuẩn hóa mã màu
+          const normalizedCode = code.startsWith("#") ? code.toUpperCase() : `#${code.toUpperCase()}`;
+          const foundColor = colorOptions.find(c => c.code.toUpperCase() === normalizedCode);
+          return foundColor ? { name: foundColor.name, code: foundColor.code } : null;
+        })
+        .filter(Boolean);
     }
 
     setFilters({
       color: colors,
       size: params.size ? params.size.split(",") : [],
-      price: params.price ? params.price.split(",") : [],
+      price: params.price ? [params.price] : [],
       material: params.material ? params.material.split(",") : [],
       category: params.category ? params.category.split(",") : [],
     });
-  }, [searchParams]);
+  }, [searchParams, colorOptions]);
 
   const handleFilterChange = (type, value) => {
     const newFilters = { ...filters };
@@ -92,9 +93,9 @@ const FilterSidebar = () => {
     if (type === "price") {
       newFilters.price = [value];
     } else if (type === "color") {
-      const colorStr = JSON.stringify(value);
-      if (newFilters.color.some(c => JSON.stringify(c) === colorStr)) {
-        newFilters.color = newFilters.color.filter(c => JSON.stringify(c) !== colorStr);
+      const existingColor = newFilters.color.find(c => c.code.toUpperCase() === value.code.toUpperCase());
+      if (existingColor) {
+        newFilters.color = newFilters.color.filter(c => c.code.toUpperCase() !== value.code.toUpperCase());
       } else {
         newFilters.color = [...newFilters.color, value];
       }
@@ -108,17 +109,25 @@ const FilterSidebar = () => {
 
     setFilters(newFilters);
 
-    // Update URL params
-    const newParams = {};
+    // Cập nhật URL params
+    const newParams = { ...Object.fromEntries(searchParams) };
+
+    // Update filter params
     Object.entries(newFilters).forEach(([key, values]) => {
-      if (values.length > 0) {
+      if (values && values.length > 0) {
         if (key === "color") {
-          newParams[key] = encodeURIComponent(JSON.stringify(values));
+          // Gửi mã màu không có dấu # và in hoa
+          newParams[key] = values.map(c => c.code.replace("#", "").toUpperCase()).join(",");
+        } else if (key === "price" && values.length === 1) {
+          newParams[key] = values[0];
         } else {
           newParams[key] = values.join(",");
         }
+      } else {
+        delete newParams[key];
       }
     });
+
     setSearchParams(newParams);
   };
 
@@ -130,7 +139,13 @@ const FilterSidebar = () => {
       material: [],
       category: [],
     });
-    setSearchParams({});
+
+    // Preserve non-filter params
+    const newParams = { ...Object.fromEntries(searchParams) };
+    Object.keys(filters).forEach(key => {
+      delete newParams[key];
+    });
+    setSearchParams(newParams);
   };
 
   return (
@@ -147,19 +162,24 @@ const FilterSidebar = () => {
         )}
       </div>
 
-      {/* Màu sắc */}
       <div className="mb-6">
         <label className="block font-medium text-gray-700 mb-3">Màu sắc</label>
         <div className="flex flex-wrap gap-2">
           {colorOptions.map((color) => (
             <button
-              key={color.name}
+              key={color.code}
               onClick={() => handleFilterChange("color", color)}
-              className={`w-8 h-8 rounded-full border-2 cursor-pointer transition hover:scale-105 ${filters.color.some(c => c.name === color.name) ? "border-black" : "border-gray-300"
+              className={`w-8 h-8 rounded-full border-2 cursor-pointer ${filters.color.some(c => c.code === color.code)
+                ? "border-black"
+                : "border-gray-300"
                 }`}
               style={{ backgroundColor: color.code }}
               title={color.name}
-            ></button>
+            >
+              {/* {filters.color.some(c => c.code === color.code) && (
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-black rounded-full border-2 border-white" />
+              )} */}
+            </button>
           ))}
         </div>
       </div>
@@ -262,26 +282,20 @@ const FilterSidebar = () => {
         <div className="mt-8 pt-6 border-t">
           <h4 className="font-medium text-gray-700 mb-3">Bộ lọc đã chọn</h4>
           <div className="flex flex-wrap gap-2">
-            {Object.entries(filters).map(([type, values]) =>
-              values.map((value) => {
-                let label = value;
-                if (type === "price") {
-                  label = price.find((p) => p.value === value)?.name || value;
-                } else if (type === "color") {
-                  label = value.name;
-                } else if (type === "material") {
-                  label = value;
-                } else if (type === "category") {
-                  label = value;
-                }
-
-                return (
+            {/* Màu sắc đã chọn */}
+            {filters.color.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {filters.color.map((color) => (
                   <button
-                    key={`${type}-${JSON.stringify(value)}`}
-                    onClick={() => handleFilterChange(type, value)}
-                    className="px-2 py-1 rounded-full bg-amber-100 text-amber-800 text-sm flex items-center gap-1 hover:bg-amber-200"
+                    key={color.code}
+                    onClick={() => handleFilterChange("color", color)}
+                    className="px-2 py-1 rounded-full bg-gray-100 text-gray-800 text-sm flex items-center gap-1 hover:bg-gray-200"
                   >
-                    {label}
+                    <span
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: color.code }}
+                    />
+                    <span>{color.name}</span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 20 20"
@@ -291,8 +305,100 @@ const FilterSidebar = () => {
                       <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
                     </svg>
                   </button>
-                );
-              })
+                ))}
+              </div>
+            )}
+
+            {/* Kích thước đã chọn */}
+            {filters.size.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {filters.size.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => handleFilterChange("size", s)}
+                    className="px-2 py-1 rounded-full bg-gray-100 text-gray-800 text-sm flex items-center gap-1 hover:bg-gray-200"
+                  >
+                    <span>{s}</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      className="w-4 h-4"
+                    >
+                      <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                    </svg>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Giá đã chọn */}
+            {filters.price.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {filters.price.map((p) => (
+                  <button
+                    key={p}
+                    onClick={() => handleFilterChange("price", p)}
+                    className="px-2 py-1 rounded-full bg-gray-100 text-gray-800 text-sm flex items-center gap-1 hover:bg-gray-200"
+                  >
+                    <span>{price.find(item => item.value === p)?.name || p}</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      className="w-4 h-4"
+                    >
+                      <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                    </svg>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Chất liệu đã chọn */}
+            {filters.material.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {filters.material.map((m) => (
+                  <button
+                    key={m}
+                    onClick={() => handleFilterChange("material", m)}
+                    className="px-2 py-1 rounded-full bg-gray-100 text-gray-800 text-sm flex items-center gap-1 hover:bg-gray-200"
+                  >
+                    <span>{m}</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      className="w-4 h-4"
+                    >
+                      <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                    </svg>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Danh mục đã chọn */}
+            {filters.category.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {filters.category.map((c) => (
+                  <button
+                    key={c}
+                    onClick={() => handleFilterChange("category", c)}
+                    className="px-2 py-1 rounded-full bg-gray-100 text-gray-800 text-sm flex items-center gap-1 hover:bg-gray-200"
+                  >
+                    <span>{c}</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      className="w-4 h-4"
+                    >
+                      <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                    </svg>
+                  </button>
+                ))}
+              </div>
             )}
           </div>
         </div>

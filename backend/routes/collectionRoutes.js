@@ -56,7 +56,12 @@ router.get("/:id/products", async (req, res) => {
 
     const query = { collection: req.params.id }; // Sử dụng id tự nhập
 
-    if (color) query.colors = { $in: color.split(",") };
+    if (color) {
+      const colors = color.split(",").map(c => c.toUpperCase());
+      query["colors.code"] = {
+        $in: colors.map(c => new RegExp(c.startsWith("#") ? c : `#${c}`, "i"))
+      };
+    }
     if (size) query.sizes = { $in: size.split(",") };
     if (material) {
       const materials = material.split(",");

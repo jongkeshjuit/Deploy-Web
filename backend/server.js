@@ -51,7 +51,7 @@ const limiter = rateLimit({
   message: {
     error: "Too many authentication attempts, please try again later."
   },
-  standardHeaders: true, 
+  standardHeaders: true,
   legacyHeaders: false,
 });
 
