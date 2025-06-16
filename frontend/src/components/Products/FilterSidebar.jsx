@@ -66,8 +66,19 @@ const FilterSidebar = () => {
 
   useEffect(() => {
     const params = Object.fromEntries(searchParams);
+
+    // Xử lý đặc biệt cho color
+    let colors = [];
+    if (params.color) {
+      const colorNames = params.color.split(",");
+      colors = colorNames.map(name => {
+        const colorOption = colorOptions.find(c => c.name === name);
+        return colorOption || { name, code: "#000000" }; // fallback nếu không tìm thấy
+      });
+    }
+
     setFilters({
-      color: params.color ? JSON.parse(decodeURIComponent(params.color)) : [],
+      color: colors,
       size: params.size ? params.size.split(",") : [],
       price: params.price ? params.price.split(",") : [],
       material: params.material ? params.material.split(",") : [],
