@@ -501,9 +501,27 @@ router.get("/new-arrivals", async (req, res) => {
   }
 });
 
-// @route   GET /api/products/:id
-// @desc    Get a single product by ID
-// @access Public
+// Gợi ý tìm kiếm sản phẩm theo tên
+router.get("/suggest", async (req, res) => {
+  try {
+    const { query } = req.query;
+    if (!query || query.trim() === "") {
+      return res.json([]);
+    }
+    // Tìm các sản phẩm có tên chứa query (không phân biệt hoa thường)
+    const suggestions = await Product.find({
+      name: { $regex: query, $options: "i" },
+    })
+      .limit(8)
+      .select("name"); // chỉ lấy tên
+
+    res.json(suggestions.map((p) => p.name));
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Route động :id phải đặt sau tất cả các route đặc biệt
 router.get("/:id", async (req, res) => {
   try {
     const productId = req.params.id;
@@ -527,26 +545,6 @@ router.get("/:id", async (req, res) => {
       return res.status(400).json({ message: "Invalid product ID format" });
     }
     res.status(500).json({ message: "Server error", error: error.message });
-  }
-});
-
-// Gợi ý tìm kiếm sản phẩm theo tên
-router.get("/suggest", async (req, res) => {
-  try {
-    const { query } = req.query;
-    if (!query || query.trim() === "") {
-      return res.json([]);
-    }
-    // Tìm các sản phẩm có tên chứa query (không phân biệt hoa thường)
-    const suggestions = await Product.find({
-      name: { $regex: query, $options: "i" },
-    })
-      .limit(8)
-      .select("name"); // chỉ lấy tên
-
-    res.json(suggestions.map((p) => p.name));
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
   }
 });
 

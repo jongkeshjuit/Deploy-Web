@@ -60,16 +60,26 @@ router.post("/", authMiddleware, async (req, res) => {
     ) {
       return res.status(400).json({ message: "Thiếu thông tin giao hàng" });
     }
-    // Chuẩn hóa dữ liệu orderItems từ cartItems
-    const orderItems = cartItems.map((item) => ({
-      productId: item.product._id,
-      name: item.product.name,
-      image: item.product.images?.[0]?.url || "",
-      price: item.product.discountPrice || item.product.price,
-      size: item.size,
-      color: item.color,
-      quantity: item.quantity,
-    }));
+    // Chuẩn hóa dữ liệu orderItems từ cartItems (lấy thông tin sản phẩm từ DB)
+    const productIds = cartItems.map((item) => item.productId);
+    const products = await require("../models/Product").find({
+      _id: { $in: productIds },
+    });
+    const productMap = new Map(products.map((p) => [p._id.toString(), p]));
+    const orderItems = cartItems.map((item) => {
+      const product = productMap.get((item.productId || "").toString());
+      if (!product)
+        throw new Error(`Không tìm thấy sản phẩm với id ${item.productId}`);
+      return {
+        productId: product._id,
+        name: product.name,
+        image: product.images?.[0]?.url || "",
+        price: product.discountPrice || product.price,
+        size: item.size,
+        color: item.color,
+        quantity: item.quantity,
+      };
+    });
     // Địa chỉ giao hàng
     const shippingAddress = {
       address: formData.address,
@@ -100,11 +110,38 @@ router.post("/", authMiddleware, async (req, res) => {
       paymentStatus,
       status: "Processing",
     });
+    // Ghi log chi tiết khi tạo đơn hàng mới
+    console.log("[ORDER] Dữ liệu nhận từ frontend:", {
+      formData,
+      cartItems,
+      totalPrice,
+    });
+    console.log("[ORDER] Tạo đơn hàng mới:", {
+      user: req.user?._id,
+      orderItems,
+      shippingAddress,
+      paymentMethod: formData.paymentMethod,
+      totalPrice,
+      isPaid,
+      paidAt,
+      paymentStatus,
+      status: "Processing",
+      createdAt: new Date(),
+    });
     const createdOrder = await order.save();
     res.status(201).json(createdOrder);
   } catch (error) {
     console.error("Error creating order:", error);
-    res.status(500).json({ message: "Server error" });
+    // Ghi log chi tiết lỗi để debug
+    if (error instanceof Error) {
+      res.status(500).json({
+        message: "Server error",
+        error: error.message,
+        stack: error.stack,
+      });
+    } else {
+      res.status(500).json({ message: "Server error", error });
+    }
   }
 });
 

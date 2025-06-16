@@ -4,6 +4,7 @@ import { Navigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
 import { getUserProfile } from "../../redux/slices/authSlice";
+import { fetchCities, fetchDistricts, fetchWards } from "../../utils/wards";
 
 const ProfileInfo = () => {
   const [isEdit, setIsEdit] = useState(false);
@@ -21,6 +22,12 @@ const ProfileInfo = () => {
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  // State cho dropdown địa chỉ
+  const [cities, setCities] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [selectedCityCode, setSelectedCityCode] = useState(null);
+  const [selectedDistrictCode, setSelectedDistrictCode] = useState(null);
 
   // Lấy thông tin user từ Redux store
   const { userInfo, userToken } = useSelector((state) => state.auth);
@@ -55,6 +62,46 @@ const ProfileInfo = () => {
       });
     }
   }, [userInfo]);
+
+  // Lấy danh sách tỉnh/thành khi mở form
+  useEffect(() => {
+    fetchCities().then((data) => setCities(data));
+  }, []);
+
+  // Khi userInfo thay đổi hoặc cities đã load, tự động set code cho city nếu có
+  useEffect(() => {
+    if (userInfo && cities.length > 0) {
+      const cityObj = cities.find((c) => c.name === userInfo.city);
+      if (cityObj) setSelectedCityCode(cityObj.code);
+    }
+  }, [userInfo, cities]);
+
+  // Fetch districts khi chọn city
+  useEffect(() => {
+    if (selectedCityCode) {
+      fetchDistricts(selectedCityCode).then((data) => setDistricts(data));
+    } else {
+      setDistricts([]);
+      setWards([]);
+    }
+  }, [selectedCityCode]);
+
+  // Khi userInfo thay đổi hoặc districts đã load, tự động set code cho district nếu có
+  useEffect(() => {
+    if (userInfo && districts.length > 0) {
+      const districtObj = districts.find((d) => d.name === userInfo.district);
+      if (districtObj) setSelectedDistrictCode(districtObj.code);
+    }
+  }, [userInfo, districts]);
+
+  // Fetch wards khi chọn district
+  useEffect(() => {
+    if (selectedDistrictCode) {
+      fetchWards(selectedDistrictCode).then((data) => setWards(data));
+    } else {
+      setWards([]);
+    }
+  }, [selectedDistrictCode]);
 
   const validate = () => {
     const newErrors = {};
@@ -215,45 +262,94 @@ const ProfileInfo = () => {
             {errors.address && (
               <div className="text-red-500 text-sm mb-3">{errors.address}</div>
             )}
+            {/* Thành phố */}
             <div className="mb-2 text-gray-600 font-semibold">THÀNH PHỐ</div>
-            <input
-              type="text"
+            <select
               name="city"
               value={form.city}
-              onChange={handleChange}
+              onChange={(e) => {
+                const cityName = e.target.options[e.target.selectedIndex].text;
+                setForm((prev) => ({
+                  ...prev,
+                  city: cityName,
+                  district: "",
+                  ward: "",
+                }));
+                const cityObj = cities.find((c) => c.name === cityName);
+                setSelectedCityCode(cityObj ? cityObj.code : null);
+                setSelectedDistrictCode(null);
+              }}
               className={`mb-1 w-full border rounded px-3 py-2 ${
                 errors.city ? "border-red-500" : ""
               }`}
               required
-            />
+            >
+              <option value="">Chọn thành phố</option>
+              {cities.map((city) => (
+                <option key={city.code} value={city.name}>
+                  {city.name}
+                </option>
+              ))}
+            </select>
             {errors.city && (
               <div className="text-red-500 text-sm mb-3">{errors.city}</div>
             )}
+            {/* Quận/huyện */}
             <div className="mb-2 text-gray-600 font-semibold">QUẬN/HUYỆN</div>
-            <input
-              type="text"
+            <select
               name="district"
               value={form.district}
-              onChange={handleChange}
+              onChange={(e) => {
+                const districtName =
+                  e.target.options[e.target.selectedIndex].text;
+                setForm((prev) => ({
+                  ...prev,
+                  district: districtName,
+                  ward: "",
+                }));
+                const districtObj = districts.find(
+                  (d) => d.name === districtName
+                );
+                setSelectedDistrictCode(districtObj ? districtObj.code : null);
+              }}
               className={`mb-1 w-full border rounded px-3 py-2 ${
                 errors.district ? "border-red-500" : ""
               }`}
               required
-            />
+              disabled={!selectedCityCode || districts.length === 0}
+            >
+              <option value="">Chọn quận/huyện</option>
+              {districts.map((d) => (
+                <option key={d.code} value={d.name}>
+                  {d.name}
+                </option>
+              ))}
+            </select>
             {errors.district && (
               <div className="text-red-500 text-sm mb-3">{errors.district}</div>
             )}
+            {/* Phường/xã */}
             <div className="mb-2 text-gray-600 font-semibold">PHƯỜNG/XÃ</div>
-            <input
-              type="text"
+            <select
               name="ward"
               value={form.ward}
-              onChange={handleChange}
+              onChange={(e) => {
+                const wardName = e.target.options[e.target.selectedIndex].text;
+                setForm((prev) => ({ ...prev, ward: wardName }));
+              }}
               className={`mb-1 w-full border rounded px-3 py-2 ${
                 errors.ward ? "border-red-500" : ""
               }`}
               required
-            />
+              disabled={!selectedDistrictCode || wards.length === 0}
+            >
+              <option value="">Chọn phường/xã</option>
+              {wards.map((w) => (
+                <option key={w.code} value={w.name}>
+                  {w.name}
+                </option>
+              ))}
+            </select>
             {errors.ward && (
               <div className="text-red-500 text-sm mb-3">{errors.ward}</div>
             )}
