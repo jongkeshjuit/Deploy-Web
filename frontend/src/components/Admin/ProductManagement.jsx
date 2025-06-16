@@ -7,6 +7,43 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:9000";
 const ProductManagement = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedGender, setSelectedGender] = useState("all");
+
+  const categoryGroups = {
+    all: "Tất cả",
+    tops: {
+      label: "Áo",
+      categories: ["Áo sơ mi", "Áo hoodie", "Áo blazer", "Áo vest", "Áo sweater", "Áo henley", "Áo khoác", "Áo thun", "Áo polo"]
+    },
+    bottoms: {
+      label: "Quần",
+      categories: ["Quần short", "Quần jogger", "Quần cargo", "Quần legging", "Quần palazzo", "Quần jean", "Quần tây", "Quần culottes"]
+    },
+    dresses: {
+      label: "Váy & Đầm",
+      categories: ["Chân váy", "Đầm maxi", "Váy liền"]
+    },
+    accessories: {
+      label: "Phụ kiện",
+      categories: ["Túi xách", "Ví", "Thắt lưng", "Mũ", "Khăn"]
+    }
+  };
+
+  const categoryOptions = [
+    { value: "all", label: "Tất cả" },
+    { value: "tops", label: "Áo" },
+    { value: "bottoms", label: "Quần" },
+    { value: "dresses", label: "Váy & Đầm" },
+    { value: "accessories", label: "Phụ kiện" }
+  ];
+
+  const genderOptions = [
+    { value: "all", label: "Tất cả" },
+    { value: "man", label: "Nam" },
+    { value: "woman", label: "Nữ" },
+    { value: "unisex", label: "Unisex" }
+  ];
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -23,7 +60,7 @@ const ProductManagement = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
+    if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này không?")) {
       try {
         const userToken =
           localStorage.getItem("userToken") || localStorage.getItem("token");
@@ -38,10 +75,70 @@ const ProductManagement = () => {
     }
   };
 
+  const getFilteredProducts = () => {
+    let filtered = [...products];
+
+    // Lọc theo danh mục
+    if (selectedCategory !== "all") {
+      const group = categoryGroups[selectedCategory];
+      if (group) {
+        filtered = filtered.filter(product =>
+          group.categories.includes(product.category)
+        );
+      }
+    }
+
+    // Lọc theo giới tính
+    if (selectedGender !== "all") {
+      filtered = filtered.filter(product =>
+        product.gender === selectedGender
+      );
+    }
+
+    return filtered;
+  };
+
+  const getGenderLabel = (gender) => {
+    switch (gender) {
+      case "man": return "Nam";
+      case "woman": return "Nữ";
+      case "unisex": return "Unisex";
+      default: return gender;
+    }
+  };
+
+  const filteredProducts = getFilteredProducts();
+
   return (
     <div className="max-w-7xl mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Quản lý sản phẩm</h2>
+        <div className="flex items-center gap-4">
+          <h2 className="text-2xl font-bold">Quản lý sản phẩm</h2>
+          <div className="flex gap-2">
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="border border-gray-300 rounded px-3 py-1"
+            >
+              {categoryOptions.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <select
+              value={selectedGender}
+              onChange={(e) => setSelectedGender(e.target.value)}
+              className="border border-gray-300 rounded px-3 py-1"
+            >
+              {genderOptions.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
         <Link
           to="/admin/products/new"
           className="bg-black text-white px-4 py-2 hover:bg-gray-700 cursor-pointer"
@@ -54,6 +151,8 @@ const ProductManagement = () => {
           <thead className="text-xs text-gray-700 uppercase bg-gray-100">
             <tr>
               <th className="px-3 py-3">Tên sản phẩm</th>
+              <th className="px-3 py-3">Danh mục</th>
+              <th className="px-3 py-3">Giới tính</th>
               <th className="px-3 py-3">Giá</th>
               <th className="px-3 py-3">SKU</th>
               <th className="px-3 py-3">Thao tác</th>
@@ -62,12 +161,12 @@ const ProductManagement = () => {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={4} className="p-4 text-center">
-                  Loading...
+                <td colSpan={6} className="p-4 text-center">
+                  Đang tải...
                 </td>
               </tr>
-            ) : products.length > 0 ? (
-              products.map((product) => (
+            ) : filteredProducts.length > 0 ? (
+              filteredProducts.map((product) => (
                 <tr
                   key={product._id}
                   className="bg-white border-b border-gray-100"
@@ -75,7 +174,13 @@ const ProductManagement = () => {
                   <td className="p-4 font-medium text-gray-900 whitespace-nowrap">
                     {product.name}
                   </td>
-                  <td className="p-4">{product.price} VND</td>
+                  <td className="p-4">
+                    {product.category}
+                  </td>
+                  <td className="p-4">
+                    {getGenderLabel(product.gender)}
+                  </td>
+                  <td className="p-4">{product.price.toLocaleString('vi-VN')} VND</td>
                   <td className="p-4">{product.sku}</td>
                   <td className="p-4">
                     <Link
@@ -95,8 +200,11 @@ const ProductManagement = () => {
               ))
             ) : (
               <tr>
-                <td colSpan={4} className="p-4 text-center">
-                  No products found
+                <td colSpan={6} className="p-4 text-center">
+                  {selectedCategory === "all" && selectedGender === "all"
+                    ? "Không tìm thấy sản phẩm nào"
+                    : `Không tìm thấy sản phẩm ${selectedCategory !== "all" ? `thuộc danh mục ${categoryGroups[selectedCategory]?.label}` : ''} ${selectedGender !== "all" ? `dành cho ${getGenderLabel(selectedGender).toLowerCase()}` : ''}`
+                  }
                 </td>
               </tr>
             )}
