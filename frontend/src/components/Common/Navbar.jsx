@@ -23,8 +23,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const { cart } = useSelector((state) => state.cart);
-  const cartProducts =
-    cart?.products?.reduce((total, item) => total + item.quantity, 0) || 0;
+  const uniqueProductCount = cart?.products?.length || 0;
 
   // Kiểm tra quyền admin
   const isAdmin = userInfo?.role === "admin";
@@ -172,9 +171,9 @@ const Navbar = () => {
             {/* Icon giỏ hàng */}
             <div className="relative">
               <PiShoppingCartSimple className="text-[20px] md:text-[24px]" />
-              {cartProducts > 0 && (
+              {uniqueProductCount > 0 && (
                 <span className="absolute -top-2 -right-2 w-4 h-4 md:w-5 md:h-5 bg-red-500 text-white text-[10px] md:text-xs rounded-full flex items-center justify-center">
-                  {cartProducts}
+                  {uniqueProductCount}
                 </span>
               )}
             </div>

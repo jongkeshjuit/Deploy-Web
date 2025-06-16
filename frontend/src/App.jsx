@@ -25,6 +25,7 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 import GoogleCallback from "./pages/GoogleCallback";
 import GenderCollection from "./pages/GenderCollection";
+import CheckoutBuyNow from "./pages/CheckoutBuyNow";
 // ==================================================
 // admin
 import AdminHomePage from "./pages/AdminHomePage";
@@ -36,6 +37,8 @@ import OrderManagement from "./components/Admin/OrderManagement";
 import CollectionManagement from "./components/Admin/CollectionManagement";
 import EditCollection from "./components/Admin/EditCollection";
 // ==================================================
+import PublicOnlyRoute from "./components/Auth/PublicOnlyRoute";
+import PrivateRoute from "./components/Auth/PrivateRoute";
 import axios from 'axios';
 axios.defaults.withCredentials = true;
 const App = () => {
@@ -48,26 +51,36 @@ const App = () => {
             <Routes>
               <Route path="/" element={<UserLayout />}>
                 <Route index element={<Home />} />
-                <Route path="login" element={<Login />} />
-                <Route path="signup" element={<Signup />} />
+
+                {/* Public only routes (redirect to home if logged in) */}
+                <Route element={<PublicOnlyRoute />}>
+                  <Route path="login" element={<Login />} />
+                  <Route path="signup" element={<Signup />} />
+                </Route>
+
                 <Route path="collections/:id" element={<Collection />} />
                 <Route path="gendercollections/:id" element={<GenderCollection />} />
                 <Route path="product/:id" element={<ProductDetails />} />
                 <Route path="cart" element={<Cart />} />
-                <Route path="checkout" element={<Checkout />} />
+
+                {/* Protected routes (require authentication) */}
+                <Route element={<PrivateRoute />}>
+                  <Route path="checkout" element={<Checkout />} />
+                  <Route path="checkout-buy-now" element={<CheckoutBuyNow />} />
+                  <Route path="profile" element={<ProfileLayout />}>
+                    <Route index element={<ProfileInfo />} />
+                    <Route path="info" element={<ProfileInfo />} />
+                    <Route path="orders" element={<MyOdersPage />} />
+                    <Route path="orders/:id" element={<OrderDetailPage />} />
+                  </Route>
+                </Route>
+
                 <Route path="auth/success" element={<GoogleCallback />} />
                 <Route path="information" element={<Information />}>
                   <Route path="about" element={<About />} />
                   <Route path="sponsorship" element={<Sponsorship />} />
                 </Route>
                 <Route path="policy" element={<Policy />} />
-
-                <Route path="profile" element={<ProfileLayout />}>
-                  <Route index element={<ProfileInfo />} />
-                  <Route path="info" element={<ProfileInfo />} />
-                  <Route path="orders" element={<MyOdersPage />} />
-                  <Route path="orders/:id" element={<OrderDetailPage />} />
-                </Route>
               </Route>
 
               <Route path="/admin" element={<AdminLayout />}>

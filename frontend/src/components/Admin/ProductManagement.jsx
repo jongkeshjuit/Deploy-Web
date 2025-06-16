@@ -20,7 +20,7 @@ const ProductManagement = () => {
     bottoms: {
       label: "Quần",
       categories: ["Quần short", "Quần jogger", "Quần cargo", "Quần legging", "Quần palazzo", "Quần jean", "Quần tây", "Quần culottes"]
-    },
+    },            
     dresses: {
       label: "Váy & Đầm",
       categories: ["Chân váy", "Đầm maxi", "Váy liền"]

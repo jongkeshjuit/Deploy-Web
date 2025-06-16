@@ -7,12 +7,11 @@ export const createCheckoutSession = createAsyncThunk(
   async (orderData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/checkout`, // ✅ Sửa từ /api/orders thành /api/checkout
+        `${import.meta.env.VITE_API_URL}/api/checkout`,
         orderData,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("userToken") || localStorage.getItem("token")
-              }`,
+            Authorization: `Bearer ${localStorage.getItem("userToken") || localStorage.getItem("token")}`,
           },
         }
       );
@@ -33,14 +32,21 @@ const checkoutSlice = createSlice({
     loading: false,
     error: null,
     sessionId: null,
+    buyNowItem: null, // ✅ thêm biến này
   },
+
   reducers: {
     clearCheckout: (state) => {
       state.checkout = null;
       state.sessionId = null;
       state.error = null;
+      state.buyNowItem = null; // ✅ reset luôn buyNowItem
+    },
+    setBuyNowItem: (state, action) => {
+      state.buyNowItem = action.payload; // ✅ thêm setter
     },
   },
+
   extraReducers: (builder) => {
     builder
       .addCase(createCheckoutSession.pending, (state) => {
@@ -59,5 +65,7 @@ const checkoutSlice = createSlice({
   },
 });
 
-export const { clearCheckout } = checkoutSlice.actions;
+// ✅ Export đầy đủ cả 2 action
+export const { clearCheckout, setBuyNowItem } = checkoutSlice.actions;
+
 export default checkoutSlice.reducer;
