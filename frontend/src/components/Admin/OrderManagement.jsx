@@ -7,6 +7,8 @@ const OrderManagement = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredOrders, setFilteredOrders] = useState([]);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -19,15 +21,32 @@ const OrderManagement = () => {
           headers: userToken ? { Authorization: `Bearer ${userToken}` } : {},
         });
         setOrders(res.data || []);
+        setFilteredOrders(res.data || []);
       } catch (err) {
         setError("Không thể tải danh sách đơn hàng!");
         setOrders([]);
+        setFilteredOrders([]);
       } finally {
         setLoading(false);
       }
     };
     fetchOrders();
   }, []);
+
+  // Hàm xử lý tìm kiếm
+  useEffect(() => {
+    const searchResults = orders.filter((order) => {
+      const searchLower = searchTerm.toLowerCase();
+      return (
+        order._id.toLowerCase().includes(searchLower) ||
+        (order.user?.name || "").toLowerCase().includes(searchLower) ||
+        (order.user?.email || "").toLowerCase().includes(searchLower) ||
+        (order.status || "").toLowerCase().includes(searchLower) ||
+        (order.paymentStatus || "").toLowerCase().includes(searchLower)
+      );
+    });
+    setFilteredOrders(searchResults);
+  }, [searchTerm, orders]);
 
   const handleStatusChange = async (orderId, status) => {
     try {
@@ -70,6 +89,28 @@ const OrderManagement = () => {
   return (
     <div className="max-w-7xl mx-auto p-6">
       <h2 className="text-3xl font-bold mb-6">Quản lý đơn hàng</h2>
+
+      {/* Thanh tìm kiếm */}
+      <div className="mb-6">
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Tìm kiếm theo mã đơn hàng, tên người dùng, email hoặc trạng thái..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm("")}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+      </div>
+
       <div className="overflow-x-auto">
         <table className="min-w-full text-left text-gray-600 border border-gray-100 border-collapse">
           <thead className="text-xs text-black uppercase bg-gray-100">
@@ -99,8 +140,8 @@ const OrderManagement = () => {
                   {error}
                 </td>
               </tr>
-            ) : orders.length > 0 ? (
-              orders.map((order) => (
+            ) : filteredOrders.length > 0 ? (
+              filteredOrders.map((order) => (
                 <tr key={order._id} className="border-b border-gray-100">
                   <td className="p-4 font-medium whitespace-nowrap">
                     #{order._id}
@@ -154,7 +195,7 @@ const OrderManagement = () => {
                       onClick={() => handleStatusChange(order._id, "Delivered")}
                       className="bg-blue-500 text-white px-3 py-1 border border-gray-300 hover:bg-blue-600 cursor-pointer w-20"
                     >
-                     Đã giao
+                      Đã giao
                     </button>
                   </td>
                 </tr>
@@ -162,7 +203,9 @@ const OrderManagement = () => {
             ) : (
               <tr>
                 <td colSpan={10} className="px-4 text-center">
-                  Không có đơn hàng
+                  {searchTerm
+                    ? "Không tìm thấy đơn hàng phù hợp"
+                    : "Không có đơn hàng"}
                 </td>
               </tr>
             )}

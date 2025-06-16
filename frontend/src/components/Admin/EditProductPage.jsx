@@ -31,6 +31,39 @@ const EditProductPage = () => {
     },
   });
   const [loading, setLoading] = useState(true);
+  const [collections, setCollections] = useState([]);
+  const [availableCategories, setAvailableCategories] = useState([]);
+
+  // Fetch collections
+  useEffect(() => {
+    const fetchCollections = async () => {
+      try {
+        const collectionsRes = await axios.get(`${API_URL}/api/collections`);
+        setCollections(collectionsRes.data);
+      } catch (err) {
+        console.error("Error fetching collections:", err);
+      }
+    };
+    fetchCollections();
+  }, []);
+
+  // Update available categories when collection changes
+  useEffect(() => {
+    if (productData.collection) {
+      const selectedCollection = collections.find(
+        (c) => c.id === productData.collection
+      );
+      if (selectedCollection) {
+        setAvailableCategories(selectedCollection.categories || []);
+        if (!selectedCollection.categories?.includes(productData.category)) {
+          setProductData((prev) => ({ ...prev, category: "" }));
+        }
+      }
+    } else {
+      setAvailableCategories([]);
+      setProductData((prev) => ({ ...prev, category: "" }));
+    }
+  }, [productData.collection, collections]);
 
   // Lấy dữ liệu sản phẩm khi vào trang (chỉ khi chỉnh sửa)
   useEffect(() => {
@@ -135,8 +168,8 @@ const EditProductPage = () => {
         productData.gender === "man"
           ? "man"
           : productData.gender === "woman"
-            ? "woman"
-            : "",
+          ? "woman"
+          : "",
     };
     console.log("Dữ liệu gửi lên:", fixedProductData);
     console.log("Các trường bắt buộc:");
@@ -190,9 +223,7 @@ const EditProductPage = () => {
     return <div className="text-center mt-10">Đang tải sản phẩm...</div>;
   return (
     <div className="w-full mx-auto p-6">
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {/* name */}
         <div className="">
           <label className="block font-medium text-lg">Tên sản phẩm</label>
@@ -327,33 +358,41 @@ const EditProductPage = () => {
           >
             + Thêm màu
           </button>
-
         </div>
         {/* category */}
         <div className="">
           <label className="block font-medium text-lg">Danh mục</label>
-          <input
-            type="text"
+          <select
             name="category"
             value={productData.category}
             onChange={handleChange}
             className="w-full border border-gray-300 p-2"
-            placeholder="Enter category"
-            required
-          />
+            disabled={!productData.collection}
+          >
+            <option value="">Chọn danh mục</option>
+            {availableCategories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
         </div>
         {/* collection */}
         <div className="">
           <label className="block font-medium text-lg">Bộ sưu tập</label>
-          <input
-            type="text"
+          <select
             name="collection"
             value={productData.collection}
             onChange={handleChange}
             className="w-full border border-gray-300 p-2"
-            placeholder="Enter collection"
-            required
-          />
+          >
+            <option value="">Chọn bộ sưu tập</option>
+            {collections.map((collection) => (
+              <option key={collection.id} value={collection.id}>
+                {collection.name}
+              </option>
+            ))}
+          </select>
         </div>
         {/* material */}
         <div className="">

@@ -104,6 +104,19 @@ const Checkout = () => {
   const [isPaymentVerified, setIsPaymentVerified] = useState(false);
   const [isCheckingPayment, setIsCheckingPayment] = useState(false);
   const [paymentCheckResult, setPaymentCheckResult] = useState(null);
+  // Calculate shipping cost (free for HCM, otherwise 30000)
+  const [shippingCost, setShippingCost] = useState(0);
+  useEffect(() => {
+    if (
+      formData.city &&
+      formData.city.trim().toLowerCase().includes("hồ chí minh")
+    ) {
+      setShippingCost(0);
+    } else {
+      setShippingCost(30000);
+    }
+  }, [formData.city]);
+  const totalAmount = getTotalPrice() + shippingCost;
 
   // Redirect if cart is empty
   useEffect(() => {
@@ -181,37 +194,54 @@ const Checkout = () => {
 
     setIsProcessing(true);
     try {
+      // Prepare order data cho flow cũ, chỉ gửi productId
       const orderData = {
-        checkoutItems: cartItems.map((item) => ({
-          ...item,
-          productId: item.productId?._id || item.productId,
-        })),
-        shippingAddress: {
+        formData: {
+          fullName: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
           address: formData.address,
           city: formData.city,
           district: formData.district,
           ward: formData.ward,
           postalCode: formData.postalCode,
           country: formData.country,
-          fullName: formData.fullName,
-          phone: formData.phone,
-          email: formData.email,
           notes: formData.notes,
+          paymentMethod: formData.paymentMethod, // Thêm paymentMethod vào formData
         },
-        paymentMethod: formData.paymentMethod,
-        totalPrice: getTotalPrice() + 50000,
-        guestId: guestId || null,
+        cartItems: cartItems.map((item) => ({
+          productId: item.productId?._id || item.productId || item.product?._id,
+          size: item.size,
+          color: item.color,
+          quantity: item.quantity,
+        })),
+        totalPrice: getTotalPrice() + shippingCost,
       };
-
-      const response = await dispatch(createCheckoutSession(orderData)).unwrap();
-
-      if (response) {
-        // ✅ Gọi /finalize để trừ tồn kho
+      // Log dữ liệu gửi lên để kiểm tra
+      console.log("orderData gửi lên:", orderData);
+      // Create order
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/orders`,
+        orderData,
+        {
+          headers: {
+            Authorization: `Bearer ${
+              localStorage.getItem("userToken") || localStorage.getItem("token")
+            }`,
+          },
+        }
+      );
+      if (response.data) {
+        // Xử lý hàng tồn kho và cập nhật số lượng sản phẩm
         try {
           const token =
             localStorage.getItem("userToken") || localStorage.getItem("token");
-          const finalizeRes = await axios.post(
-            `${import.meta.env.VITE_API_URL}/api/checkout/${response._id}/finalize`,
+
+          // Gọi API để cập nhật hàng tồn kho cho các sản phẩm trong đơn hàng
+          await axios.post(
+            `${import.meta.env.VITE_API_URL}/api/orders/${
+              response.data._id
+            }/update-stock`,
             {},
             {
               headers: {
@@ -219,10 +249,12 @@ const Checkout = () => {
               },
             }
           );
-          console.log("✅ Finalized checkout:", finalizeRes.data);
-        } catch (finalizeError) {
-          console.error("❌ Lỗi khi finalize checkout:", finalizeError);
-          toast.error("Đặt hàng thành công nhưng có lỗi khi xử lý tồn kho!");
+          console.log("✅ Đã cập nhật hàng tồn kho thành công");
+        } catch (stockError) {
+          console.error("❌ Lỗi khi cập nhật hàng tồn kho:", stockError);
+          toast.warning(
+            "Đặt hàng thành công nhưng có lỗi khi cập nhật tồn kho!"
+          );
         }
 
         // ✅ Xoá giỏ hàng
@@ -233,13 +265,17 @@ const Checkout = () => {
 
           if (userId || guestId) {
             const token =
-              localStorage.getItem("userToken") || localStorage.getItem("token");
-            await axios.delete(`${import.meta.env.VITE_API_URL}/api/cart/clear`, {
-              data: { userId, guestId },
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            });
+              localStorage.getItem("userToken") ||
+              localStorage.getItem("token");
+            await axios.delete(
+              `${import.meta.env.VITE_API_URL}/api/cart/clear`,
+              {
+                data: { userId, guestId },
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
             await dispatch(fetchCart({ userId, guestId }));
           }
 
@@ -269,10 +305,34 @@ const Checkout = () => {
       setIsProcessing(false);
     }
   };
-
-
   // Check payment status
   const handleCheckPayment = async () => {
+    // Kiểm tra thông tin ProfileInfo trước khi cho phép kiểm tra thanh toán
+    if (!validateForm()) {
+      toast.error(
+        "Vui lòng cập nhật đầy đủ thông tin giao hàng trong hồ sơ cá nhân trước khi kiểm tra thanh toán!"
+      );
+      return;
+    }
+
+    // Kiểm tra các trường bắt buộc
+    const requiredFields = [
+      { field: "fullName", label: "Họ và tên" },
+      { field: "email", label: "Email" },
+      { field: "phone", label: "Số điện thoại" },
+      { field: "address", label: "Địa chỉ" },
+      { field: "city", label: "Thành phố" },
+      { field: "district", label: "Quận/Huyện" },
+      { field: "ward", label: "Phường/Xã" },
+    ];
+
+    for (const { field, label } of requiredFields) {
+      if (!formData[field] || formData[field].trim() === "") {
+        toast.error(`Vui lòng cập nhật ${label} trong hồ sơ cá nhân!`);
+        return;
+      }
+    }
+
     setIsCheckingPayment(true);
     setPaymentCheckResult(null);
     setIsPaymentVerified(false);
@@ -280,7 +340,7 @@ const Checkout = () => {
       document
         .querySelector(".font-mono.text-xs.bg-white.p-2.border.rounded.mt-1")
         ?.textContent?.split(" ")[0] || generateOrderCode();
-    const amount = getTotalPrice() + 50000;
+    const amount = getTotalPrice() + shippingCost;
     // Lấy phone từ userInfo nếu có, fallback rỗng
     const phone = userInfo?.phone || formData.phone || "";
     const result = await fetchRecentTransactionsAndCheckPayment(
@@ -307,16 +367,12 @@ const Checkout = () => {
     }
   };
 
-  // Calculate shipping cost (free for now)
-  const shippingCost = 0;
-  const totalAmount = getTotalPrice() + shippingCost;
-
   if (!cartItems || cartItems.length === 0) {
     return null; // Will be redirected by useEffect
   }
   return (
     <div className="bg-white min-h-screen flex flex-col items-center justify-center py-6 mx-20 sm:px-4">
-      <div className="flex flex-col items-start md:flex-row gap-6 md:gap-8 w-full ">
+      <div className="flex flex-col md:flex-row gap-6 md:gap-8 w-full ">
         {/* Payment Method & Form */}
         <div className="flex-1 border p-4 sm:p-6 md:p-8 bg-white min-w-0">
           <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 uppercase tracking-wide">
@@ -372,7 +428,8 @@ const Checkout = () => {
                   <div className="text-sm">
                     <span className="font-semibold">Số tiền:</span>
                     <span className="font-bold text-red-600 ml-1">
-                      {(getTotalPrice() + 50000).toLocaleString("vi-VN")} VND
+                      {(getTotalPrice() + shippingCost).toLocaleString("vi-VN")}{" "}
+                      VND
                     </span>
                   </div>{" "}
                   <div className="text-sm">
@@ -394,7 +451,7 @@ const Checkout = () => {
                     {" "}
                     <img
                       src={generateVietQRUrl(
-                        getTotalPrice() + 50000,
+                        getTotalPrice() + shippingCost,
                         generateOrderCode(),
                         userInfo?.phone || formData.phone || ""
                       )}
@@ -458,14 +515,36 @@ const Checkout = () => {
                 </button>
                 {paymentCheckResult && (
                   <div
-                    className={`mt-2 text-sm ${paymentCheckResult.success
-                      ? "text-green-600"
-                      : "text-red-600"
-                      }`}
+                    className={`mt-2 text-sm ${
+                      paymentCheckResult.success
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
                   >
                     {paymentCheckResult.message}
                   </div>
                 )}
+              </div>
+            </div>
+          )}
+          {/* Shipping Information for COD */}
+          {formData.paymentMethod === "cod" && (
+            <div className="space-y-4 mb-6 p-4 border border-gray-300 rounded-lg bg-gray-50">
+              <h3 className="font-bold text-lg mb-3">THÔNG TIN GIAO HÀNG</h3>
+              <div className="text-sm">
+                <span className="font-semibold">Họ và tên:</span>
+                <span className="ml-2">{formData.fullName}</span>
+              </div>
+              <div className="text-sm">
+                <span className="font-semibold">Địa chỉ giao hàng:</span>
+                <span className="ml-2">
+                  {formData.address}, {formData.ward}, {formData.district},{" "}
+                  {formData.city}
+                </span>
+              </div>
+              <div className="text-sm">
+                <span className="font-semibold">Số điện thoại:</span>
+                <span className="ml-2">{formData.phone}</span>
               </div>
             </div>
           )}
@@ -500,26 +579,27 @@ const Checkout = () => {
           </div>
           <div className="mb-2 flex justify-between text-xs sm:text-sm">
             <span>Phí vận chuyển</span>
-            <span>50.000 VND</span>
+            {shippingCost === 0 ? (
+              <span className="text-green-600 font-bold">Miễn phí</span>
+            ) : (
+              <span>{shippingCost.toLocaleString("vi-VN")} VND</span>
+            )}
           </div>
           <div className="border-t border-black my-2"></div>
           <div className="mb-2 flex justify-between items-center text-base sm:text-lg font-bold">
             <span>TỔNG</span>
-            <span>{(getTotalPrice() + 50000).toLocaleString("vi-VN")} VND</span>
+            <span>{totalAmount.toLocaleString("vi-VN")} VND</span>
           </div>
           <div className="text-xs text-gray-500 mb-2">
             Đã bao gồm thuế giá trị gia tăng
             <span className="float-right">
-              {Math.round((getTotalPrice() + 50000) / 11).toLocaleString(
-                "vi-VN"
-              )}{" "}
-              VND
+              {Math.round(totalAmount / 11).toLocaleString("vi-VN")} VND
             </span>
           </div>
           <div className="border-t border-black my-2"></div>
           <div className="mb-2 flex justify-between items-center text-xs sm:text-base font-bold">
             <span>TỔNG ĐƠN ĐẶT HÀNG</span>
-            <span>{(getTotalPrice() + 50000).toLocaleString("vi-VN")} VND</span>
+            <span>{totalAmount.toLocaleString("vi-VN")} VND</span>
           </div>
         </div>
       </div>

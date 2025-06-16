@@ -39,6 +39,16 @@ router.post("/", async (req, res) => {
   const { productId, quantity = 1, size, color, guestId, userId } = req.body;
 
   try {
+    // Log dữ liệu thêm vào giỏ hàng
+    console.log("[ADD TO CART]", {
+      productId,
+      quantity,
+      size,
+      color,
+      guestId,
+      userId,
+    });
+
     // Input validation
     if (!productId || !size || !color) {
       return res
@@ -108,7 +118,7 @@ router.post("/", async (req, res) => {
           size,
           color: {
             name: color.name,
-            code: color.code
+            code: color.code,
           },
         });
       }
@@ -134,7 +144,7 @@ router.post("/", async (req, res) => {
             size,
             color: {
               name: color.name,
-              code: color.code
+              code: color.code,
             },
           },
         ],
@@ -430,7 +440,7 @@ router.post("/merge", authMiddleware, async (req, res) => {
             size: guestItem.size,
             color: {
               name: guestItem.color.name,
-              code: guestItem.color.code
+              code: guestItem.color.code,
             },
           });
           mergeCount++;
@@ -449,8 +459,9 @@ router.post("/merge", authMiddleware, async (req, res) => {
         skippedCount,
       });
       return res.status(200).json({
-        message: `Cart merged successfully. Added ${mergeCount} new items, updated ${updateCount} existing items${skippedCount > 0 ? `, skipped ${skippedCount} unavailable items` : ""
-          }.`,
+        message: `Cart merged successfully. Added ${mergeCount} new items, updated ${updateCount} existing items${
+          skippedCount > 0 ? `, skipped ${skippedCount} unavailable items` : ""
+        }.`,
         cart: userCart,
         stats: {
           merged: mergeCount,
@@ -480,7 +491,7 @@ router.post("/merge", authMiddleware, async (req, res) => {
             size: item.size,
             color: {
               name: item.color.name,
-              code: item.color.code
+              code: item.color.code,
             },
           });
         } else {
@@ -497,10 +508,11 @@ router.post("/merge", authMiddleware, async (req, res) => {
 
       console.log("✅ Guest cart converted to user cart");
       return res.status(200).json({
-        message: `Guest cart converted to user cart successfully${skippedCount > 0
+        message: `Guest cart converted to user cart successfully${
+          skippedCount > 0
             ? `. ${skippedCount} unavailable items were removed.`
             : ""
-          }.`,
+        }.`,
         cart: guestCart,
       });
     }
