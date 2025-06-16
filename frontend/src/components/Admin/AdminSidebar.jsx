@@ -1,6 +1,7 @@
 import React from 'react'
 import { FaBoxOpen, FaClipboardList, FaSignOutAlt, FaStore, FaUser } from 'react-icons/fa';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { BsCollectionFill } from "react-icons/bs";
 
 const AdminSidebar = () => {
     const navigate = useNavigate();
@@ -45,7 +46,7 @@ const AdminSidebar = () => {
                             ? "bg-gray-800 text-white py-3 px-4 flex items-center space-x-2"
                             : "text-gray-300 hover:bg-gray-800 hover:text-white py-3 px-4 flex items-center space-x-2"}
                 >
-                    <FaBoxOpen size={20} />
+                    <BsCollectionFill size={20} />
                     <span>Bộ sưu tập  </span>
                 </NavLink>
                 {/* orders */}

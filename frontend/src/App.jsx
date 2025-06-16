@@ -39,6 +39,7 @@ import EditCollection from "./components/Admin/EditCollection";
 // ==================================================
 import PublicOnlyRoute from "./components/Auth/PublicOnlyRoute";
 import PrivateRoute from "./components/Auth/PrivateRoute";
+import AdminRoute from "./components/Auth/AdminRoute";
 import axios from 'axios';
 axios.defaults.withCredentials = true;
 const App = () => {
@@ -83,14 +84,17 @@ const App = () => {
                 <Route path="policy" element={<Policy />} />
               </Route>
 
-              <Route path="/admin" element={<AdminLayout />}>
-                <Route index element={<AdminHomePage />} />
-                <Route path="users" element={<UserManagement />} />
-                <Route path="products" element={<ProductManagement />} />
-                <Route path="products/:id" element={<EditProductPage />} />
-                <Route path="orders" element={<OrderManagement />} />
-                <Route path="collections" element={<CollectionManagement />} />
-                <Route path="collections/:id" element={<EditCollection />} />
+              {/* Admin routes (require admin role) */}
+              <Route element={<AdminRoute />}>
+                <Route path="/admin" element={<AdminLayout />}>
+                  <Route index element={<AdminHomePage />} />
+                  <Route path="users" element={<UserManagement />} />
+                  <Route path="products" element={<ProductManagement />} />
+                  <Route path="products/:id" element={<EditProductPage />} />
+                  <Route path="orders" element={<OrderManagement />} />
+                  <Route path="collections" element={<CollectionManagement />} />
+                  <Route path="collections/:id" element={<EditCollection />} />
+                </Route>
               </Route>
             </Routes>
           </OrderProvider>

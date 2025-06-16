@@ -1,21 +1,15 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
+import { toast } from 'sonner';
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:9000";
 
 const UserManagement = () => {
-
-    const users = [
-        {
-            _id: 1,
-            name: "John Doe",
-            email: "john@example.com",
-            role: "admin",
-        },
-        {
-            _id: 2,
-            name: "Jane Smith",
-            email: "jane@example.com",
-            role: "customer",
-        },
-    ];
+    const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const { userToken } = useSelector((state) => state.auth);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -24,28 +18,113 @@ const UserManagement = () => {
         role: "customer",
     });
 
+    // Fetch users
+    const fetchUsers = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/api/admin/users`, {
+                headers: {
+                    Authorization: `Bearer ${userToken}`,
+                },
+            });
+            setUsers(response.data);
+            setLoading(false);
+        } catch (err) {
+            console.error("Error fetching users:", err);
+            setError("Không thể tải danh sách người dùng");
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchUsers();
+    }, [userToken]);
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
         });
-    }
+    };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData);
-    }
-
-    const handleRoleChange = (userId, newRole) => {
-        console.log(userId, newRole);
-        // setUsers(users.map(user => user.id === userId ? { ...user, role: newRole } : user));
-    }
-
-    const handleDelete = (userId) => {
-        if (window.confirm("Are you sure you want to delete this user?")) {
-            // setUsers(users.filter(user => user.id !== userId));
-            console.log("Deleting user with ID:", userId);
+        try {
+            await axios.post(`${API_URL}/api/admin`, formData, {
+                headers: {
+                    Authorization: `Bearer ${userToken}`,
+                },
+            });
+            toast.success("Thêm người dùng thành công!");
+            // Reset form
+            setFormData({
+                name: "",
+                email: "",
+                password: "",
+                role: "customer",
+            });
+            // Refresh user list
+            fetchUsers();
+        } catch (err) {
+            console.error("Error creating user:", err);
+            toast.error(err.response?.data?.message || "Không thể tạo người dùng");
         }
+    };
+
+    const handleRoleChange = async (userId, newRole) => {
+        try {
+            await axios.put(`${API_URL}/api/admin/${userId}`,
+                { role: newRole },
+                {
+                    headers: {
+                        Authorization: `Bearer ${userToken}`,
+                    },
+                }
+            );
+            toast.success("Cập nhật vai trò thành công!");
+            // Update local state
+            setUsers(users.map(user =>
+                user._id === userId ? { ...user, role: newRole } : user
+            ));
+        } catch (err) {
+            console.error("Error updating user role:", err);
+            toast.error("Không thể cập nhật vai trò người dùng");
+        }
+    };
+
+    const handleDelete = async (userId) => {
+        if (window.confirm("Bạn có chắc chắn muốn xóa người dùng này?")) {
+            try {
+                await axios.delete(`${API_URL}/api/admin/${userId}`, {
+                    headers: {
+                        Authorization: `Bearer ${userToken}`,
+                    },
+                });
+                toast.success("Xóa người dùng thành công!");
+                // Update local state
+                setUsers(users.filter(user => user._id !== userId));
+            } catch (err) {
+                console.error("Error deleting user:", err);
+                toast.error("Không thể xóa người dùng");
+            }
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="max-w-7xl mx-auto p-6">
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                    {error}
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -104,7 +183,7 @@ const UserManagement = () => {
                     <button
                         type='submit'
                         className='bg-black text-white px-4 py-2 hover:bg-gray-700 cursor-pointer'>
-                        Add User
+                        Thêm người dùng
                     </button>
                 </form>
             </div>
@@ -139,7 +218,9 @@ const UserManagement = () => {
                                 <td className='p-4'>
                                     <button
                                         onClick={() => handleDelete(user._id)}
-                                        className='text-black px-2 py-1 border border-black hover:border-gray-700 hover:text-gray-700 cursor-pointer'>Xóa</button>
+                                        className='text-black px-2 py-1 border border-black hover:border-gray-700 hover:text-gray-700 cursor-pointer'>
+                                        Xóa
+                                    </button>
                                 </td>
                             </tr>
                         ))}
@@ -147,7 +228,7 @@ const UserManagement = () => {
                 </table>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default UserManagement
+export default UserManagement;
