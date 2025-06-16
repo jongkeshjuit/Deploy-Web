@@ -12,7 +12,7 @@ router.get("/", async (req, res) => {
       collections.map(async (col) => {
         const products = await Product.find({
           collection: col.id,
-          isPublished: true
+          isPublished: true,
         });
         return { ...col.toObject(), products };
       })
@@ -26,14 +26,14 @@ router.get("/", async (req, res) => {
 // Lấy bộ sưu tập theo MongoDB _id
 router.get("/:id", async (req, res) => {
   try {
-    const collection = await Collection.findById(req.params.id);
+    const collection = await Collection.findOne({ id: req.params.id });
     if (!collection)
       return res.status(404).json({ message: "Không tìm thấy bộ sưu tập" });
 
     // Tìm các sản phẩm thuộc collection này
     const products = await Product.find({
       collection: collection.id,
-      isPublished: true
+      isPublished: true,
     });
     res.json({ ...collection.toObject(), products });
   } catch (err) {
@@ -46,7 +46,12 @@ router.get("/:id/products", async (req, res) => {
   try {
     const { color, size, material, category, price, sortBy } = req.query;
     console.log("Filter params received:", {
-      color, size, material, category, price, sortBy,
+      color,
+      size,
+      material,
+      category,
+      price,
+      sortBy,
     });
 
     const query = { collection: req.params.id }; // Sử dụng id tự nhập
@@ -74,11 +79,21 @@ router.get("/:id/products", async (req, res) => {
 
     let sortOptions = {};
     switch (sortBy) {
-      case "price_asc": sortOptions = { price: 1 }; break;
-      case "price_desc": sortOptions = { price: -1 }; break;
-      case "newest": sortOptions = { createdAt: -1 }; break;
-      case "name_asc": sortOptions = { name: 1 }; break;
-      case "name_desc": sortOptions = { name: -1 }; break;
+      case "price_asc":
+        sortOptions = { price: 1 };
+        break;
+      case "price_desc":
+        sortOptions = { price: -1 };
+        break;
+      case "newest":
+        sortOptions = { createdAt: -1 };
+        break;
+      case "name_asc":
+        sortOptions = { name: 1 };
+        break;
+      case "name_desc":
+        sortOptions = { name: -1 };
+        break;
     }
 
     const products = await Product.find(query).sort(sortOptions);
@@ -91,13 +106,14 @@ router.get("/:id/products", async (req, res) => {
 // Tạo mới bộ sưu tập
 router.post("/", async (req, res) => {
   try {
-    const { id, name, bannerUrl, description, status } = req.body;
+    const { id, name, bannerUrl, description, categories, status } = req.body;
     const collection = new Collection({
       id,
       name,
       bannerUrl,
       description,
-      status: status || "active"
+      categories: categories || [],
+      status: status || "active",
     });
     await collection.save();
     res.status(201).json(collection);
@@ -105,7 +121,7 @@ router.post("/", async (req, res) => {
     if (err.code === 11000) {
       // Duplicate key error
       return res.status(400).json({
-        message: "ID bộ sưu tập đã tồn tại, vui lòng chọn ID khác"
+        message: "ID bộ sưu tập đã tồn tại, vui lòng chọn ID khác",
       });
     }
     res.status(400).json({ message: err.message });
@@ -115,15 +131,26 @@ router.post("/", async (req, res) => {
 // Cập nhật bộ sưu tập theo _id
 router.put("/:id", async (req, res) => {
   try {
-    const { name, bannerUrl, description, status } = req.body;
-    const updated = await Collection.findByIdAndUpdate(
-      req.params.id,
-      { name, bannerUrl, description, status },
-      { new: true, runValidators: true }
-    );
-    if (!updated)
+    const { name, bannerUrl, description, categories, status } = req.body;
+    const collection = await Collection.findOne({ id: req.params.id });
+    if (!collection)
       return res.status(404).json({ message: "Không tìm thấy bộ sưu tập" });
-    res.json(updated);
+
+    if (name) collection.name = name;
+    if (bannerUrl) collection.bannerUrl = bannerUrl;
+    if (description) collection.description = description;
+    if (categories !== undefined) {
+      console.log(
+        "Cập nhật categories cho collection",
+        req.params.id,
+        categories
+      );
+      collection.categories = categories;
+    }
+    if (status) collection.status = status;
+
+    await collection.save();
+    res.json(collection);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -132,9 +159,10 @@ router.put("/:id", async (req, res) => {
 // Xóa bộ sưu tập theo _id
 router.delete("/:id", async (req, res) => {
   try {
-    const deleted = await Collection.findByIdAndDelete(req.params.id);
-    if (!deleted)
+    const collection = await Collection.findOne({ id: req.params.id });
+    if (!collection)
       return res.status(404).json({ message: "Không tìm thấy bộ sưu tập" });
+    await collection.remove();
     res.json({ message: "Đã xóa bộ sưu tập" });
   } catch (err) {
     res.status(500).json({ message: err.message });

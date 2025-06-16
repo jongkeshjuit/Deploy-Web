@@ -40,7 +40,6 @@ const productSchema = new mongoose.Schema(
 
     category: {
       type: String,
-      required: true,
       trim: true,
     },
 
@@ -73,7 +72,6 @@ const productSchema = new mongoose.Schema(
 
     collection: {
       type: String,
-      required: true,
       trim: true,
     },
 

@@ -232,12 +232,16 @@ const Checkout = () => {
         }
       );
       if (response.data) {
-        // Xóa giỏ hàng sau khi đặt hàng thành công
+        // Xử lý hàng tồn kho và cập nhật số lượng sản phẩm
         try {
           const token =
             localStorage.getItem("userToken") || localStorage.getItem("token");
-          const finalizeRes = await axios.post(
-            `${import.meta.env.VITE_API_URL}/api/checkout/${response._id}/finalize`,
+
+          // Gọi API để cập nhật hàng tồn kho cho các sản phẩm trong đơn hàng
+          await axios.post(
+            `${import.meta.env.VITE_API_URL}/api/orders/${
+              response.data._id
+            }/update-stock`,
             {},
             {
               headers: {
@@ -245,10 +249,12 @@ const Checkout = () => {
               },
             }
           );
-          console.log("✅ Finalized checkout:", finalizeRes.data);
-        } catch (finalizeError) {
-          console.error("❌ Lỗi khi finalize checkout:", finalizeError);
-          toast.error("Đặt hàng thành công nhưng có lỗi khi xử lý tồn kho!");
+          console.log("✅ Đã cập nhật hàng tồn kho thành công");
+        } catch (stockError) {
+          console.error("❌ Lỗi khi cập nhật hàng tồn kho:", stockError);
+          toast.warning(
+            "Đặt hàng thành công nhưng có lỗi khi cập nhật tồn kho!"
+          );
         }
 
         // ✅ Xoá giỏ hàng
@@ -259,13 +265,17 @@ const Checkout = () => {
 
           if (userId || guestId) {
             const token =
-              localStorage.getItem("userToken") || localStorage.getItem("token");
-            await axios.delete(`${import.meta.env.VITE_API_URL}/api/cart/clear`, {
-              data: { userId, guestId },
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            });
+              localStorage.getItem("userToken") ||
+              localStorage.getItem("token");
+            await axios.delete(
+              `${import.meta.env.VITE_API_URL}/api/cart/clear`,
+              {
+                data: { userId, guestId },
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
             await dispatch(fetchCart({ userId, guestId }));
           }
 
@@ -295,10 +305,34 @@ const Checkout = () => {
       setIsProcessing(false);
     }
   };
-
-
   // Check payment status
   const handleCheckPayment = async () => {
+    // Kiểm tra thông tin ProfileInfo trước khi cho phép kiểm tra thanh toán
+    if (!validateForm()) {
+      toast.error(
+        "Vui lòng cập nhật đầy đủ thông tin giao hàng trong hồ sơ cá nhân trước khi kiểm tra thanh toán!"
+      );
+      return;
+    }
+
+    // Kiểm tra các trường bắt buộc
+    const requiredFields = [
+      { field: "fullName", label: "Họ và tên" },
+      { field: "email", label: "Email" },
+      { field: "phone", label: "Số điện thoại" },
+      { field: "address", label: "Địa chỉ" },
+      { field: "city", label: "Thành phố" },
+      { field: "district", label: "Quận/Huyện" },
+      { field: "ward", label: "Phường/Xã" },
+    ];
+
+    for (const { field, label } of requiredFields) {
+      if (!formData[field] || formData[field].trim() === "") {
+        toast.error(`Vui lòng cập nhật ${label} trong hồ sơ cá nhân!`);
+        return;
+      }
+    }
+
     setIsCheckingPayment(true);
     setPaymentCheckResult(null);
     setIsPaymentVerified(false);
@@ -306,7 +340,7 @@ const Checkout = () => {
       document
         .querySelector(".font-mono.text-xs.bg-white.p-2.border.rounded.mt-1")
         ?.textContent?.split(" ")[0] || generateOrderCode();
-    const amount = getTotalPrice() + 50000;
+    const amount = getTotalPrice() + shippingCost;
     // Lấy phone từ userInfo nếu có, fallback rỗng
     const phone = userInfo?.phone || formData.phone || "";
     const result = await fetchRecentTransactionsAndCheckPayment(
@@ -481,10 +515,11 @@ const Checkout = () => {
                 </button>
                 {paymentCheckResult && (
                   <div
-                    className={`mt-2 text-sm ${paymentCheckResult.success
-                      ? "text-green-600"
-                      : "text-red-600"
-                      }`}
+                    className={`mt-2 text-sm ${
+                      paymentCheckResult.success
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
                   >
                     {paymentCheckResult.message}
                   </div>

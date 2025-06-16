@@ -145,4 +145,53 @@ router.post("/", authMiddleware, async (req, res) => {
   }
 });
 
+// @route   PUT /api/orders/:id/update-stock
+// @desc    Update product stock after order is placed
+// @access  Private
+router.put("/:id/update-stock", authMiddleware, async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Verify order belongs to user
+    if (order.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    // Update stock for each product in the order
+    const Product = require("../models/Product");
+    for (const item of order.orderItems) {
+      const product = await Product.findById(item.productId);
+      if (product) {
+        if (product.countInStock >= item.quantity) {
+          product.countInStock -= item.quantity;
+          await product.save();
+          console.log(
+            `[STOCK] Updated product ${product.name}: -${item.quantity}, remaining: ${product.countInStock}`
+          );
+        } else {
+          console.warn(
+            `[STOCK] Insufficient stock for product ${product.name}: requested ${item.quantity}, available ${product.countInStock}`
+          );
+          return res.status(400).json({
+            message: `Không đủ hàng tồn kho cho sản phẩm ${product.name}`,
+          });
+        }
+      } else {
+        console.warn(`[STOCK] Product not found: ${item.productId}`);
+        return res.status(404).json({
+          message: `Không tìm thấy sản phẩm với ID ${item.productId}`,
+        });
+      }
+    }
+
+    res.json({ message: "Stock updated successfully", order });
+  } catch (error) {
+    console.error("Error updating stock:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
 module.exports = router;
