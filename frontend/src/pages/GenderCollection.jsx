@@ -6,10 +6,11 @@ import ProductGrid from "../components/Products/ProductGrid";
 import FilterSidebar from "../components/Products/FilterSidebar";
 import SortOptions from "../components/Products/SortOptions";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:9000";
+
 function GenderCollection() {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
-  const [collection, setCollection] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -18,34 +19,35 @@ function GenderCollection() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
-    const fetchCollectionAndProducts = async () => {
+    const fetchProducts = async () => {
       try {
-        // Lấy thông tin bộ sưu tập từ API
-        const res = await axios.get(`/api/collections/${id}`);
-        setCollection(res.data);
-
         // Lấy sản phẩm theo gender (và các filter khác)
-        const filters = { gender: id };
+        const filters = { gender: id === "women" ? "woman" : id };
         const color = searchParams.get("color");
         const size = searchParams.get("size");
         const material = searchParams.get("material");
         const category = searchParams.get("category");
         const sortBy = searchParams.get("sort");
-        if (color) filters.colors = color;
+        const price = searchParams.get("price");
+        const search = searchParams.get("search");
+
+        if (color) filters.color = color;
         if (size) filters.sizes = size;
         if (material) filters.material = material;
         if (category) filters.category = category;
         if (sortBy) filters.sortBy = sortBy;
+        if (price) filters.price = price;
+        if (search) filters.search = search;
+
         const response = await getProducts(filters);
-        const products = response.products || [];
-        setProducts(products);
+        setProducts(response.products || []);
         setLoading(false);
       } catch (err) {
-        setError("Không thể tải dữ liệu bộ sưu tập");
+        setError("Không thể tải dữ liệu sản phẩm");
         setLoading(false);
       }
     };
-    fetchCollectionAndProducts();
+    fetchProducts();
   }, [id, searchParams]);
 
   const toggleSidebar = () => {
@@ -68,24 +70,17 @@ function GenderCollection() {
   if (loading) return <div className="text-center mt-10">Đang tải...</div>;
   if (error)
     return <div className="text-center text-red-500 mt-10">{error}</div>;
-  if (!collection) return <h2>Không tìm thấy bộ sưu tập!</h2>;
 
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="w-full px-4 md:px-[50px]">
         <h2 className="text-xl md:text-2xl text-left font-medium mb-4 md:mb-6 mt-6 md:mt-10">
-          {collection.name}
+          {id === "man"
+            ? "Thời Trang Nam"
+            : id === "woman"
+            ? "Thời Trang Nữ"
+            : "Thời Trang"}
         </h2>
-        {collection.bannerUrl && (
-          <img
-            src={collection.bannerUrl}
-            alt={collection.name}
-            className="w-full object-cover rounded mb-4"
-          />
-        )}
-        {collection.description && (
-          <p className="text-base md:text-lg text-gray-700 mb-4">{collection.description}</p>
-        )}
       </div>
       {/* filter sidebar */}
       <div className="w-full px-4 md:px-[50px] flex justify-between items-center">

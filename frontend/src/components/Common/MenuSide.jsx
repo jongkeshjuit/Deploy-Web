@@ -1,24 +1,53 @@
-import React, { useState, useEffect } from "react"; // ✅ thiếu import useEffect
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { GrClose, GrMenu } from "react-icons/gr";
+import axios from "axios";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:9000";
 
 const MenuSide = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
   const [isWomanSubMenuOpen, setIsWomanSubMenuOpen] = useState(false);
+  const [manCategories, setManCategories] = useState([]);
+  const [womanCategories, setWomanCategories] = useState([]);
 
-  const categories = [
-    "Áo phông",
-    "Áo sơ mi",
-    "Quần tây",
-    "Quần short",
-    "Áo khoác",
-  ];
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        // Lấy danh sách sản phẩm nam
+        const manResponse = await axios.get(`${API_URL}/api/products`, {
+          params: { gender: "man" },
+        });
+        // Lấy danh sách sản phẩm nữ
+        const womanResponse = await axios.get(`${API_URL}/api/products`, {
+          params: { gender: "woman" },
+        });
+
+        // Lọc và loại bỏ các danh mục trùng lặp
+        const manCategories = [
+          ...new Set(manResponse.data.products.map((p) => p.category)),
+        ];
+        const womanCategories = [
+          ...new Set(womanResponse.data.products.map((p) => p.category)),
+        ];
+
+        setManCategories(manCategories);
+        setWomanCategories(womanCategories);
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
-    setIsSubMenuOpen(false); // Đóng submenu khi toggle menu chính
+    setIsSubMenuOpen(false);
     setIsWomanSubMenuOpen(false);
   };
+
   const toggleSubMenu = () => {
     setIsSubMenuOpen(!isSubMenuOpen);
   };
@@ -26,11 +55,13 @@ const MenuSide = () => {
   const toggleWomanSubMenu = () => {
     setIsWomanSubMenuOpen(!isWomanSubMenuOpen);
   };
+
   const closeMenu = () => {
     setIsMenuOpen(false);
     setIsSubMenuOpen(false);
     setIsWomanSubMenuOpen(false);
   };
+
   useEffect(() => {
     if (isMenuOpen) {
       document.body.classList.add("overflow-hidden");
@@ -80,10 +111,10 @@ const MenuSide = () => {
             : "opacity-0 invisible pointer-events-none"
         }`}
         onClick={closeMenu}
-      />{" "}
+      />
       {/* Menu chính */}
       <div
-        className={`fixed top-0 left-0 w-[300px] h-full bg-white shadow-lg z-40 transition-all duration-300 ease-in-out transform ${
+        className={`fixed top-0 left-0 w-[300px] h-full bg-white shadow-lg z-40 transition-all duration-300 ease-in-out transform overflow-y-auto ${
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -111,13 +142,11 @@ const MenuSide = () => {
             {/* Submenu danh mục */}
             <div
               className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                isSubMenuOpen
-                  ? "max-h-[300px] opacity-100"
-                  : "max-h-0 opacity-0"
+                isSubMenuOpen ? "opacity-100" : "max-h-0 opacity-0"
               }`}
             >
               <div className="flex flex-col gap-2 mt-2 pl-[70px] pr-[20px]">
-                {categories.map((category, index) => (
+                {manCategories.map((category, index) => (
                   <Link
                     key={index}
                     to={`gendercollections/man?category=${encodeURIComponent(
@@ -130,7 +159,7 @@ const MenuSide = () => {
                   </Link>
                 ))}
               </div>
-            </div>{" "}
+            </div>
           </div>
 
           {/* Đồ Nữ với submenu */}
@@ -159,14 +188,11 @@ const MenuSide = () => {
             {/* Submenu danh mục */}
             <div
               className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                isWomanSubMenuOpen
-                  ? "max-h-[300px] opacity-100"
-                  : "max-h-0 opacity-0"
+                isWomanSubMenuOpen ? "opacity-100" : "max-h-0 opacity-0"
               }`}
             >
               <div className="flex flex-col gap-2 mt-2 pl-[70px] pr-[20px]">
-                {" "}
-                {categories.map((category, index) => (
+                {womanCategories.map((category, index) => (
                   <Link
                     key={index}
                     to={`gendercollections/women?category=${encodeURIComponent(
