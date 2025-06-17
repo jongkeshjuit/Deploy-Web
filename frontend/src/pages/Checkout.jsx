@@ -131,6 +131,31 @@ const Checkout = () => {
       ...prev,
       [name]: value,
     }));
+
+    // Kiểm tra thông tin khi chuyển sang phương thức chuyển khoản
+    if (name === "paymentMethod" && value === "bank_transfer") {
+      const requiredFields = [
+        { field: "fullName", label: "Họ và tên" },
+        { field: "email", label: "Email" },
+        { field: "phone", label: "Số điện thoại" },
+        { field: "address", label: "Địa chỉ" },
+        { field: "city", label: "Thành phố" },
+        { field: "district", label: "Quận/Huyện" },
+        { field: "ward", label: "Phường/Xã" },
+      ];
+
+      const missingFields = requiredFields.filter(
+        ({ field }) => !formData[field] || formData[field].trim() === ""
+      );
+
+      if (missingFields.length > 0) {
+        toast.error(
+          `Vui lòng cập nhật đầy đủ thông tin: ${missingFields
+            .map(({ label }) => label)
+            .join(", ")} trong hồ sơ cá nhân!`
+        );
+      }
+    }
   };
 
   // Validate form
@@ -326,11 +351,31 @@ const Checkout = () => {
       { field: "ward", label: "Phường/Xã" },
     ];
 
-    for (const { field, label } of requiredFields) {
-      if (!formData[field] || formData[field].trim() === "") {
-        toast.error(`Vui lòng cập nhật ${label} trong hồ sơ cá nhân!`);
-        return;
-      }
+    const missingFields = requiredFields.filter(
+      ({ field }) => !formData[field] || formData[field].trim() === ""
+    );
+
+    if (missingFields.length > 0) {
+      toast.error(
+        `Vui lòng cập nhật đầy đủ thông tin: ${missingFields
+          .map(({ label }) => label)
+          .join(", ")} trong hồ sơ cá nhân!`
+      );
+      return;
+    }
+
+    // Kiểm tra định dạng email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.error("Email không hợp lệ!");
+      return;
+    }
+
+    // Kiểm tra định dạng số điện thoại
+    const phoneRegex = /^[0-9]{10,11}$/;
+    if (!phoneRegex.test(formData.phone.replace(/\s/g, ""))) {
+      toast.error("Số điện thoại không hợp lệ!");
+      return;
     }
 
     setIsCheckingPayment(true);
@@ -378,7 +423,7 @@ const Checkout = () => {
           <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 uppercase tracking-wide">
             PHƯƠNG THỨC THANH TOÁN
           </h2>{" "}
-          <div className="flex flex-col sm:flex-row sm:items-center mb-4 sm:mb-6 gap-4 sm:gap-8">
+          <div className="flex flex-col items-start sm:flex-row sm:items-center mb-4 sm:mb-6 gap-4 sm:gap-8">
             <label className="flex items-center font-medium text-base">
               <input
                 type="radio"
@@ -545,6 +590,22 @@ const Checkout = () => {
               <div className="text-sm">
                 <span className="font-semibold">Số điện thoại:</span>
                 <span className="ml-2">{formData.phone}</span>
+              </div>
+              <div className="text-sm">
+                <span className="font-semibold">Phương thức thanh toán:</span>
+                <span className="ml-2 text-green-600 font-medium">
+                  Thanh toán khi giao hàng
+                </span>
+              </div>
+              <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded p-3">
+                <div className="text-sm text-yellow-800">
+                  <div className="font-semibold mb-1">📋 Lưu ý:</div>
+                  <ul className="list-disc list-inside space-y-1 text-xs">
+                    <li>Bạn sẽ thanh toán khi nhận được hàng</li>
+                    <li>Vui lòng kiểm tra hàng trước khi thanh toán</li>
+                    <li>Đơn hàng sẽ được giao trong vòng 2-3 ngày làm việc</li>
+                  </ul>
+                </div>
               </div>
             </div>
           )}
