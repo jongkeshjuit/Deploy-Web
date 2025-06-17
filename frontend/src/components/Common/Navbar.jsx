@@ -4,6 +4,7 @@ import { IoMdHeartEmpty } from "react-icons/io";
 import { PiShoppingCartSimple } from "react-icons/pi";
 import { AiOutlineUser } from "react-icons/ai";
 import { FiLogOut } from "react-icons/fi";
+import { logoutUser } from "../../redux/slices/authSlice";
 import { CgProfile } from "react-icons/cg";
 import { RiAdminLine } from "react-icons/ri";
 import { useSelector, useDispatch } from "react-redux";
@@ -43,11 +44,20 @@ const Navbar = () => {
   }, []);
 
   // Hàm xử lý đăng xuất
-  const handleLogout = () => {
-    dispatch(logout());
-    toast.success("Đăng xuất thành công!");
-    navigate("/");
-    setShowDropdown(false);
+  const handleLogout = async () => {
+    try {
+      // Gọi async logout
+      await dispatch(logoutUser()).unwrap();
+      
+      toast.success("Đăng xuất thành công!");
+      navigate("/");
+      setShowDropdown(false);
+    } catch (error) {
+      // Dù có lỗi vẫn logout và hiển thị thông báo
+      toast.success("Đăng xuất thành công!");
+      navigate("/");
+      setShowDropdown(false);
+    }
   };
 
   return (

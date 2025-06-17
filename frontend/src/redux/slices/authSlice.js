@@ -61,6 +61,46 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+export const logoutUser = createAsyncThunk(
+  "auth/logoutUser",
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("userToken") || localStorage.getItem("token");
+      
+      if (token) {
+        // Gọi API logout backend
+        await axios.post(
+          `${API_URL}/api/users/logout`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      }
+
+      // Xóa tất cả dữ liệu trong localStorage
+      localStorage.removeItem("userInfo");
+      localStorage.removeItem("userToken");
+      localStorage.removeItem("token");
+      localStorage.removeItem("cart");
+      
+      return { message: "Đăng xuất thành công" };
+    } catch (error) {
+      // Dù có lỗi API vẫn xóa localStorage
+      localStorage.removeItem("userInfo");
+      localStorage.removeItem("userToken");
+      localStorage.removeItem("token");
+      localStorage.removeItem("cart");
+      
+      console.error("Logout error:", error);
+      return rejectWithValue(error.response?.data?.message || "Lỗi khi đăng xuất");
+    }
+  }
+);
+
 // Async thunk for user Registration
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
@@ -127,13 +167,18 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     logout: (state) => {
+      // Force clear tất cả
       localStorage.removeItem("userInfo");
       localStorage.removeItem("userToken");
+      localStorage.removeItem("token");
+      localStorage.removeItem("cart");
+      
       state.userInfo = null;
       state.userToken = null;
       state.loading = false;
       state.error = null;
       state.success = false;
+      
       // Generate new guest ID on logout
       state.guestId = `guest_${Date.now()}_${Math.random()
         .toString(36)
@@ -174,6 +219,10 @@ const authSlice = createSlice({
         state.userToken = action.payload.token;
         state.success = true;
         state.error = null;
+        state.loading = false;
+        // Đảm bảo sync localStorage
+        localStorage.setItem("userInfo", JSON.stringify(action.payload.user));
+        localStorage.setItem("userToken", action.payload.token);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -197,6 +246,36 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
         state.success = false;
+      })
+      .addCase(logoutUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(logoutUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userInfo = null;
+        state.userToken = null;
+        state.error = null;
+        state.success = false;
+        
+        // Generate new guest ID
+        state.guestId = `guest_${Date.now()}_${Math.random()
+          .toString(36)
+          .substr(2, 9)}`;
+        localStorage.setItem("guestId", state.guestId);
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.loading = false;
+        // Vẫn logout dù có lỗi
+        state.userInfo = null;
+        state.userToken = null;
+        state.error = null;
+        
+        // Generate new guest ID
+        state.guestId = `guest_${Date.now()}_${Math.random()
+          .toString(36)
+          .substr(2, 9)}`;
+        localStorage.setItem("guestId", state.guestId);
       })
       // Get profile cases
       .addCase(getUserProfile.pending, (state) => {

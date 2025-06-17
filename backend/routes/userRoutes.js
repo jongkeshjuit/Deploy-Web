@@ -55,7 +55,8 @@ router.post("/register", async (req, res) => {
         name: newUser.name,
         email: newUser.email,
         role: newUser.role,
-      }
+      },
+      token: token
     };
 
     // Chỉ gửi token trong response khi development (để frontend có thể sử dụng)
@@ -138,17 +139,31 @@ router.post("/login", async (req, res) => {
 
 router.post("/logout", authMiddleware, async (req, res) => {
   try {
-    // Clear cookie
-    res.clearCookie('authToken', {
+    // Clear tất cả cookies có thể
+    const cookieOptions = {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax'
-    });
+      sameSite: 'lax',
+      path: '/'
+    };
 
-    res.json({ message: "Đăng xuất thành công" });
+    res.clearCookie('authToken', cookieOptions);
+    res.clearCookie('userToken', cookieOptions);
+    res.clearCookie('token', cookieOptions);
+
+    // Optional: Thêm token vào blacklist nếu muốn
+    // await addToBlacklist(req.headers.authorization?.split(" ")[1]);
+
+    res.json({ 
+      message: "Đăng xuất thành công",
+      success: true 
+    });
   } catch (error) {
     console.error("Logout error:", error);
-    res.status(500).json({ message: "Lỗi khi đăng xuất" });
+    res.status(500).json({ 
+      message: "Lỗi khi đăng xuất",
+      success: false 
+    });
   }
 });
 

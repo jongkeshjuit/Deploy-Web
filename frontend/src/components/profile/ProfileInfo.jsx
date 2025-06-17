@@ -35,7 +35,8 @@ const ProfileInfo = () => {
   const dispatch = useDispatch();
 
   // Redirect to login if not authenticated
-  if (!userToken) {
+  const token = userToken || localStorage.getItem("userToken") || localStorage.getItem("token");
+  if (!token || !userInfo) {
     return <Navigate to="/login" replace />;
   }
 
