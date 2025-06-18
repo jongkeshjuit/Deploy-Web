@@ -1,0 +1,138 @@
+.
+├── backend
+│   ├── Guide.md
+│   ├── IMPORT_INSTRUCTIONS.md
+│   ├── clear-products.js
+│   ├── config
+│   │   ├── db.js
+│   │   └── passport.js
+│   ├── data
+│   │   ├── collections.js
+│   │   ├── dataManager.js
+│   │   ├── products.js
+│   │   └── users.js
+│   ├── debug-cart-merge.js
+│   ├── env.txt
+│   ├── middleware
+│   │   ├── authMiddleware.js
+│   │   └── errorHandler.js
+│   ├── models
+│   │   ├── Cart.js
+│   │   ├── Checkout.js
+│   │   ├── Collection.js
+│   │   ├── Order.js
+│   │   ├── Product.js
+│   │   └── User.js
+│   ├── routes
+│   │   ├── adminOrderRoutes.js
+│   │   ├── adminRoutes.js
+│   │   ├── authRoutes.js
+│   │   ├── cartRoutes.js
+│   │   ├── checkoutRoutes.js
+│   │   ├── collectionRoutes.js
+│   │   ├── orderRoutes.js
+│   │   ├── paymentRoutes.js
+│   │   ├── productAdminRoutes.js
+│   │   ├── productRoutes.js
+│   │   ├── uploadRoutes.js
+│   │   └── userRoutes.js
+│   ├── seeder.js
+│   ├── server.js
+│   └── vercel.json
+├── frontend
+│   ├── PAYMENT_SETUP_GUIDE.md
+│   ├── README.md
+│   ├── env.txt
+│   ├── eslint.config.js
+│   ├── src
+│   │   ├── App.jsx
+│   │   ├── assets
+│   │   │   └── dummyData.js
+│   │   ├── components
+│   │   │   ├── Admin
+│   │   │   │   ├── AdminLayout.jsx
+│   │   │   │   ├── AdminSidebar.jsx
+│   │   │   │   ├── CollectionManagement.jsx
+│   │   │   │   ├── EditCollection.jsx
+│   │   │   │   ├── EditProductPage.jsx
+│   │   │   │   ├── OrderManagement.jsx
+│   │   │   │   ├── ProductManagement.jsx
+│   │   │   │   └── UserManagement.jsx
+│   │   │   ├── Auth
+│   │   │   │   ├── AdminRoute.jsx
+│   │   │   │   ├── PrivateRoute.jsx
+│   │   │   │   └── PublicOnlyRoute.jsx
+│   │   │   ├── Cart
+│   │   │   │   └── CartContext.jsx
+│   │   │   ├── Common
+│   │   │   │   ├── Footer.jsx
+│   │   │   │   ├── Header.jsx
+│   │   │   │   ├── MenuSide.jsx
+│   │   │   │   ├── Navbar.jsx
+│   │   │   │   ├── Newsletter.jsx
+│   │   │   │   ├── PaymentStatus.jsx
+│   │   │   │   ├── ScrollToTop.jsx
+│   │   │   │   └── SearchBar.jsx
+│   │   │   ├── Layout
+│   │   │   │   ├── Hero.jsx
+│   │   │   │   └── UserLayout.jsx
+│   │   │   ├── Products
+│   │   │   │   ├── FeaturedCollection.jsx
+│   │   │   │   ├── FilterSidebar.jsx
+│   │   │   │   ├── ProductDetails.jsx
+│   │   │   │   ├── ProductGrid.jsx
+│   │   │   │   └── SortOptions.jsx
+│   │   │   ├── information
+│   │   │   │   ├── About.jsx
+│   │   │   │   └── Sponsorship.jsx
+│   │   │   └── profile
+│   │   │       ├── MyOdersPage.jsx
+│   │   │       ├── OrderContext.jsx
+│   │   │       ├── OrderDetailPage.jsx
+│   │   │       ├── OrderSearch.jsx
+│   │   │       ├── ProfileInfo.jsx
+│   │   │       └── ProfileLayout.jsx
+│   │   ├── hooks
+│   │   │   └── usePaymentChecker.js
+│   │   ├── main.jsx
+│   │   ├── pages
+│   │   │   ├── About.jsx
+│   │   │   ├── AdminHomePage.jsx
+│   │   │   ├── Cart.jsx
+│   │   │   ├── Checkout.jsx
+│   │   │   ├── CheckoutBuyNow.jsx
+│   │   │   ├── Collection.jsx
+│   │   │   ├── GenderCollection.jsx
+│   │   │   ├── GoogleCallback.jsx
+│   │   │   ├── Home.jsx
+│   │   │   ├── Information.jsx
+│   │   │   ├── Login.jsx
+│   │   │   ├── Policy.jsx
+│   │   │   └── Signup.jsx
+│   │   ├── redux
+│   │   │   ├── slices
+│   │   │   │   ├── adminOrderSlice.js
+│   │   │   │   ├── adminProductSlice.js
+│   │   │   │   ├── adminSlice.js
+│   │   │   │   ├── authSlice.js
+│   │   │   │   ├── cartSlice.js
+│   │   │   │   ├── checkoutSlice.js
+│   │   │   │   ├── orderSlice.js
+│   │   │   │   └── productsSlice.js
+│   │   │   └── store.js
+│   │   ├── services
+│   │   │   └── productService.js
+│   │   └── utils
+│   │       ├── auth.js
+│   │       ├── axiosInterceptor.js
+│   │       ├── bankInfo.js
+│   │       ├── cities.js
+│   │       ├── districts.js
+│   │       ├── googleAppsScript.js
+│   │       ├── paymentChecker.js
+│   │       ├── testPaymentChecker.js
+│   │       └── wards.js
+│   └── vercel.json
+└── tree.txt
+
+25 directories, 111 files
