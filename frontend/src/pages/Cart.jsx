@@ -1,33 +1,40 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { clearCart, removeFromCart, updateCartItemQuantity, fetchCart, clearCartServer } from "../redux/slices/cartSlice";
+import {
+  clearCart,
+  removeFromCart,
+  updateCartItemQuantity,
+  fetchCart,
+  clearCartServer,
+} from "../redux/slices/cartSlice";
 
 const Cart = () => {
   const navigate = useNavigate();
   const { userInfo, guestId } = useSelector((state) => state.auth);
   const { cart, loading, error } = useSelector((state) => state.cart);
+  const [shippingCost, setShippingCost] = useState(0);
 
   const userId = userInfo ? userInfo._id : null;
   const dispatch = useDispatch();
   useEffect(() => {
-    console.log('Auth state:', { userInfo, guestId });
-    console.log('User ID:', userId);
-    console.log('User structure:', userInfo);
+    console.log("Auth state:", { userInfo, guestId });
+    console.log("User ID:", userId);
+    console.log("User structure:", userInfo);
 
     // Kiểm tra localStorage
-    const userFromStorage = localStorage.getItem('userInfo');
-    const tokenFromStorage = localStorage.getItem('userToken');
+    const userFromStorage = localStorage.getItem("userInfo");
+    const tokenFromStorage = localStorage.getItem("userToken");
 
-    console.log('UserInfo from localStorage:', userFromStorage);
-    console.log('Token from localStorage:', tokenFromStorage);
+    console.log("UserInfo from localStorage:", userFromStorage);
+    console.log("Token from localStorage:", tokenFromStorage);
 
     if (userFromStorage) {
       try {
         const parsedUser = JSON.parse(userFromStorage);
-        console.log('Parsed user:', parsedUser);
+        console.log("Parsed user:", parsedUser);
       } catch (e) {
-        console.error('Error parsing user from localStorage:', e);
+        console.error("Error parsing user from localStorage:", e);
       }
     }
   }, [userInfo, guestId, userId]);
@@ -38,11 +45,23 @@ const Cart = () => {
     }
   }, [dispatch, userId, guestId]);
 
+  const calculateShippingCost = (city) => {
+    if (!city) return 30000; // Mặc định là 30.000 VND nếu chưa có thành phố
+    return city.trim().toLowerCase().includes("hồ chí minh") ? 0 : 30000;
+  };
+
+  const getShippingCost = () => {
+    return calculateShippingCost(userInfo?.city);
+  };
+
+  const getTotalAmount = () => {
+    return getTotalPrice() + getShippingCost();
+  };
+
   const getTotalPrice = () => {
     if (!cart?.products || cart.products.length === 0) return 0;
 
     return cart.products.reduce((total, item) => {
-      // SỬA: Xử lý cả hai cấu trúc dữ liệu có thể có
       const product = item.productId || item.product;
       const price = product?.discountPrice || product?.price || item.price || 0;
       return total + price * item.quantity;
@@ -60,14 +79,16 @@ const Cart = () => {
   const handleAddToCart = (productId, quantity, size, color, delta) => {
     const newQuantity = quantity + delta;
     if (newQuantity >= 1) {
-      dispatch(updateCartItemQuantity({
-        productId,
-        quantity: newQuantity,
-        size,
-        color,
-        userId,
-        guestId
-      }));
+      dispatch(
+        updateCartItemQuantity({
+          productId,
+          quantity: newQuantity,
+          size,
+          color,
+          userId,
+          guestId,
+        })
+      );
     }
   };
 
@@ -84,7 +105,7 @@ const Cart = () => {
   };
 
   // Xử lý trường hợp error
-  if (error && error !== 'Cart not found') {
+  if (error && error !== "Cart not found") {
     return (
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="text-center text-red-500">
@@ -101,7 +122,7 @@ const Cart = () => {
   }
 
   // Xử lý trường hợp cart chưa được khởi tạo hoặc cart not found (coi như giỏ hàng trống)
-  if (!cart || !cart.products || error === 'Cart not found') {
+  if (!cart || !cart.products || error === "Cart not found") {
     return (
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex flex-col items-center justify-center py-12">
@@ -176,7 +197,7 @@ const Cart = () => {
 
               // Nếu không có thông tin sản phẩm, bỏ qua item này
               if (!product) {
-                console.warn('Missing product data for cart item:', item);
+                console.warn("Missing product data for cart item:", item);
                 return null;
               }
 
@@ -191,11 +212,15 @@ const Cart = () => {
                     className="w-32 flex-shrink-0"
                   >
                     <img
-                      src={product.images?.[0]?.url || item.image || '/placeholder-image.jpg'}
+                      src={
+                        product.images?.[0]?.url ||
+                        item.image ||
+                        "/placeholder-image.jpg"
+                      }
                       alt={product.name || item.name}
                       className="w-full h-full object-cover"
                       onError={(e) => {
-                        e.target.src = '/placeholder-image.jpg';
+                        e.target.src = "/placeholder-image.jpg";
                       }}
                     />
                   </Link>
@@ -211,12 +236,14 @@ const Cart = () => {
                           {product.name || item.name}
                         </Link>
                         <div className="text-lg text-gray-500 mt-1">
-                          <p>Màu: {item.color?.name || 'N/A'}</p>
+                          <p>Màu: {item.color?.name || "N/A"}</p>
                           <p>Size: {item.size}</p>
                         </div>
                       </div>
                       <button
-                        onClick={() => handleRemoveFromCart(productId, item.size, item.color)}
+                        onClick={() =>
+                          handleRemoveFromCart(productId, item.size, item.color)
+                        }
                         className="text-red-500 hover:text-red-600"
                       >
                         Xóa
@@ -227,14 +254,30 @@ const Cart = () => {
                       {/* Quantity */}
                       <div className="flex items-center space-x-2">
                         <button
-                          onClick={() => handleAddToCart(productId, item.quantity, item.size, item.color, -1)}
+                          onClick={() =>
+                            handleAddToCart(
+                              productId,
+                              item.quantity,
+                              item.size,
+                              item.color,
+                              -1
+                            )
+                          }
                           className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 cursor-pointer"
                         >
                           -
                         </button>
                         <span className="w-8 text-center">{item.quantity}</span>
                         <button
-                          onClick={() => handleAddToCart(productId, item.quantity, item.size, item.color, 1)}
+                          onClick={() =>
+                            handleAddToCart(
+                              productId,
+                              item.quantity,
+                              item.size,
+                              item.color,
+                              1
+                            )
+                          }
                           className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 cursor-pointer"
                         >
                           +
@@ -244,8 +287,10 @@ const Cart = () => {
                       <div className="text-right">
                         <p className="font-medium">
                           {(
-                            (product.discountPrice || product.price || item.price || 0) *
-                            item.quantity
+                            (product.discountPrice ||
+                              product.price ||
+                              item.price ||
+                              0) * item.quantity
                           ).toLocaleString("vi-VN")}{" "}
                           VND
                         </p>
@@ -269,12 +314,20 @@ const Cart = () => {
                 </div>
                 <div className="flex justify-between">
                   <span>Phí vận chuyển</span>
-                  <span>Miễn phí</span>
+                  <span>
+                    {getShippingCost() === 0 ? (
+                      <span className="text-green-600 font-bold">Miễn phí</span>
+                    ) : (
+                      <span>
+                        {getShippingCost().toLocaleString("vi-VN")} VND
+                      </span>
+                    )}
+                  </span>
                 </div>
                 <div className="border-t pt-2 mt-2">
                   <div className="flex justify-between font-medium">
                     <span>Tổng tiền</span>
-                    <span>{getTotalPrice().toLocaleString("vi-VN")} VND</span>
+                    <span>{getTotalAmount().toLocaleString("vi-VN")} VND</span>
                   </div>
                 </div>
               </div>

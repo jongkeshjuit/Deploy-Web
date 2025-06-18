@@ -24,6 +24,29 @@ const CheckoutBuyNow = () => {
 
   const cartItems = buyNowItem ? [buyNowItem] : [];
 
+  // Calculate shipping cost
+  const calculateShippingCost = (city) => {
+    if (city && city.trim().toLowerCase().includes("hồ chí minh")) {
+      return 0;
+    }
+    return 30000;
+  };
+
+  const getTotalPrice = () => {
+    if (!cartItems || cartItems.length === 0) return 0;
+    return cartItems.reduce((total, item) => {
+      return total + item.price * item.quantity;
+    }, 0);
+  };
+
+  const getShippingCost = () => {
+    return calculateShippingCost(formData.city);
+  };
+
+  const getTotalAmount = () => {
+    return getTotalPrice() + getShippingCost();
+  };
+
   // Check login status and redirect if needed
   useEffect(() => {
     if (!userInfo) {
@@ -42,13 +65,6 @@ const CheckoutBuyNow = () => {
       navigate("/");
     }
   }, [buyNowItem, navigate]);
-
-  const getTotalPrice = () => {
-    if (!cartItems || cartItems.length === 0) return 0;
-    return cartItems.reduce((total, item) => {
-      return total + item.price * item.quantity;
-    }, 0);
-  };
 
   // Helper function to parse address from user profile
   const parseAddress = (addressString) => {
@@ -233,7 +249,7 @@ const CheckoutBuyNow = () => {
           notes: formData.notes,
         },
         paymentMethod: formData.paymentMethod,
-        totalPrice: getTotalPrice() + 50000,
+        totalPrice: getTotalAmount(),
       };
 
       const response = await dispatch(
@@ -337,7 +353,7 @@ const CheckoutBuyNow = () => {
     setPaymentCheckResult(null);
     setIsPaymentVerified(false);
     const orderCode = generateOrderCode();
-    const amount = getTotalPrice() + 50000;
+    const amount = getTotalAmount();
     const phone = userInfo?.phone || formData.phone || "";
     const result = await fetchRecentTransactionsAndCheckPayment(
       orderCode,
@@ -425,7 +441,7 @@ const CheckoutBuyNow = () => {
                   <div className="text-sm">
                     <span className="font-semibold">Số tiền:</span>
                     <span className="font-bold text-red-600 ml-1">
-                      {(getTotalPrice() + 50000).toLocaleString("vi-VN")} VND
+                      {getTotalAmount().toLocaleString("vi-VN")} VND
                     </span>
                   </div>
                   <div className="text-sm">
@@ -447,7 +463,7 @@ const CheckoutBuyNow = () => {
                   <div className="bg-white p-4 border border-gray-300 rounded">
                     <img
                       src={generateVietQRUrl(
-                        getTotalPrice() + 50000,
+                        getTotalAmount(),
                         generateOrderCode(),
                         userInfo?.phone || formData.phone || ""
                       )}
@@ -558,7 +574,18 @@ const CheckoutBuyNow = () => {
                     <li>Bạn sẽ thanh toán khi nhận được hàng</li>
                     <li>Vui lòng kiểm tra hàng trước khi thanh toán</li>
                     <li>Đơn hàng sẽ được giao trong vòng 2-3 ngày làm việc</li>
-                    <li>Phí vận chuyển: 50.000 VND</li>
+                    <li>
+                      Phí vận chuyển:{" "}
+                      {getShippingCost() === 0 ? (
+                        <span className="text-green-600 font-bold">
+                          Miễn phí
+                        </span>
+                      ) : (
+                        <span>
+                          {getShippingCost().toLocaleString("vi-VN")} VND
+                        </span>
+                      )}
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -595,26 +622,37 @@ const CheckoutBuyNow = () => {
           </div>
           <div className="mb-2 flex justify-between text-xs sm:text-sm">
             <span>Phí vận chuyển</span>
-            <span>50.000 VND</span>
+            {formData.city &&
+            formData.city.trim().toLowerCase().includes("hồ chí minh") ? (
+              <span className="text-green-600 font-bold">Miễn phí</span>
+            ) : (
+              <span>30.000 VND</span>
+            )}
           </div>
           <div className="border-t border-black my-2"></div>
           <div className="mb-2 flex justify-between items-center text-base sm:text-lg font-bold">
             <span>TỔNG</span>
-            <span>{(getTotalPrice() + 50000).toLocaleString("vi-VN")} VND</span>
+            <span>
+              {(
+                getTotalPrice() +
+                (formData.city &&
+                formData.city.trim().toLowerCase().includes("hồ chí minh")
+                  ? 0
+                  : 30000)
+              ).toLocaleString("vi-VN")}{" "}
+              VND
+            </span>
           </div>
           <div className="text-xs text-gray-500 mb-2">
             Đã bao gồm thuế giá trị gia tăng
             <span className="float-right">
-              {Math.round((getTotalPrice() + 50000) / 11).toLocaleString(
-                "vi-VN"
-              )}{" "}
-              VND
+              {Math.round(getTotalAmount() / 11).toLocaleString("vi-VN")} VND
             </span>
           </div>
           <div className="border-t border-black my-2"></div>
           <div className="mb-2 flex justify-between items-center text-xs sm:text-base font-bold">
             <span>TỔNG ĐƠN ĐẶT HÀNG</span>
-            <span>{(getTotalPrice() + 50000).toLocaleString("vi-VN")} VND</span>
+            <span>{getTotalAmount().toLocaleString("vi-VN")} VND</span>
           </div>
         </div>
       </div>
